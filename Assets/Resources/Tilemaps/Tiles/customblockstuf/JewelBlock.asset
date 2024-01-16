@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a8e0a9cf03afb145bee88e8779c16e9, type: 3}
+  m_Name: JewelBlock
+  m_EditorClassIdentifier: 
+  m_AnimatedSprites:
+  - {fileID: -1249339157, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: -1522187171, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: -932903721, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: -1766352663, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: -217985290, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: -1844000635, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: 1159575662, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: 346937438, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: 20623732, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: -1781914709, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: -1680782164, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: 559017559, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: 50275344, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: 1234898956, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: -932949767, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: 1663378113, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: 1799427374, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  - {fileID: -2118825368, guid: 0085962fa3340514eb3f6744f681fafa, type: 3}
+  m_MinSpeed: 12
+  m_MaxSpeed: 12
+  m_AnimationStartTime: 0
+  m_AnimationStartFrame: 0
+  m_TileColliderType: 1
+  particleColor: {r: 0.83403355, g: 0.6273585, b: 1, a: 0}
+  breakableBySmallMario: 1
+  breakableByLargeMario: 1
+  breakableByGiantMario: 1
+  breakableByShells: 1
+  breakableByBombs: 1
+  bumpIfNotBroken: 0
+  bumpIfBroken: 0

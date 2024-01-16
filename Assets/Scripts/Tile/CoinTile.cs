@@ -6,6 +6,8 @@ using NSMB.Utils;
 [CreateAssetMenu(fileName = "CoinTile", menuName = "ScriptableObjects/Tiles/CoinTile", order = 1)]
 public class CoinTile : BreakableBrickTile {
     public string resultTile;
+	public Vector2[] coins = {new(0, 0)};
+	
     public override bool Interact(MonoBehaviour interacter, InteractionDirection direction, Vector3 worldLocation) {
         if (base.Interact(interacter, direction, worldLocation))
             return true;
@@ -34,8 +36,10 @@ public class CoinTile : BreakableBrickTile {
                 return true;
             }
 
-            //Give coin to player
-            player.photonView.RPC(nameof(PlayerController.AttemptCollectCoin), RpcTarget.All, -1, (Vector2) worldLocation + Vector2.one/4f);
+            //Give coin(s) to player
+            foreach (var coin in coins) {
+				player.photonView.RPC(nameof(PlayerController.AttemptCollectCoin), RpcTarget.All, -1, (Vector2) worldLocation + Vector2.one/4f + (coin * 0.5f));
+			}
         } else {
             interacter.gameObject.GetPhotonView().RPC(nameof(HoldableEntity.PlaySound), RpcTarget.All, Enums.Sounds.World_Coin_Collect);
         }

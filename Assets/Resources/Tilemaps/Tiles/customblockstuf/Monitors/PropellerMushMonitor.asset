@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40cec343a61ca014d8e5a2979f27a422, type: 3}
+  m_Name: PropellerMushMonitor
+  m_EditorClassIdentifier: 
+  m_AnimatedSprites:
+  - {fileID: 819558048, guid: 21f009469a7fd714ab3750080ae2e82f, type: 3}
+  m_MinSpeed: 1
+  m_MaxSpeed: 1
+  m_AnimationStartTime: 0
+  m_AnimationStartFrame: 0
+  m_TileColliderType: 1
+  particleColor: {r: 0.85490197, g: 0.9529412, b: 1, a: 0}
+  breakableBySmallMario: 0
+  breakableByLargeMario: 0
+  breakableByGiantMario: 1
+  breakableByShells: 0
+  breakableByBombs: 1
+  bumpIfNotBroken: 0
+  bumpIfBroken: 0
+  resultTile: customblockstuf/Monitors/DestroyedPropellerMushMonitor
+  powerup: {x: 0, y: 0}
+  topSpawnOffset: {x: 0, y: 0}
+  bottomSpawnOffset: {x: 0, y: 1}

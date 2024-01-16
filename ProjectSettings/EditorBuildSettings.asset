@@ -41,6 +41,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/CustomDesert.unity
     guid: 0a445e83695e8424e9e56da3e5b773e4
+  - enabled: 1
+    path: Assets/Scenes/Levels/CustomGiddySky.unity
+    guid: 7b2104966c6e74f43b8d35801832287f
+  - enabled: 1
+    path: Assets/Scenes/Levels/CustomSewers.unity
+    guid: de8e8b099418f8b479394e6f76af19d7
+  - enabled: 1
+    path: Assets/Scenes/Levels/CustomSunsetBeach.unity
+    guid: 67dc4b32bb8c38343be21542557a38fe
+  - enabled: 1
+    path: Assets/Scenes/Levels/CustomFinalCastle.unity
+    guid: 452252a36f44cd940a2fc05d0e35cccc
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 49335f30d253220488d2d332ade6e901,
       type: 2}

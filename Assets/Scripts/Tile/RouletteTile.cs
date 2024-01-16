@@ -7,6 +7,7 @@ public class RouletteTile : BreakableBrickTile {
 
     public string resultTile;
     public Vector2 topSpawnOffset, bottomSpawnOffset;
+    public Vector2[] powerup = {new(0, 0)};
 
     public override bool Interact(MonoBehaviour interacter, InteractionDirection direction, Vector3 worldLocation) {
         if (base.Interact(interacter, direction, worldLocation))

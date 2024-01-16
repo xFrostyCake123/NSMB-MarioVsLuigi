@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public Tilemap tilemap;
     [ColorUsage(false)] public Color levelUIColor = new(24, 178, 170);
     public bool spawnBigPowerups = true, spawnVerticalPowerups = true;
-    public string levelDesigner = "", richPresenceId = "", levelName = "Unknown";
+    public string levelDesigner = "", richPresenceId = "", levelName = "Unknown", starSkin = "Prefabs/Bigstar";
     private TileBase[] originalTiles;
     private BoundsInt origin;
     private GameObject[] starSpawns;
@@ -635,7 +635,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 }
             }
 
-            PhotonNetwork.InstantiateRoomObject("Prefabs/BigStar", spawnPos, Quaternion.identity);
+            PhotonNetwork.InstantiateRoomObject(starSkin, spawnPos, Quaternion.identity);
             remainingSpawns.RemoveAt(index);
             break;
         }
