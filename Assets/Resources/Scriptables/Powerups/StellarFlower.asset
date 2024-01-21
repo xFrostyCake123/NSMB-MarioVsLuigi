@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea796f302b1a91d478efc94e21899d8d, type: 3}
-  m_Name: FireFlower 1
+  m_Name: StellarFlower
   m_EditorClassIdentifier: 
-  state: 4
+  state: 8
   prefab: StellarFlower
   soundEffect: 16
-  spawnChance: 4
+  spawnChance: 7
   losingSpawnBonus: 0.75
   big: 0
   vertical: 0

@@ -767,7 +767,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         switch (state) {
         case Enums.PowerupState.IceFlower:
-        case Enums.PowerupState.FireFlower: {
+        case Enums.PowerupState.FireFlower:
+        case Enums.PowerupState.StellarFlower: {
             if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding)
                 return;
 
@@ -790,9 +791,13 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             }
 
             bool ice = state == Enums.PowerupState.IceFlower;
+            bool star = state == Enums.PowerupState.StellarFlower;
             string projectile = ice ? "Iceball" : "Fireball";
             Enums.Sounds sound = ice ? Enums.Sounds.Powerup_Iceball_Shoot : Enums.Sounds.Powerup_Fireball_Shoot;
-
+            if (star) {
+                projectile = "Starball";
+                sound = Enums.Sounds.Powerup_StarShoot; 
+            }
             Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
             if (Utils.IsTileSolidAtWorldLocation(pos)) {
                 photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{projectile}Wall", pos);
