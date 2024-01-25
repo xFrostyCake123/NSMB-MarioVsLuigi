@@ -6,7 +6,7 @@ using NSMB.Utils;
 public class BreakableBrickTile : InteractableTile {
     [ColorUsage(false)]
     public Color particleColor;
-    public bool breakableBySmallMario = false, breakableByLargeMario = true, breakableByGiantMario = true, breakableByShells = true, breakableByBombs = true, bumpIfNotBroken = true, bumpIfBroken = true;
+    public bool breakableBySmallMario = false, breakableByLargeMario = true, breakableByGiantMario = true, breakableByShells = true, breakableByBombs = true, breakableByStars = false, bumpIfNotBroken = true, bumpIfBroken = true;
     protected bool BreakBlockCheck(MonoBehaviour interacter, InteractionDirection direction, Vector3 worldLocation) {
         bool doBump = false, doBreak = false, giantBreak = false;
         if (interacter is PlayerController pl) {
@@ -31,6 +31,9 @@ public class BreakableBrickTile : InteractableTile {
         } else if (interacter is BobombWalk) {
             doBump = false;
             doBreak = breakableByBombs;
+        } else if (interacter is FireballMover fireball && fireball.isStarball) {
+            doBump = false;
+            doBreak = breakableByStars;
         }
         if (doBump && doBreak && bumpIfBroken)
             Bump(interacter, direction, worldLocation);

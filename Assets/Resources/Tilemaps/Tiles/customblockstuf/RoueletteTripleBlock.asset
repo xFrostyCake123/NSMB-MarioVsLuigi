@@ -26,13 +26,14 @@ MonoBehaviour:
   m_MaxSpeed: 8
   m_AnimationStartTime: 0
   m_AnimationStartFrame: 0
-  m_TileColliderType: 2
+  m_TileColliderType: 1
   particleColor: {r: 1, g: 0, b: 0.19345713, a: 0}
   breakableBySmallMario: 0
   breakableByLargeMario: 0
   breakableByGiantMario: 1
   breakableByShells: 0
   breakableByBombs: 1
+  breakableByStars: 0
   bumpIfNotBroken: 0
   bumpIfBroken: 0
   resultTile: customblockstuf/EmptyRouletteTripleBlock

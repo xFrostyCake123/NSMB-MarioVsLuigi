@@ -13,13 +13,17 @@ MonoBehaviour:
   m_Name: GrayQuestionPowerup
   m_EditorClassIdentifier: 
   m_AnimatedSprites:
-  - {fileID: 5242519309527336308, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
-  - {fileID: -5785169764808499753, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
-  - {fileID: 2286950547735446004, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
-  - {fileID: 105889491633116753, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
-  - {fileID: 5242519309527336308, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
-  m_MinSpeed: 8
-  m_MaxSpeed: 8
+  - {fileID: 1670841934, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 1026927243, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 1840832725, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 603603367, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 877973966, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 659643434, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: -260910363, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: -240399683, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 1670841934, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  m_MinSpeed: 16
+  m_MaxSpeed: 16
   m_AnimationStartTime: 0
   m_AnimationStartFrame: 0
   m_TileColliderType: 2
@@ -29,6 +33,7 @@ MonoBehaviour:
   breakableByGiantMario: 1
   breakableByShells: 0
   breakableByBombs: 1
+  breakableByStars: 0
   bumpIfNotBroken: 0
   bumpIfBroken: 0
   resultTile: SpecialTiles/EmptyGrayQuestion

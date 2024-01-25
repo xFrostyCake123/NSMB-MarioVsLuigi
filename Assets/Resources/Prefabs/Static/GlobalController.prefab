@@ -232,6 +232,7 @@ MonoBehaviour:
   skins:
   - {fileID: 0}
   - {fileID: 11400000, guid: f63a082ed1de1ac46a4d175774638d5a, type: 2}
+  - {fileID: 11400000, guid: 7cb5a2ad42906874eaed8ed772ff8c65, type: 2}
   - {fileID: 11400000, guid: 8af1f8b5ba79cd049815d2650240b98c, type: 2}
   - {fileID: 11400000, guid: b64a87dbaa8184d4b865712efee298f4, type: 2}
   - {fileID: 11400000, guid: 49daddea50a684d4a90c97b006f72d5d, type: 2}
@@ -266,6 +267,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 97122e1837e1f494d85c6a51f1694459, type: 2}
   - {fileID: 11400000, guid: 1c39446eb80150d4bbb74cd840fbf9e5, type: 2}
   - {fileID: 11400000, guid: 1bdc6f7cddd69524cba4e5bc75684290, type: 2}
+  - {fileID: 11400000, guid: de54f52891f91cb4ca54dba07908ab16, type: 2}
+  - {fileID: 11400000, guid: 901dd3a8d34b6864cbd46f5926d26cc5, type: 2}
+  - {fileID: 11400000, guid: be7047fe6a62ad947858c93e01fdd440, type: 2}
   rainbowGradient:
     serializedVersion: 2
     key0: {r: 1, g: 0.13913044, b: 0.11304349, a: 1}

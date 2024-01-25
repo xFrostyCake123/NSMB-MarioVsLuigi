@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6127176af3cb09478c687149142ed94, type: 3}
+  m_Name: MiniMushMonitor
+  m_EditorClassIdentifier: 
+  m_AnimatedSprites:
+  - {fileID: -512968506, guid: 247aa55d9118e4c469a67c76678a4d13, type: 3}
+  - {fileID: -2123220681, guid: 247aa55d9118e4c469a67c76678a4d13, type: 3}
+  m_MinSpeed: 1
+  m_MaxSpeed: 1
+  m_AnimationStartTime: 0
+  m_AnimationStartFrame: 0
+  m_TileColliderType: 1
+  particleColor: {r: 0.85490197, g: 0.9529412, b: 1, a: 0}
+  breakableBySmallMario: 0
+  breakableByLargeMario: 0
+  breakableByGiantMario: 1
+  breakableByShells: 0
+  breakableByBombs: 1
+  breakableByStars: 0
+  bumpIfNotBroken: 0
+  bumpIfBroken: 0
+  resultTile: customblockstuf/Monitors/DestroyedMiniMushMonitor
+  powerup: {x: 0, y: 0}
+  topSpawnOffset: {x: 0, y: 0}
+  bottomSpawnOffset: {x: 0, y: 1}

@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AnimatedSprites:
   - {fileID: 932839567, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
-  - {fileID: 739973368, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
-  - {fileID: -2121888148, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
-  - {fileID: -927628020, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
-  - {fileID: -256716528, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
-  - {fileID: -1800096551, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
-  - {fileID: 1928392356, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
-  - {fileID: -1103121513, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
   - {fileID: -1855946817, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
+  - {fileID: -1103121513, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
+  - {fileID: 1928392356, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
+  - {fileID: -1800096551, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
+  - {fileID: -256716528, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
+  - {fileID: -927628020, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
+  - {fileID: -2121888148, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
+  - {fileID: 739973368, guid: 09d3bb1a7bc575b4fa582711c9737b67, type: 3}
   m_MinSpeed: 8
   m_MaxSpeed: 8
   m_AnimationStartTime: 0
@@ -33,6 +33,7 @@ MonoBehaviour:
   breakableByGiantMario: 1
   breakableByShells: 0
   breakableByBombs: 1
+  breakableByStars: 0
   bumpIfNotBroken: 0
   bumpIfBroken: 0
   resultTile: customblockstuf/EmptyBlueTripleBlock

@@ -15,10 +15,10 @@ MonoBehaviour:
   state: 8
   prefab: StellarFlower
   soundEffect: 16
-  spawnChance: 7
-  losingSpawnBonus: 0.75
+  spawnChance: 1
+  losingSpawnBonus: 1.25
   big: 0
   vertical: 0
   custom: 1
   lives: 0
-  reserveSprite: {fileID: -847865161, guid: 936b8848c71b9f04e897bda61f6d87e0, type: 3}
+  reserveSprite: {fileID: 21300000, guid: 30c8fbaf697d64142894ee694611cd1f, type: 3}

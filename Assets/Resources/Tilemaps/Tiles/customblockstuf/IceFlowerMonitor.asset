@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae161bb06371f2746944ee9dbd0916c6, type: 3}
+  m_Name: IceFlowerMonitor
+  m_EditorClassIdentifier: 
+  m_AnimatedSprites:
+  - {fileID: -1575966120, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: -754124627, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 2082531764, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 1086495239, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 467944070, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 1997901716, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: -1891536234, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 2092504771, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: -1575966120, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  m_MinSpeed: 1
+  m_MaxSpeed: 1
+  m_AnimationStartTime: 0
+  m_AnimationStartFrame: 0
+  m_TileColliderType: 1
+  particleColor: {r: 0.85490197, g: 0.9529412, b: 1, a: 0}
+  breakableBySmallMario: 0
+  breakableByLargeMario: 0
+  breakableByGiantMario: 1
+  breakableByShells: 0
+  breakableByBombs: 1
+  breakableByStars: 0
+  bumpIfNotBroken: 0
+  bumpIfBroken: 0
+  resultTile: customblockstuf/Monitors/DestroyedIceFlowerMonitor
+  powerup: {x: 0, y: 0}
+  topSpawnOffset: {x: 0, y: 0}
+  bottomSpawnOffset: {x: 0, y: 1}

@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
 using Photon.Pun;
+using NSMB.Utils;
+using UnityEngine.Tilemaps;
 
 public class FireballMover : MonoBehaviourPun {
+public AudioSource audioSource;
 
-    public bool left, isIceball;
+    public bool left, isIceball, isStarball;
+    public BoxCollider2D worldHitbox;
 
-    [SerializeField] private float speed = 3f, bounceHeight = 4.5f, terminalVelocity = 6.25f;
+    [SerializeField] private float speed = 3f, bounceHeight = 4.5f, terminalVelocity = 6.25f, despawnTimer = 0f;
 
     private Rigidbody2D body;
     private PhysicsEntity physics;
     private bool breakOnImpact;
-
+    
     public void Start() {
         body = GetComponent<Rigidbody2D>();
         physics = GetComponent<PhysicsEntity>();
@@ -23,7 +27,7 @@ public class FireballMover : MonoBehaviourPun {
         body.velocity = new Vector2(speed * (left ? -1 : 1), -speed);
     }
 
-    public void FixedUpdate() {
+       public void FixedUpdate() {
         if (GameManager.Instance && GameManager.Instance.gameover) {
             body.velocity = Vector2.zero;
             GetComponent<Animator>().enabled = false;
@@ -35,6 +39,36 @@ public class FireballMover : MonoBehaviourPun {
 
         float gravityInOneFrame = body.gravityScale * Physics2D.gravity.y * Time.fixedDeltaTime;
         body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(-terminalVelocity, body.velocity.y));
+
+        if (despawnTimer > 0 && (despawnTimer -= Time.fixedDeltaTime) <= 0) {
+            PhotonNetwork.Destroy(gameObject);
+        }
+    }
+
+    private bool CollideWithTiles() {
+        if (!isStarball) {
+            return physics.hitLeft || physics.hitRight || physics.hitRoof || (physics.onGround && breakOnImpact);
+        }
+
+        bool destroySelf = false;
+        ContactPoint2D[] collisions = new ContactPoint2D[20];
+        int collisionAmount = worldHitbox.GetContacts(collisions);
+        for (int i = 0; i < collisionAmount; i++) {
+            var point = collisions[i];
+            Vector2 p = point.point + (point.normal * -0.15f);
+            if (point.collider.gameObject.layer == Layers.LayerGround) {
+                Vector3Int tileLoc = Utils.WorldToTilemapPosition(p);
+                TileBase tile = GameManager.Instance.tilemap.GetTile(tileLoc);
+                if (tile is InteractableTile it) {
+                    bool ret = it.Interact(this, InteractableTile.InteractionDirection.Up, Utils.TilemapToWorldPosition(tileLoc));
+                    destroySelf |= !ret;
+                }  else if (tile) {
+                      destroySelf = true;
+                    
+                }
+            }
+        }
+        return destroySelf;
     }
 
     private void HandleCollision() {
@@ -49,7 +83,7 @@ public class FireballMover : MonoBehaviourPun {
         } else if (isIceball && body.velocity.y > 1.5f)  {
             breakOnImpact = true;
         }
-        bool breaking = physics.hitLeft || physics.hitRight || physics.hitRoof || (physics.onGround && breakOnImpact);
+        bool breaking = CollideWithTiles();
         if (photonView && breaking) {
             if (photonView.IsMine)
                 PhotonNetwork.Destroy(gameObject);
@@ -60,7 +94,7 @@ public class FireballMover : MonoBehaviourPun {
 
     public void OnDestroy() {
         if (!GameManager.Instance.gameover)
-            Instantiate(Resources.Load("Prefabs/Particle/" + (isIceball ? "IceballWall" : "FireballWall")), transform.position, Quaternion.identity);
+            Instantiate(Resources.Load("Prefabs/Particle/" + (isIceball ? "IceballWall" : isStarball ? "Starballwall" : "FireballWall")), transform.position, Quaternion.identity);
     }
 
     [PunRPC]
@@ -68,7 +102,12 @@ public class FireballMover : MonoBehaviourPun {
         if (photonView.IsMine)
             PhotonNetwork.Destroy(photonView);
     }
-
+    
+    [PunRPC]
+    public void PlaySound(Enums.Sounds sound) {
+        audioSource.PlayOneShot(sound.GetClip());
+    }
+    
     private void OnTriggerEnter2D(Collider2D collider) {
         if (!photonView.IsMine)
             return;
