@@ -53,6 +53,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/CustomFinalCastle.unity
     guid: 452252a36f44cd940a2fc05d0e35cccc
+  - enabled: 1
+    path: Assets/Scenes/Levels/CustomDoubleCherryTest.unity
+    guid: e501d7eac30a6654e8c618abfead32d1
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 49335f30d253220488d2d332ade6e901,
       type: 2}

@@ -52,6 +52,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public Selectable[] roomSettings;
 
     public List<string> maps, debugMaps;
+    public List<string> MapNotes, MapNoteColor, MapSetColor;
 
     private bool pingsReceived, joinedLate;
     private List<string> formattedRegions;
@@ -838,7 +839,8 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
 
     public void ChangeLevel(int index) {
         levelDropdown.SetValueWithoutNotify(index);
-        LocalChatMessage("Map set to: " + levelDropdown.options[index].text, Color.red);
+        LocalChatMessage("Map set to: " + levelDropdown.options[index].text, Color.magenta);
+        LocalChatMessage("" + MapNotes[index], Color.black);
         Camera.main.transform.position = levelCameraPositions[index].transform.position;
     }
     public void SetLevelIndex() {

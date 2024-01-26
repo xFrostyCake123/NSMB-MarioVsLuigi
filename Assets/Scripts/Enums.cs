@@ -29,9 +29,10 @@ public static class Enums {
         [PowerupState.StellarFlower] = new(2),
         [PowerupState.IceBreaker] = new(2),
         [PowerupState.BuilderSuit] = new(2),
+        [PowerupState.Bombro] = new(2),
     };
     public enum PowerupState : byte {
-        None, MiniMushroom, Small, Mushroom, FireFlower, IceFlower, PropellerMushroom, BlueShell, MegaMushroom, StellarFlower, IceBreaker, BuilderSuit
+        None, MiniMushroom, Small, Mushroom, FireFlower, IceFlower, PropellerMushroom, BlueShell, MegaMushroom, StellarFlower, IceBreaker, BuilderSuit, Bombro
     }
     #endregion
     #region ANIMATION & MUSIC

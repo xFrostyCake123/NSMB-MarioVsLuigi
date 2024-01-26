@@ -24,8 +24,8 @@ GameObject:
   - component: {fileID: 6513581928866091161}
   - component: {fileID: 746595948144697788}
   m_Layer: 9
-  m_Name: Bobomb
-  m_TagString: bobomb
+  m_Name: Bombud
+  m_TagString: Fireball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37,6 +37,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3286581577125373952}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.23, y: 1.493, z: 0}
   m_LocalScale: {x: 0.45, y: 0.45, z: 1}
@@ -44,7 +45,6 @@ Transform:
   m_Children:
   - {fileID: 3286581578154145921}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3286581577125373967
 MonoBehaviour:
@@ -59,10 +59,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dead: 0
-  left: 1
-  collide: 1
-  iceCarryable: 1
+  left: 0
+  collide: 0
+  iceCarryable: 0
   flying: 0
+  isBubble: 0
   body: {fileID: 0}
   hitbox: {fileID: 0}
   holder: {fileID: 0}
@@ -71,13 +72,13 @@ MonoBehaviour:
   canPlace: 1
   explosionPrefab: {fileID: 1681235843256999355, guid: a89a150bbd7d5d74aa28f02a5d5a0dfb,
     type: 3}
-  walkSpeed: 0.6
-  kickSpeed: 4.5
+  walkSpeed: 0
+  kickSpeed: 8
   detonationTime: 4
-  explosionTileSize: 2
+  explosionTileSize: 3
   lit: 0
   detonated: 0
-  Projectile: 0
+  Projectile: 1
 --- !u!212 &3286581577125373961
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -119,7 +120,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 950155298242298425, guid: 044577968aa8cbd42a6330af35c59d85, type: 3}
+  m_Sprite: {fileID: -6985388001290370435, guid: 044577968aa8cbd42a6330af35c59d85,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -147,6 +149,12 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 2.2
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -161,6 +169,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -168,7 +195,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1.125, y: 1.125}
+    oldSize: {x: 1.125, y: 1.0625}
     newSize: {x: 1.125, y: 1.125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -179,7 +206,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!95 &3286581577125373959
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -196,7 +223,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &3636465036723004912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -456,13 +484,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3286581578154145922}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3286581577125373960}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &3286581578154145920
 BoxCollider2D:
@@ -474,6 +502,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0

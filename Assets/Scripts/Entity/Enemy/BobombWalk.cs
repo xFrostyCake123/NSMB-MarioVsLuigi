@@ -10,7 +10,7 @@ public class BobombWalk : HoldableEntity {
     [SerializeField] private float walkSpeed = 0.6f, kickSpeed = 4.5f, detonationTime = 4f;
     [SerializeField] private int explosionTileSize = 2;
 
-    public bool lit, detonated;
+    public bool lit, detonated, Projectile;
 
     private Vector3 previousFrameVelocity;
     private float detonateCount;
@@ -18,7 +18,6 @@ public class BobombWalk : HoldableEntity {
     #region Unity Methods
     public override void Start() {
         base.Start();
-
         body.velocity = new(walkSpeed * (left ? -1 : 1), body.velocity.y);
     }
 
@@ -35,6 +34,15 @@ public class BobombWalk : HoldableEntity {
         if (Frozen || dead)
             return;
 
+        if (Projectile) {
+          if (!lit) {
+            if ((detonateCount -= Time.fixedDeltaTime) < 0) 
+                   detonateCount = 4;
+                   body.velocity = Vector2.zero;
+                   lit = true;
+                   PlaySound(Enums.Sounds.Enemy_Bobomb_Fuse);
+          }
+        }
 
         if (lit)
             animator.SetTrigger("lit");
