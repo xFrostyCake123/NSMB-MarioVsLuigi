@@ -662,6 +662,18 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             }
             break;
         }
+        case "knockbacker":
+            {
+                Instantiate(Resources.Load("Prefabs/Particle/Puff"), transform.position, Quaternion.identity);
+                obj.transform.parent.gameObject.SetActive(false);
+                photonView.RPC(nameof(Knockback), RpcTarget.All, facingRight, 3, false, -1);
+                break;
+            }
+        case "harmer":
+            {
+                photonView.RPC(nameof(Powerdown), RpcTarget.All, false);
+                break;
+            }
         case "lava":
         case "poison": {
             if (!photonView.IsMine)

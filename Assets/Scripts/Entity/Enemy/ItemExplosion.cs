@@ -6,12 +6,11 @@ using NSMB.Utils;
 
 public class ItemExplosion : MonoBehaviour {
     
-    [SerializeField] private GameObject explosionPrefab;
-    [SerializeField] private int explosionTileSize = 2;
-
+    [SerializeField] public string explosionPrefab;
+    
     private void OnDestroy() {
         if (!gameObject.activeInHierarchy) {
-            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            PhotonNetwork.InstantiateRoomObject(explosionPrefab, transform.position, Quaternion.identity);
         }  
     } 
 }

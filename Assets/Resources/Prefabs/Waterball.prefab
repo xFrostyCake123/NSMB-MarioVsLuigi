@@ -20,8 +20,9 @@ GameObject:
   - component: {fileID: 2269455486527583307}
   - component: {fileID: 6091953025159033845}
   - component: {fileID: 3450170468620705130}
+  - component: {fileID: -7012054197112858393}
   m_Layer: 9
-  m_Name: IceBall
+  m_Name: Waterball
   m_TagString: Fireball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,10 +59,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 0}
   left: 0
-  isIceball: 1
+  isIceball: 0
   isStarball: 0
-  isWaterball: 0
-  isTidalwave: 0
+  isWaterball: 1
   worldHitbox: {fileID: 0}
   speed: 4.25
   bounceHeight: 6
@@ -108,8 +108,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 5353841184698615464, guid: eddf8ec042b3e614e925d846a27642df,
-    type: 3}
+  m_Sprite: {fileID: -1437997897, guid: aacb292e0076a384a9f9258b98e3d034, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -132,7 +131,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 0.075625
+  m_Mass: 0.102805026
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 2.2
@@ -154,18 +153,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.055}
+  m_Offset: {x: 0.0014421511, y: 0.00164029}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.11, y: 0.11}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.16, y: 0.16}
     newSize: {x: 0.11, y: 0.11}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.11, y: 0.11}
+  m_Size: {x: 0.12634444, y: 0.13019016}
   m_EdgeRadius: 0
 --- !u!95 &1011982274984717418
 Animator:
@@ -177,7 +176,7 @@ Animator:
   m_GameObject: {fileID: 1011982274984717421}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: bb7d47823597a5b46893ebff0c4c652d, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -284,6 +283,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interpolate: 1
   body: {fileID: 1186833380152900418}
+--- !u!114 &-7012054197112858393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1011982274984717421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be307bb6ffde83e489d687907797359a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explosionPrefab: Prefabs/WaterSpout
 --- !u!1 &4295026986443583635
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,7 +341,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.05}
+  m_Offset: {x: 0.0004807189, y: 0.0024088994}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -340,7 +352,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.1, y: 0.12}
+  m_Size: {x: 0.122113034, y: 0.13057582}
   m_EdgeRadius: 0
 --- !u!1 &8143467996169431833
 GameObject:
@@ -368,7 +380,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8143467996169431833}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.05, z: 0}
+  m_LocalPosition: {x: -0.001, y: -0.0038, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1834,9 +1846,9 @@ ParticleSystem:
     uvChannelMask: -1
     rowMode: 1
     sprites:
-    - sprite: {fileID: -8077568, guid: eddf8ec042b3e614e925d846a27642df, type: 3}
-    - sprite: {fileID: -2140104179, guid: eddf8ec042b3e614e925d846a27642df, type: 3}
-    - sprite: {fileID: -456267274, guid: eddf8ec042b3e614e925d846a27642df, type: 3}
+    - sprite: {fileID: 566541151, guid: aacb292e0076a384a9f9258b98e3d034, type: 3}
+    - sprite: {fileID: 1883254195, guid: aacb292e0076a384a9f9258b98e3d034, type: 3}
+    - sprite: {fileID: 1271595934, guid: aacb292e0076a384a9f9258b98e3d034, type: 3}
     flipU: 0
     flipV: 0
   VelocityModule:
