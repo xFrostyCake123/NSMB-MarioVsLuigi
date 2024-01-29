@@ -60,6 +60,8 @@ MonoBehaviour:
   left: 0
   isIceball: 0
   isStarball: 0
+  isWaterball: 0
+  isTidalwave: 0
   worldHitbox: {fileID: 0}
   speed: 6.25
   bounceHeight: 6.75

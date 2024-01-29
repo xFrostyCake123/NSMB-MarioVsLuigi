@@ -784,7 +784,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         case Enums.PowerupState.IceFlower:
         case Enums.PowerupState.FireFlower:
         case Enums.PowerupState.StellarFlower:
-        case Enums.PowerupState.IceBreaker: {
+        case Enums.PowerupState.IceBreaker:
+        case Enums.PowerupState.TideFlower: {
             if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding)
                 return;
 
@@ -815,8 +816,16 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             bool ice = state == Enums.PowerupState.IceFlower;
             bool star = state == Enums.PowerupState.StellarFlower;
             bool icecube = state == Enums.PowerupState.IceBreaker;
+            bool waterball = state == Enums.PowerupState.TideFlower;
             string projectile = ice ? "Iceball" : "Fireball";
             Enums.Sounds sound = ice ? Enums.Sounds.Powerup_Iceball_Shoot : Enums.Sounds.Powerup_Fireball_Shoot;
+            if (waterball && jumpHeld) {
+                projectile = "Waterball";
+                sound = Enums.Sounds.Powerup_WaterShoot;
+              } else if (waterball) {
+                  projectile = "TidalWave";
+                  sound = Enums.Sounds.Powerup_WaterShoot;
+                }
             if (star) {
                 projectile = "Starball";
                 sound = Enums.Sounds.Powerup_StarShoot; 
@@ -1053,7 +1062,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         case Enums.PowerupState.IceFlower:
         case Enums.PowerupState.PropellerMushroom:
         case Enums.PowerupState.BlueShell:
-        case Enums.PowerupState.StellarFlower: {
+        case Enums.PowerupState.StellarFlower:
+        case Enums.PowerupState.TideFlower:
+        case Enums.PowerupState.Bombro: {
             state = Enums.PowerupState.Mushroom;
             powerupFlash = 2f;
             SpawnStars(1, false);

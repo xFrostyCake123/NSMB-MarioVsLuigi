@@ -8,7 +8,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
 
     [SerializeField] private Avatar smallAvatar, largeAvatar;
     [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle;
-    [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, bombFuse;
+    [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell, tideHelmet;
     [SerializeField] private Material glowMaterial;
     [SerializeField] private Color primaryColor = Color.clear, secondaryColor = Color.clear;
     [SerializeField] [ColorUsage(true, false)] private Color? _glowColor = null;
@@ -258,6 +258,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
             Enums.PowerupState.FireFlower => 1,
             Enums.PowerupState.PropellerMushroom => 2,
             Enums.PowerupState.IceFlower => 3,
+            Enums.PowerupState.TideFlower => 3,
             Enums.PowerupState.IceBreaker => 3,
             Enums.PowerupState.StellarFlower => 4,
             Enums.PowerupState.Bombro => 5,
@@ -296,6 +297,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         largeShellExclude.SetActive(!animator.GetCurrentAnimatorStateInfo(0).IsName("in-shell"));
         propellerHelmet.SetActive(controller.state == Enums.PowerupState.PropellerMushroom);
         bombHelmet.SetActive(controller.state == Enums.PowerupState.Bombro);
+        tideShell.SetActive(controller.state == Enums.PowerupState.TideFlower);
         animator.avatar = large ? largeAvatar : smallAvatar;
         animator.runtimeAnimatorController = large ? controller.character.largeOverrides : controller.character.smallOverrides;
 
@@ -391,6 +393,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         blueShell.SetActive(false);
         propellerHelmet.SetActive(false);
         bombHelmet.SetActive(false);
+        tideShell.SetActive(false);
         animator.avatar = smallAvatar;
     }
 }
