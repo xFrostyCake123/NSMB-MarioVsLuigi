@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea796f302b1a91d478efc94e21899d8d, type: 3}
   m_Name: IceBreaker
   m_EditorClassIdentifier: 
-  state: 9
+  state: 10
   prefab: IceBreaker
   soundEffect: 16
   spawnChance: 0
   losingSpawnBonus: 1.5
   big: 0
   vertical: 0
-  custom: 1
+  custom: 0
   lives: 0
+  frosty: 1
   reserveSprite: {fileID: 230146947, guid: bfec0ae000d308d41910d04fcc21396f, type: 3}

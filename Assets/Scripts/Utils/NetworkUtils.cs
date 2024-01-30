@@ -30,6 +30,7 @@ namespace NSMB.Utils {
             [Enums.NetRoomProperties.Time] = -1,
             [Enums.NetRoomProperties.DrawTime] = false,
             [Enums.NetRoomProperties.NewPowerups] = true,
+            [Enums.NetRoomProperties.FrostyPowerups] = true,
             [Enums.NetRoomProperties.GameStarted] = false,
             [Enums.NetRoomProperties.HostName] = "",
             [Enums.NetRoomProperties.Debug] = false,
@@ -52,6 +53,7 @@ namespace NSMB.Utils {
         Enums.NetRoomProperties.CoinRequirement,
         Enums.NetRoomProperties.Time,
         Enums.NetRoomProperties.NewPowerups,
+        Enums.NetRoomProperties.FrostyPowerups,
         Enums.NetRoomProperties.GameStarted,
         Enums.NetRoomProperties.HostName,
     };

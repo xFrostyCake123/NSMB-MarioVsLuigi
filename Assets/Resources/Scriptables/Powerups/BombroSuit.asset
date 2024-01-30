@@ -19,6 +19,7 @@ MonoBehaviour:
   losingSpawnBonus: 1
   big: 0
   vertical: 0
-  custom: 1
+  custom: 0
   lives: 0
+  frosty: 1
   reserveSprite: {fileID: 21300000, guid: 9c762f1b3e1643d4585edb62f02bb470, type: 3}

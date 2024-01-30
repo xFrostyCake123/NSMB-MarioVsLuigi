@@ -760,8 +760,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         if (Frozen)
             return;
+        
+        if (state == Enums.PowerupState.Bombro && holding == true && fireballTimer <= 0.3f) {
+            fireballTimer = 0.3f;
+        }
 
-        if (running && (state == Enums.PowerupState.FireFlower || state == Enums.PowerupState.IceFlower) && GlobalController.Instance.settings.fireballFromSprint)
+        if (running && (state == Enums.PowerupState.FireFlower || state == Enums.PowerupState.IceFlower || state ==Enums.PowerupState.Bombro) && GlobalController.Instance.settings.fireballFromSprint)
             ActivatePowerupAction();
     }
 
@@ -785,7 +789,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         case Enums.PowerupState.FireFlower:
         case Enums.PowerupState.StellarFlower:
         case Enums.PowerupState.IceBreaker:
-        case Enums.PowerupState.TideFlower: {
+        case Enums.PowerupState.TideFlower:
+        case Enums.PowerupState.Bombro: {
             if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding)
                 return;
 
@@ -817,6 +822,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             bool star = state == Enums.PowerupState.StellarFlower;
             bool icecube = state == Enums.PowerupState.IceBreaker;
             bool waterball = state == Enums.PowerupState.TideFlower;
+            bool bomb = state == Enums.PowerupState.Bombro;
             string projectile = ice ? "Iceball" : "Fireball";
             Enums.Sounds sound = ice ? Enums.Sounds.Powerup_Iceball_Shoot : Enums.Sounds.Powerup_Fireball_Shoot;
             if (waterball && jumpHeld) {
@@ -835,6 +841,10 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 projectile = "IceCubeFreeze";
                 sound = Enums.Sounds.Powerup_Iceball_Shoot;
             }
+            if (bomb) {
+                projectile = "Bombud";
+                sound = Enums.Sounds.Powerup_Fireball_Shoot;
+            } 
 
             Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
             if (Utils.IsTileSolidAtWorldLocation(pos)) {

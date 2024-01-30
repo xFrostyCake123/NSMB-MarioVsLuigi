@@ -13,15 +13,11 @@ MonoBehaviour:
   m_Name: BlueQuestionCoin
   m_EditorClassIdentifier: 
   m_AnimatedSprites:
-  - {fileID: 503347977, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
-  - {fileID: 560612594, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
-  - {fileID: 355671475, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
-  - {fileID: -368744204, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
-  - {fileID: 745918332, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
-  - {fileID: -178422823, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
-  - {fileID: 495529540, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
-  - {fileID: -1851539952, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
-  - {fileID: -1851539952, guid: 5a9b3053ff353f844a1e65c07df7bded, type: 3}
+  - {fileID: 6088895996261290297, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
+  - {fileID: 6700115880502462848, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
+  - {fileID: 4366118933763392549, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
+  - {fileID: 5563996254464901877, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
+  - {fileID: 6088895996261290297, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
   m_MinSpeed: 8
   m_MaxSpeed: 8
   m_AnimationStartTime: 0
@@ -33,9 +29,6 @@ MonoBehaviour:
   breakableByGiantMario: 1
   breakableByShells: 0
   breakableByBombs: 1
-  breakableByStars: 0
   bumpIfNotBroken: 0
   bumpIfBroken: 0
   resultTile: SpecialTiles/EmptyBlueQuestion
-  coins:
-  - {x: 0, y: 0}
