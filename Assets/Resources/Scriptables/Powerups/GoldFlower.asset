@@ -10,17 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea796f302b1a91d478efc94e21899d8d, type: 3}
-  m_Name: Mushroom
+  m_Name: GoldFlower
   m_EditorClassIdentifier: 
-  state: 3
-  prefab: Mushroom
+  state: 15
+  prefab: GoldFlower
   soundEffect: 16
-  spawnChance: 5
-  losingSpawnBonus: -8
+  spawnChance: 0.3
+  losingSpawnBonus: 1.5
   big: 0
   vertical: 0
   custom: 0
   lives: 0
-  frosty: 0
-  reserveSprite: {fileID: -6080119536613256813, guid: a87d3b028baa82640b06b88398a8c4f0,
-    type: 3}
+  frosty: 1
+  reserveSprite: {fileID: 21300000, guid: e26287ff9d675584fbb862fa7773d4af, type: 3}

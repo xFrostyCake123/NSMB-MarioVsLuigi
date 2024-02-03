@@ -41,12 +41,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
     public PlayerAnimationController AnimationController { get; private set; }
 
-    public bool onGround, previousOnGround, crushGround, doGroundSnap, jumping, properJump, hitRoof, skidding, turnaround, facingRight = true, singlejump, doublejump, triplejump, bounce, crouching, groundpound, groundpoundLastFrame, sliding, knockback, hitBlock, running, functionallyRunning, jumpHeld, flying, drill, inShell, hitLeft, hitRight, stuckInBlock, alreadyStuckInBlock, propeller, usedPropellerThisJump, stationaryGiantEnd, fireballKnockback, startedSliding, canShootProjectile;
+    public bool onGround, previousOnGround, crushGround, doGroundSnap, jumping, properJump, hitRoof, skidding, turnaround, facingRight = true, singlejump, doublejump, triplejump, bounce, crouching, groundpound, groundpoundLastFrame, sliding, knockback, hitBlock, running, functionallyRunning, jumpHeld, flying, drill, inShell, hitLeft, hitRight, stuckInBlock, alreadyStuckInBlock, propeller, usedPropellerThisJump, stationaryGiantEnd, fireballKnockback, startedSliding, canShootProjectile, dashing;
     public float jumpLandingTimer, landing, koyoteTime, groundpoundCounter, groundpoundStartTimer, pickupTimer, groundpoundDelay, hitInvincibilityCounter, powerupFlash, throwInvincibility, jumpBuffer, giantStartTimer, giantEndTimer, propellerTimer, propellerSpinTimer, fireballTimer;
     public float invincible, giantTimer, floorAngle, knockbackTimer, pipeTimer, slowdownTimer;
 
     //MOVEMENT STAGES
-    private static readonly int WALK_STAGE = 1, RUN_STAGE = 3, STAR_STAGE = 4;
+    private static readonly int WALK_STAGE = 1, RUN_STAGE = 3, DASH_STAGE = 4, STAR_STAGE = 4;
     private static readonly float[] SPEED_STAGE_MAX = { 0.9375f, 2.8125f, 4.21875f, 5.625f, 8.4375f };
     private static readonly float SPEED_SLIDE_MAX = 7.5f;
     private static readonly float[] SPEED_STAGE_ACC = { 0.131835975f, 0.06591802875f, 0.05859375f, 0.0439453125f, 1.40625f };
@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     private static readonly float SKIDDING_THRESHOLD = 4.6875f;
     private static readonly float SKIDDING_DEC = 0.17578125f;
     private static readonly float SKIDDING_STAR_DEC = 1.40625f;
+    private static readonly float SKIDDING_DASH_DEC = 3.4f;
 
     private static readonly float WALLJUMP_HSPEED = 4.21874f;
     private static readonly float WALLJUMP_VSPEED = 6.4453125f;
@@ -66,6 +67,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
     private static readonly float[] SPEED_STAGE_MEGA_ACC = { 0.46875f, 0.0805664061f, 0.0805664061f, 0.0805664061f, 0.0805664061f };
     private static readonly float[] WALK_TURNAROUND_MEGA_ACC = { 0.0769042968f, 0.17578125f, 0.3515625f };
+
+    private static readonly float[] SPEED_STAGE_DASH_ACC = { 0.65f, 0.1f, 0.09f, 0.09f, 0.09f };
+    private static readonly float[] WALK_TURNAROUND_DASH_ACC = { 0.9f, 0.2f, 0.4f };
 
     private static readonly float TURNAROUND_THRESHOLD = 2.8125f;
     private static readonly float TURNAROUND_ACC = 0.46875f;
@@ -577,6 +581,10 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, 1, true, photonView.ViewID);
                     photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
                 }
+                // Dash Shroom speed-upper
+                if (state == Enums.PowerupState.DashShroom) {
+                    body.velocity = new(SPEED_STAGE_MAX[RUN_STAGE] * 2f * (otherObj.transform.position.x < body.position.x ? 1 : -1), body.velocity.y);
+                }
             }
             break;
         }
@@ -790,7 +798,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         case Enums.PowerupState.StellarFlower:
         case Enums.PowerupState.IceBreaker:
         case Enums.PowerupState.TideFlower:
-        case Enums.PowerupState.Bombro: {
+        case Enums.PowerupState.Bombro:
+        case Enums.PowerupState.GoldFlower: {
             if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding)
                 return;
 
@@ -823,6 +832,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             bool icecube = state == Enums.PowerupState.IceBreaker;
             bool waterball = state == Enums.PowerupState.TideFlower;
             bool bomb = state == Enums.PowerupState.Bombro;
+            bool gold = state == Enums.PowerupState.GoldFlower;
             string projectile = ice ? "Iceball" : "Fireball";
             Enums.Sounds sound = ice ? Enums.Sounds.Powerup_Iceball_Shoot : Enums.Sounds.Powerup_Fireball_Shoot;
             if (waterball && jumpHeld) {
@@ -844,7 +854,11 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             if (bomb) {
                 projectile = "Bombud";
                 sound = Enums.Sounds.Powerup_Fireball_Shoot;
-            } 
+            }
+            if (gold) {
+                projectile = "GoldFireball";
+                sound = Enums.Sounds.Powerup_Fireball_Shoot;
+            }
 
             Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
             if (Utils.IsTileSolidAtWorldLocation(pos)) {
@@ -1074,7 +1088,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         case Enums.PowerupState.BlueShell:
         case Enums.PowerupState.StellarFlower:
         case Enums.PowerupState.TideFlower:
-        case Enums.PowerupState.Bombro: {
+        case Enums.PowerupState.Bombro:
+        case Enums.PowerupState.GoldFlower: {
             state = Enums.PowerupState.Mushroom;
             powerupFlash = 2f;
             SpawnStars(1, false);
@@ -2202,13 +2217,15 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         int maxStage;
         if (invincible > 0 && run && onGround)
             maxStage = STAR_STAGE;
+        else if (dashing)
+            maxStage = DASH_STAGE;
         else if (run)
             maxStage = RUN_STAGE;
         else
             maxStage = WALK_STAGE;
 
         int stage = MovementStage;
-        float acc = state == Enums.PowerupState.MegaMushroom ? SPEED_STAGE_MEGA_ACC[stage] : SPEED_STAGE_ACC[stage];
+        float acc = state == Enums.PowerupState.MegaMushroom ? SPEED_STAGE_MEGA_ACC[stage] : state == Enums.PowerupState.DashShroom ? SPEED_STAGE_DASH_ACC[stage] : SPEED_STAGE_ACC[stage];
         float sign = Mathf.Sign(body.velocity.x);
 
         if ((left ^ right) && (!crouching || (crouching && !onGround && state != Enums.PowerupState.BlueShell)) && !knockback && !sliding) {
@@ -2245,7 +2262,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                             acc = WALK_TURNAROUND_ICE_ACC;
                         } else {
                             turnaroundFrames = Mathf.Min(turnaroundFrames + 0.2f, WALK_TURNAROUND_ACC.Length - 1);
-                            acc = state == Enums.PowerupState.MegaMushroom ? WALK_TURNAROUND_MEGA_ACC[(int) turnaroundFrames] : WALK_TURNAROUND_ACC[(int) turnaroundFrames];
+                            acc = state == Enums.PowerupState.MegaMushroom ? WALK_TURNAROUND_MEGA_ACC[(int) turnaroundFrames] : state == Enums.PowerupState.DashShroom ? WALK_TURNAROUND_DASH_ACC[(int) turnaroundFrames] : WALK_TURNAROUND_ACC[(int) turnaroundFrames];
                         }
                     }
                 } else {
@@ -2855,6 +2872,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             };
             if (groundpound)
                 gravityModifier *= 1.5f;
+            if (groundpound && dashing)
+                gravityModifier *= 2f;
 
             if (body.velocity.y > 2.5) {
                 if (jump || jumpHeld || state == Enums.PowerupState.MegaMushroom) {
@@ -2987,7 +3006,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             hitBlock = true;
             sliding = false;
             body.velocity = Vector2.up * 1.5f;
-            groundpoundCounter = groundpoundTime * (state == Enums.PowerupState.MegaMushroom ? 1.5f : 1);
+            groundpoundCounter = groundpoundTime * (state == Enums.PowerupState.MegaMushroom ? 1.5f : state == Enums.PowerupState.DashShroom ? 0.6f : 1);
             photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Player_Sound_GroundpoundStart);
             alreadyGroundpounded = true;
             //groundpoundDelay = 0.75f;

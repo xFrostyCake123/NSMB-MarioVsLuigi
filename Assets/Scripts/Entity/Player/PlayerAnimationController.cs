@@ -196,6 +196,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         animator.SetBool("facingRight", (left ^ right) ? right : controller.facingRight);
         animator.SetBool("flying", controller.flying);
         animator.SetBool("drill", controller.drill);
+        animator.SetBool("dashing", controller.dashing);
 
         if (photonView.IsMine) {
             //Animation
@@ -223,6 +224,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
             animator.SetBool("mini", controller.state == Enums.PowerupState.MiniMushroom);
             animator.SetBool("mega", controller.state == Enums.PowerupState.MegaMushroom);
             animator.SetBool("inShell", controller.inShell || (controller.state == Enums.PowerupState.BlueShell && (controller.crouching || controller.groundpound) && controller.groundpoundCounter <= 0.15f));
+            animator.SetBool("dashing", controller.dashing || (controller.state == Enums.PowerupState.DashShroom));
         } else {
             //controller.wallSlideLeft = animator.GetBool("onLeft");
             //controller.wallSlideRight = animator.GetBool("onRight");
@@ -258,10 +260,11 @@ public class PlayerAnimationController : MonoBehaviourPun {
             Enums.PowerupState.FireFlower => 1,
             Enums.PowerupState.PropellerMushroom => 2,
             Enums.PowerupState.IceFlower => 3,
-            Enums.PowerupState.TideFlower => 3,
             Enums.PowerupState.IceBreaker => 3,
             Enums.PowerupState.StellarFlower => 4,
             Enums.PowerupState.Bombro => 5,
+            Enums.PowerupState.TideFlower => 6,
+            Enums.PowerupState.GoldFlower => 7,
             _ => 0
         };
         materialBlock.SetFloat("PowerupState", ps);

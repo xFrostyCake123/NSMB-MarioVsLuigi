@@ -21560,7 +21560,8 @@ MonoBehaviour:
   propellerHelmet: {fileID: 8681391253028689487}
   propeller: {fileID: 8585382974291583916}
   bombHelmet: {fileID: 8144036234015694000}
-  bombFuse: {fileID: 0}
+  tideShell: {fileID: 0}
+  tideHelmet: {fileID: 0}
   glowMaterial: {fileID: 0}
   primaryColor: {r: 0, g: 0, b: 0, a: 0}
   secondaryColor: {r: 0, g: 0, b: 0, a: 0}
