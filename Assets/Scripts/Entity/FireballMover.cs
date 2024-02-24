@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 public class FireballMover : MonoBehaviourPun {
 public AudioSource audioSource;
 
-    public bool left, isIceball, isStarball, isWaterball, isTidalwave;
+    public bool left, isIceball, isStarball, isWaterball, isTidalwave, isMagmaball;
     public BoxCollider2D worldHitbox;
 
     [SerializeField] private float speed = 3f, bounceHeight = 4.5f, terminalVelocity = 6.25f, despawnTimer = 0f;
@@ -82,7 +82,9 @@ public AudioSource audioSource;
             body.velocity = new Vector2(body.velocity.x, bounceHeight + boost);
         } else if (isIceball && body.velocity.y > 1.5f)  {
             breakOnImpact = true;
-        }else if (isWaterball && body.velocity.y > 1.5f)  {
+        } else if (isWaterball && body.velocity.y > 1.5f)  {
+            breakOnImpact = true;
+        } else if (isMagmaball && body.velocity.y > 1.5f)  {
             breakOnImpact = true;
         }
         bool breaking = CollideWithTiles();

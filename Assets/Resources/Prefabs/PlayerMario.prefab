@@ -10376,6 +10376,7 @@ MonoBehaviour:
   megaJumpVelocity: 12.65625
   launchVelocity: 12
   wallslideSpeed: -4.6875
+  acornWallSlideSpeed: 0
   giantStartTime: 1.5
   soundRange: 10
   slopeSlidingAngle: 12.5
@@ -10383,6 +10384,7 @@ MonoBehaviour:
   propellerLaunchVelocity: 6
   propellerFallSpeed: 2
   propellerSpinFallSpeed: 1.5
+  glidingFallSpeed: 1.15
   propellerSpinTime: 0.5
   propellerDrillBuffer: 0
   heightSmallModel: 0.42
@@ -10424,11 +10426,13 @@ MonoBehaviour:
   alreadyStuckInBlock: 0
   propeller: 0
   usedPropellerThisJump: 0
+  squirrel: 0
+  usedSquirrelThisJump: 0
   stationaryGiantEnd: 0
   fireballKnockback: 0
   startedSliding: 0
   canShootProjectile: 0
-  dashing: 0
+  gliding: 0
   jumpLandingTimer: 0
   landing: 0
   koyoteTime: 0
@@ -10445,6 +10449,7 @@ MonoBehaviour:
   propellerTimer: 0
   propellerSpinTimer: 0
   fireballTimer: 0
+  squirrelTimer: 0
   invincible: 0
   giantTimer: 0
   floorAngle: 0
@@ -10499,7 +10504,6 @@ MonoBehaviour:
   propeller: {fileID: 8626919663303982960}
   bombHelmet: {fileID: 1419887612558881751}
   tideShell: {fileID: 5228281926424571092}
-  tideHelmet: {fileID: 0}
   glowMaterial: {fileID: 2100000, guid: 2cfa80f93994da44c9bdacad018e6ff5, type: 2}
   primaryColor: {r: 0, g: 0, b: 0, a: 0}
   secondaryColor: {r: 0, g: 0, b: 0, a: 0}

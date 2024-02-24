@@ -91,6 +91,8 @@ MonoBehaviour:
   - AttemptCollectCoin
   - BlueBecomeItem
   - CancelCollectCoin
+  - SquirrelJump
+  - SquirrelGlide
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

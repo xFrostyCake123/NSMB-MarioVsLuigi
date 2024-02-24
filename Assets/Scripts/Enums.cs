@@ -33,9 +33,11 @@ public static class Enums {
         [PowerupState.TideFlower] = new(2),
         [PowerupState.DashShroom] = new(2),
         [PowerupState.GoldFlower] = new(2),
+        [PowerupState.SuperAcorn] = new(2),
+        [PowerupState.MagmaFlower] = new(2),
     };
     public enum PowerupState : byte {
-        None, MiniMushroom, Small, Mushroom, FireFlower, IceFlower, PropellerMushroom, BlueShell, MegaMushroom, StellarFlower, IceBreaker, BuilderSuit, Bombro, TideFlower, DashShroom, GoldFlower
+        None, MiniMushroom, Small, Mushroom, FireFlower, IceFlower, PropellerMushroom, BlueShell, MegaMushroom, StellarFlower, IceBreaker, BuilderSuit, Bombro, TideFlower, DashShroom, GoldFlower, SuperAcorn, MagmaFlower
     }
     #endregion
     #region ANIMATION & MUSIC
@@ -52,7 +54,7 @@ public static class Enums {
     //Sound effects
     public enum Sounds : byte {
 
-        //CURRENT MAX: 97
+        //CURRENT MAX: 99
 
         //Enemy
         [SoundData("enemy/freeze")]                             Enemy_Generic_Freeze = 0,
@@ -104,7 +106,7 @@ public static class Enums {
         [SoundData("character/{char}/triplejump")]              Player_Voice_TripleJump = 38,
         [SoundData("character/{char}/walljump")]                Player_Voice_WallJump = 39,
         [SoundData("character/{char}/mega_mushroom_collect")]   Player_Sound_MegaMushroom_Collect = 40, //HARDCODED: DO NOT CHANGE WITHOUT CHANGING POWERUPS SCRIPTABLES
-
+        [SoundData("character/{char}/starspin")]                Player_Voice_StarSpin = 98,
         //Powerup
         [SoundData("powerup/1-up")]                             Powerup_Sound_1UP = 78, //HARDCODED: DO NOT CHANGE WITHOUT CHANGING POWERUPS SCRIPTABLES
         [SoundData("powerup/blueshell_enter")]                  Powerup_BlueShell_Enter = 41,
@@ -129,6 +131,7 @@ public static class Enums {
         [SoundData("powerup/starshoot")]                        Powerup_StarShoot = 95,
         [SoundData("powerup/starbreak")]                        Powerup_StarBreak = 96,
         [SoundData("powerup/watershoot")]                       Powerup_WaterShoot = 97,
+        [SoundData("powerup/MagmaFlowerShoot")]                 Powerup_MagmaShoot = 99,
 
         //UI Sounds / Songs / Jingles
         [SoundData("ui/hurry_up")]                              UI_HurryUp = 60,
@@ -192,6 +195,9 @@ public static class Enums {
         public static string DrawTime { get; } = "Dt";
         public static string NewPowerups { get; } = "C";
         public static string FrostyPowerups { get; } = "F";
+        public static string teamsMatch { get; } = "Te";
+        public static string friendlyFire { get; } = "Fr";
+        public static string shareStars { get; } = "Sh";
         public static string GameStarted { get; } = "G";
         public static string HostName { get; } = "H";
         public static string Debug { get; } = "D";

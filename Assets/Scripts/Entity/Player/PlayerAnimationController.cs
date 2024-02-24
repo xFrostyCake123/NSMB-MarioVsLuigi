@@ -8,7 +8,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
 
     [SerializeField] private Avatar smallAvatar, largeAvatar;
     [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle;
-    [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell, tideHelmet;
+    [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell;
     [SerializeField] private Material glowMaterial;
     [SerializeField] private Color primaryColor = Color.clear, secondaryColor = Color.clear;
     [SerializeField] [ColorUsage(true, false)] private Color? _glowColor = null;
@@ -196,7 +196,6 @@ public class PlayerAnimationController : MonoBehaviourPun {
         animator.SetBool("facingRight", (left ^ right) ? right : controller.facingRight);
         animator.SetBool("flying", controller.flying);
         animator.SetBool("drill", controller.drill);
-        animator.SetBool("dashing", controller.dashing);
 
         if (photonView.IsMine) {
             //Animation
@@ -224,7 +223,6 @@ public class PlayerAnimationController : MonoBehaviourPun {
             animator.SetBool("mini", controller.state == Enums.PowerupState.MiniMushroom);
             animator.SetBool("mega", controller.state == Enums.PowerupState.MegaMushroom);
             animator.SetBool("inShell", controller.inShell || (controller.state == Enums.PowerupState.BlueShell && (controller.crouching || controller.groundpound) && controller.groundpoundCounter <= 0.15f));
-            animator.SetBool("dashing", controller.dashing || (controller.state == Enums.PowerupState.DashShroom));
         } else {
             //controller.wallSlideLeft = animator.GetBool("onLeft");
             //controller.wallSlideRight = animator.GetBool("onRight");
@@ -264,7 +262,8 @@ public class PlayerAnimationController : MonoBehaviourPun {
             Enums.PowerupState.StellarFlower => 4,
             Enums.PowerupState.Bombro => 5,
             Enums.PowerupState.TideFlower => 6,
-            Enums.PowerupState.GoldFlower => 7,
+            Enums.PowerupState.SuperAcorn => 7,
+            Enums.PowerupState.GoldFlower => 8,
             _ => 0
         };
         materialBlock.SetFloat("PowerupState", ps);

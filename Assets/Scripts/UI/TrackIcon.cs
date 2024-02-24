@@ -56,9 +56,17 @@ public class TrackIcon : MonoBehaviour {
         }
 
         GameManager gm = GameManager.Instance;
-        float levelWidth = gm.GetLevelMaxX() - gm.GetLevelMinX();
-        float trackWidth = trackMaxX - trackMinX;
-        float percentage = (target.transform.position.x - gm.GetLevelMinX()) / levelWidth;
-        transform.localPosition = new(percentage * trackWidth - trackMaxX, transform.localPosition.y);
+          if (!gm.verticalLoopingLevel) {
+             float levelWidth = gm.GetLevelMaxX() - gm.GetLevelMinX();
+             float trackWidth = trackMaxX - trackMinX;
+             float percentage = (target.transform.position.x - gm.GetLevelMinX()) / levelWidth;
+             transform.localPosition = new (percentage * trackWidth - trackMaxX, transform.localPosition.y);
+        } else {
+             var levelWidth = gm.GetLevelMaxY() - gm.GetLevelMinY();
+             float trackWidth = trackMaxX - trackMinX;
+             float percentage = (target.transform.position.y - gm.GetLevelMinX()) / levelWidth * 0.55f;
+             transform.localPosition = new (475, (percentage * trackWidth - trackMaxX) - 125f);
+        }
+        
     }
 }

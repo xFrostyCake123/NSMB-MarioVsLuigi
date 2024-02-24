@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -101,9 +101,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
             valid &= room.IsVisible && room.IsOpen;
             valid &= !room.RemovedFromList;
             valid &= room.MaxPlayers >= 2 && room.MaxPlayers <= 10;
-            valid &= lives <= 99;
-            valid &= stars >= 1 && stars <= 99;
-            valid &= coins >= 1 && coins <= 99;
+            valid &= lives <= 25;
+            valid &= stars >= 1 && stars <= 25;
+            valid &= coins >= 1 && coins <= 50;
             //valid &= host.IsValidUsername();
 
             if (!valid) {
@@ -1329,7 +1329,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
             return;
 
         int.TryParse(input.text, out int newValue);
-        if (newValue < 1 || newValue > 99) {
+        if (newValue < 1 || newValue > 25) {
             newValue = 8;
             input.text = newValue.ToString();
         }
