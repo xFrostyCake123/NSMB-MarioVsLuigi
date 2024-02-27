@@ -64,6 +64,7 @@ MonoBehaviour:
   isStarball: 0
   isWaterball: 0
   isTidalwave: 1
+  isMagmaball: 0
   worldHitbox: {fileID: 0}
   speed: 6.25
   bounceHeight: 0

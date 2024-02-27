@@ -7,7 +7,7 @@ using NSMB.Utils;
 public class PlayerAnimationController : MonoBehaviourPun {
 
     [SerializeField] private Avatar smallAvatar, largeAvatar;
-    [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle;
+    [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle, glideParticle;
     [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell;
     [SerializeField] private Material glowMaterial;
     [SerializeField] private Color primaryColor = Color.clear, secondaryColor = Color.clear;
@@ -140,6 +140,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         SetParticleEmission(sparkles, !gameover && controller.invincible > 0);
         SetParticleEmission(giantParticle, !gameover && controller.state == Enums.PowerupState.MegaMushroom && controller.giantStartTimer <= 0);
         SetParticleEmission(fireParticle, !gameover && animator.GetBool("firedeath") && controller.dead && deathTimer > deathUpTime);
+        SetParticleEmission(glideParticle, !gameover && controller.gliding);
 
         //Blinking
         if (controller.dead) {
@@ -196,6 +197,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         animator.SetBool("facingRight", (left ^ right) ? right : controller.facingRight);
         animator.SetBool("flying", controller.flying);
         animator.SetBool("drill", controller.drill);
+        animator.SetBool("glide", controller.gliding);
 
         if (photonView.IsMine) {
             //Animation

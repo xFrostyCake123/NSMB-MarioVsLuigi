@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         private set => _instance = value;
     }
 
-    public MusicData mainMusic, invincibleMusic, megaMushroomMusic;
+    public MusicData mainMusic, invincibleMusic, megaMushroomMusic, metalCapMusic;
 
     public int levelMinTileX, levelMinTileY, levelWidthTile, levelHeightTile;
     public float cameraMinY, cameraHeightY, cameraMinX = -1000, cameraMaxX = 1000;
@@ -756,6 +756,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     }
 
     private void HandleMusic() {
+        bool metal = false;
         bool invincible = false;
         bool mega = false;
         bool speedup = false;
@@ -768,6 +769,8 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 mega = true;
             if (player.invincible > 0)
                 invincible = true;
+            if (player.metal > 0)
+                metal = true;
             if ((player.stars + 1f) / starRequirement >= 0.95f || hurryup != false)
                 speedup = true;
             if (player.lives == 1 && players.Count <= 2)
@@ -780,6 +783,8 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             PlaySong(Enums.MusicState.MegaMushroom, megaMushroomMusic);
         } else if (invincible) {
             PlaySong(Enums.MusicState.Starman, invincibleMusic);
+        } else if (metal) {
+            PlaySong(Enums.MusicState.MetalCap, metalCapMusic);
         } else {
             PlaySong(Enums.MusicState.Normal, mainMusic);
         }

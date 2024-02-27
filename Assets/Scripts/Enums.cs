@@ -50,11 +50,12 @@ public static class Enums {
         Normal,
         MegaMushroom,
         Starman,
+        MetalCap,
     }
     //Sound effects
     public enum Sounds : byte {
 
-        //CURRENT MAX: 99
+        //CURRENT MAX: 100
 
         //Enemy
         [SoundData("enemy/freeze")]                             Enemy_Generic_Freeze = 0,
@@ -132,6 +133,7 @@ public static class Enums {
         [SoundData("powerup/starbreak")]                        Powerup_StarBreak = 96,
         [SoundData("powerup/watershoot")]                       Powerup_WaterShoot = 97,
         [SoundData("powerup/MagmaFlowerShoot")]                 Powerup_MagmaShoot = 99,
+        [SoundData("powerup/squirrelhang")]                     Powerup_SquirrelHang = 100,
 
         //UI Sounds / Songs / Jingles
         [SoundData("ui/hurry_up")]                              UI_HurryUp = 60,
