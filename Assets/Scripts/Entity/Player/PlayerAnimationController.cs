@@ -8,7 +8,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
 
     [SerializeField] private Avatar smallAvatar, largeAvatar;
     [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle, glideParticle;
-    [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell;
+    [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell, squirrelHat, squirrelCoat;
     [SerializeField] private Material glowMaterial;
     [SerializeField] private Color primaryColor = Color.clear, secondaryColor = Color.clear;
     [SerializeField] [ColorUsage(true, false)] private Color? _glowColor = null;
@@ -302,6 +302,8 @@ public class PlayerAnimationController : MonoBehaviourPun {
         propellerHelmet.SetActive(controller.state == Enums.PowerupState.PropellerMushroom);
         bombHelmet.SetActive(controller.state == Enums.PowerupState.Bombro);
         tideShell.SetActive(controller.state == Enums.PowerupState.TideFlower);
+        squirrelHat.SetActive(controller.state == Enums.PowerupState.SuperAcorn);
+        squirrelCoat.SetActive(controller.state == Enums.PowerupState.SuperAcorn);
         animator.avatar = large ? largeAvatar : smallAvatar;
         animator.runtimeAnimatorController = large ? controller.character.largeOverrides : controller.character.smallOverrides;
 
@@ -398,6 +400,8 @@ public class PlayerAnimationController : MonoBehaviourPun {
         propellerHelmet.SetActive(false);
         bombHelmet.SetActive(false);
         tideShell.SetActive(false);
+        squirrelHat.SetActive(false);
+        squirrelCoat.SetActive(false);
         animator.avatar = smallAvatar;
     }
 }
