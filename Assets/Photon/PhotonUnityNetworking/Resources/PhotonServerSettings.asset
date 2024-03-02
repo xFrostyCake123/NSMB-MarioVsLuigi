@@ -94,6 +94,7 @@ MonoBehaviour:
   - SquirrelJump
   - SquirrelGlide
   - SquirrelActions
+  - WaterActions
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     public PlayerAnimationController AnimationController { get; private set; }
 
     public bool onGround, previousOnGround, crushGround, doGroundSnap, jumping, properJump, hitRoof, skidding, turnaround, facingRight = true, singlejump, doublejump, triplejump, bounce, crouching, groundpound, groundpoundLastFrame, sliding, knockback, hitBlock, running, functionallyRunning, jumpHeld, flying, drill, inShell, hitLeft, hitRight, stuckInBlock, alreadyStuckInBlock, propeller, usedPropellerThisJump, squirrel, usedSquirrelThisJump, usedSquirrelHang, stationaryGiantEnd, fireballKnockback, startedSliding, canShootProjectile, gliding;
-    public float jumpLandingTimer, landing, koyoteTime, groundpoundCounter, groundpoundStartTimer, pickupTimer, groundpoundDelay, hitInvincibilityCounter, powerupFlash, throwInvincibility, jumpBuffer, giantStartTimer, giantEndTimer, propellerTimer, propellerSpinTimer, fireballTimer, squirrelTimer, squirrelWallSlide;
+    public float jumpLandingTimer, landing, koyoteTime, groundpoundCounter, groundpoundStartTimer, pickupTimer, groundpoundDelay, hitInvincibilityCounter, powerupFlash, throwInvincibility, jumpBuffer, giantStartTimer, giantEndTimer, propellerTimer, propellerSpinTimer, fireballTimer, squirrelTimer, squirrelWallSlide, inShield, onShieldCooldown;
     public float invincible, metal, giantTimer, floorAngle, knockbackTimer, pipeTimer, slowdownTimer;
 
     //MOVEMENT STAGES
@@ -478,6 +478,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 if (other.invincible > 0) {
                     //They are invincible. let them decide if they've hit us.
                     if (invincible > 0) {
+                        if (inShield > 0)  // protecc shield!!
+                        return; 
+                        
                         //oh, we both are. bonk.
                         photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
                         other.photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, 1, true, photonView.ViewID);
@@ -488,6 +491,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 if (invincible > 0) {
                     //we are invincible. murder time :)
                     if (other.state == Enums.PowerupState.MegaMushroom) {
+                        if (inShield > 0)  // protecc shield!!
+                        return;
+
                         //wait fuck-
                         photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
                         return;
@@ -501,6 +507,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 if (other.metal > 0) {
                     //They are metal. let them decide if they've collided with us.
                     if (metal > 0) {
+                        if (inShield > 0)  // protecc shield!!
+                        return;
+                        
                         //oh, we both are. bonk.
                         photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
                         other.photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, 1, true, photonView.ViewID);
@@ -511,6 +520,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 if (metal > 0) {
                     //we are metal. bonking time :D
                     if (other.state == Enums.PowerupState.MegaMushroom) {
+                        if (inShield > 0)  // protecc shield!!
+                        return;
+                        
                         //oh shi-
                         photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
                         return;
@@ -606,7 +618,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     return;
                 } else if (!knockback && !other.knockback && !otherAbove && onGround && other.onGround && (Mathf.Abs(previousFrameVelocity.x) > WalkingMaxSpeed || Mathf.Abs(other.previousFrameVelocity.x) > WalkingMaxSpeed)) {
                     //bump
-
+                    if (inShield > 0)  // protecc shield!!
+                        return;
                     otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, 1, true, photonView.ViewID);
                     photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
                 }
@@ -925,6 +938,13 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             photonView.RPC(nameof(SquirrelActions), RpcTarget.All);
             break; 
         }
+        case Enums.PowerupState.WaterFlower: {
+            if (groundpound || (flying && drill) || squirrel || sliding || wallJumpTimer > 0) 
+                return;
+
+            photonView.RPC(nameof(WaterActions), RpcTarget.All);
+            break; 
+        }
         }
     }
 
@@ -1087,6 +1107,76 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             wallSlideRight = false;
             squirrelWallSlide = 0;
         }
+    }
+
+    [PunRPC]
+    public void WaterActions() {
+        bool upInput = joystick.y > analogDeadzone;
+        bool powerupAction = powerupButtonHeld;
+        string projectile = "WaterBubble";
+        Enums.Sounds sound = Enums.Sounds.Powerup_WaterShoot;
+        
+        if (upInput) {
+            if (onShieldCooldown > 0 || landing < 1f) 
+                return;
+            
+            inShield = 2f;
+            hitInvincibilityCounter = 2f;
+            PlaySound(Enums.Sounds.Powerup_BubbleShield);
+        
+            animator.SetTrigger("throw");
+            propeller = false;
+            flying = false;
+            crouching = false;
+            gliding = false;
+            squirrel = false;
+
+            singlejump = false;
+            doublejump = false;
+            triplejump = false;
+
+            wallSlideLeft = false;
+            wallSlideRight = false;
+            squirrelWallSlide = 0;
+
+            onShieldCooldown = 15f;
+
+            if (onShieldCooldown <= 0) 
+                PlaySound(Enums.Sounds.Powerup_BubbleShieldReady);
+            
+            
+        } else {
+            if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding || upInput)
+                return;
+
+            int count = 0;
+            foreach (FireballMover existingFire in FindObjectsOfType<FireballMover>()) {
+                if (existingFire.photonView.IsMine && ++count >= 6)
+                    return;
+            }
+
+            if (state == Enums.PowerupState.WaterFlower) {
+                canShootProjectile = false;
+                if (fireballTimer <= 0) {
+                    fireballTimer = 1.15f;
+                } else {
+                    return;
+                }
+            }
+        
+            Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
+                if (Utils.IsTileSolidAtWorldLocation(pos)) {
+                    photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{projectile}Wall", pos);
+                } else {
+                PhotonNetwork.Instantiate($"Prefabs/{projectile}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
+                }
+                photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
+
+            animator.SetTrigger("fireball");
+            wallJumpTimer = 0;
+        
+        }   
+                 
     }
 
     public void OnReserveItem(InputAction.CallbackContext context) {
@@ -1627,6 +1717,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         giantTimer = 0;
         giantEndTimer = 0;
         giantStartTimer = 0;
+        inShield = 0;
+        onShieldCooldown = 0;
         groundpound = false;
         body.isKinematic = false;
 
@@ -2696,6 +2788,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         Utils.TickTimer(ref knockbackTimer, 0, delta);
         Utils.TickTimer(ref squirrelTimer, 0, delta);
         Utils.TickTimer(ref squirrelWallSlide, 0, delta);
+        Utils.TickTimer(ref inShield, 0, delta);
+        Utils.TickTimer(ref onShieldCooldown, 0, delta);
         Utils.TickTimer(ref pipeTimer, 0, delta);
         Utils.TickTimer(ref wallSlideTimer, 0, delta);
         Utils.TickTimer(ref wallJumpTimer, 0, delta);

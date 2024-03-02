@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 1493637187516899100}
   - component: {fileID: 7546659253023383375}
   m_Layer: 9
-  m_Name: Fireball
+  m_Name: WaterBubble
   m_TagString: Fireball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,7 +42,7 @@ Transform:
   - {fileID: 2113715658840768421}
   - {fileID: 5059717370905105433}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1164692562165207756
 MonoBehaviour:
@@ -60,7 +60,7 @@ MonoBehaviour:
   left: 0
   isIceball: 0
   isStarball: 0
-  isWaterball: 0
+  isWaterball: 1
   isTidalwave: 0
   isMagmaball: 0
   isBigMagmaball: 0
@@ -68,7 +68,7 @@ MonoBehaviour:
   speed: 6.25
   bounceHeight: 6.75
   terminalVelocity: 6.25
-  despawnTimer: 0
+  despawnTimer: 1
 --- !u!212 &1011982274984717419
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -110,8 +110,7 @@ SpriteRenderer:
   m_SortingLayerID: -755315459
   m_SortingLayer: 1
   m_SortingOrder: 2
-  m_Sprite: {fileID: 5353841184698615464, guid: 8b4c76bfff99dba4b90ef29e19c39f48,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: 535e2e64870d702439f9013b49d504ff, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -134,7 +133,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 0.075625
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 4.4
@@ -142,7 +141,7 @@ Rigidbody2D:
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 4
+  m_Constraints: 6
 --- !u!61 &-1769135492019179076
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -150,24 +149,24 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1011982274984717421}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.055}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.11, y: 0.11}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.32, y: 0.32}
     newSize: {x: 0.11, y: 0.11}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.11, y: 0.11}
+  m_Size: {x: 0.26, y: 0.25}
   m_EdgeRadius: 0
 --- !u!95 &1011982274984717418
 Animator:
@@ -179,7 +178,7 @@ Animator:
   m_GameObject: {fileID: 1011982274984717421}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ce75c4329cfe8da41861982ffb54fc32, type: 2}
+  m_Controller: {fileID: 9100000, guid: 48378dc4add15ac4d95c7ae9a60faa8d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -316,7 +315,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1011982274984717416}
-  m_RootOrder: 0
+  m_RootOrder: -2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &4222306656409461088
 BoxCollider2D:
@@ -331,7 +330,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.022659749}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -342,7 +341,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.1, y: 0.24531952}
+  m_Size: {x: 0.22, y: 0.21}
   m_EdgeRadius: 0
 --- !u!1 &8143467996169431833
 GameObject:
@@ -370,12 +369,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8143467996169431833}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.06, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.002, z: 0}
+  m_LocalScale: {x: 0.39755377, y: 0.39755377, z: 3.9755378}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1011982274984717416}
-  m_RootOrder: 1
+  m_RootOrder: -2
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &5044812112945403417
 ParticleSystem:
@@ -1827,9 +1826,9 @@ ParticleSystem:
     uvChannelMask: -1
     rowMode: 1
     sprites:
-    - sprite: {fileID: -1737155869, guid: 8b4c76bfff99dba4b90ef29e19c39f48, type: 3}
-    - sprite: {fileID: -1295335873, guid: 8b4c76bfff99dba4b90ef29e19c39f48, type: 3}
-    - sprite: {fileID: 1454502836, guid: 8b4c76bfff99dba4b90ef29e19c39f48, type: 3}
+    - sprite: {fileID: -1995803819, guid: 32eb362bf0735fa44b6c36b9bf77a2cf, type: 3}
+    - sprite: {fileID: 1522364493, guid: 32eb362bf0735fa44b6c36b9bf77a2cf, type: 3}
+    - sprite: {fileID: -862775852, guid: 32eb362bf0735fa44b6c36b9bf77a2cf, type: 3}
     flipU: 0
     flipV: 0
   VelocityModule:

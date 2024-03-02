@@ -7,7 +7,7 @@ using NSMB.Utils;
 public class PlayerAnimationController : MonoBehaviourPun {
 
     [SerializeField] private Avatar smallAvatar, largeAvatar;
-    [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle, glideParticle;
+    [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle, glideParticle, shieldParticle, shieldReadyParticle;
     [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell, squirrelHat, squirrelCoat;
     [SerializeField] private Material glowMaterial;
     [SerializeField] private Color primaryColor = Color.clear, secondaryColor = Color.clear;
@@ -141,6 +141,8 @@ public class PlayerAnimationController : MonoBehaviourPun {
         SetParticleEmission(giantParticle, !gameover && controller.state == Enums.PowerupState.MegaMushroom && controller.giantStartTimer <= 0);
         SetParticleEmission(fireParticle, !gameover && animator.GetBool("firedeath") && controller.dead && deathTimer > deathUpTime);
         SetParticleEmission(glideParticle, !gameover && controller.gliding);
+        SetParticleEmission(shieldParticle, !gameover && controller.inShield > 0);
+        SetParticleEmission(shieldReadyParticle, !gameover && controller.state == Enums.PowerupState.WaterFlower && controller.onShieldCooldown <= 0);
 
         //Blinking
         if (controller.dead) {
@@ -261,6 +263,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
             Enums.PowerupState.PropellerMushroom => 2,
             Enums.PowerupState.IceFlower => 3,
             Enums.PowerupState.IceBreaker => 3,
+            Enums.PowerupState.WaterFlower => 3,
             Enums.PowerupState.StellarFlower => 4,
             Enums.PowerupState.Bombro => 5,
             Enums.PowerupState.TideFlower => 6,
