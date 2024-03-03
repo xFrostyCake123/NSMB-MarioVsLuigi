@@ -225,6 +225,8 @@ MonoBehaviour:
   isStarball: 0
   isWaterball: 0
   isTidalwave: 0
+  isMagmaball: 0
+  isBigMagmaball: 0
   worldHitbox: {fileID: 0}
   speed: 0
   bounceHeight: 0

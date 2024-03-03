@@ -65,6 +65,7 @@ MonoBehaviour:
   isWaterball: 0
   isTidalwave: 0
   isMagmaball: 0
+  isBigMagmaball: 0
   worldHitbox: {fileID: -1769135492019179076}
   speed: 9
   bounceHeight: 0

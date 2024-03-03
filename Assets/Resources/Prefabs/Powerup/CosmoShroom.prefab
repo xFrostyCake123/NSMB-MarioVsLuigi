@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 8556432279231082637}
   - component: {fileID: -1565466705953719887}
   m_Layer: 9
-  m_Name: DashShroom
+  m_Name: CosmoShroom
   m_TagString: Powerup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,9 +55,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92a2c7e0961057346829575aceae0464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
-  bouncePower: 6
-  terminalVelocity: 9
+  speed: 2.5
+  bouncePower: 0
+  terminalVelocity: 8
   blinkingRate: 6
   avoidPlayers: 0
   followMe: {fileID: 0}
@@ -106,7 +106,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 9
-  m_Sprite: {fileID: -698110273, guid: 5477629075937034da5ea5c44360c344, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fcd23722d34e9af4dbf63c73d0eeb10f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -151,10 +151,10 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0034523606, y: -0.0057966113}
+  m_Offset: {x: 0, y: 0.45}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0}
     oldSize: {x: 1, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -162,7 +162,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.74805105, y: 0.8229878}
+  m_Size: {x: 0.65, y: 0.8}
   m_EdgeRadius: 0
 --- !u!114 &1017215213198693186
 MonoBehaviour:
@@ -318,7 +318,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0034725368, y: -0.0034554899}
+  m_Offset: {x: 0, y: 0.4}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -329,5 +329,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.7436423, y: 0.79562026}
+  m_Size: {x: 0.8, y: 0.8}
   m_EdgeRadius: 0

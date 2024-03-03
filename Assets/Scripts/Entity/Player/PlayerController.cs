@@ -932,18 +932,18 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             break;
         }
         case Enums.PowerupState.SuperAcorn: {
-            if (groundpound || (flying && drill) || squirrel || crouching || sliding || wallJumpTimer > 0) 
+            if (groundpound || (flying && drill) || crouching || sliding || wallJumpTimer > 0) 
                 return;
 
             photonView.RPC(nameof(SquirrelActions), RpcTarget.All);
             break; 
         }
         case Enums.PowerupState.WaterFlower: {
-            if (groundpound || (flying && drill) || squirrel || sliding || wallJumpTimer > 0) 
+            if (groundpound || (flying && drill) || crouching || sliding || wallJumpTimer > 0) 
                 return;
-
-            photonView.RPC(nameof(WaterActions), RpcTarget.All);
-            break; 
+            
+            WaterActions();
+            break;
         }
         }
     }
@@ -1108,16 +1108,56 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             squirrelWallSlide = 0;
         }
     }
-
-    [PunRPC]
+    
     public void WaterActions() {
         bool upInput = joystick.y > analogDeadzone;
-        bool powerupAction = powerupButtonHeld;
+        if (upInput) {
+            photonView.RPC(nameof(WaterShield), RpcTarget.All);
+        } else {
+            WaterBall();
+        }
+    }
+    public void WaterBall() {
+        bool upInput = joystick.y > analogDeadzone;
         string projectile = "WaterBubble";
         Enums.Sounds sound = Enums.Sounds.Powerup_WaterShoot;
+        if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding || upInput)
+            return;
+
+        int count = 0;
+        foreach (FireballMover existingFire in FindObjectsOfType<FireballMover>()) {
+            if (existingFire.photonView.IsMine && ++count >= 1)
+                return;
+        }
+
+        if (state == Enums.PowerupState.WaterFlower) {
+            canShootProjectile = false;
+            if (fireballTimer <= 0) {
+                fireballTimer = 1.4f;
+            } else {
+                return;
+            }
+        }
         
-        if (upInput) {
-            if (onShieldCooldown > 0 || landing < 1f) 
+        Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
+            if (Utils.IsTileSolidAtWorldLocation(pos)) {
+                photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{projectile}Wall", pos);
+            } else {
+            PhotonNetwork.Instantiate($"Prefabs/{projectile}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
+            }
+            photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
+
+        animator.SetTrigger("fireball");
+        wallJumpTimer = 0;
+           
+    }
+    
+    [PunRPC]
+    public void WaterShield() {
+        bool upInput = joystick.y > analogDeadzone;
+        
+        if (upInput) { //generate shield
+            if (onShieldCooldown > 0) 
                 return;
             
             inShield = 2f;
@@ -1139,44 +1179,10 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             wallSlideRight = false;
             squirrelWallSlide = 0;
 
-            onShieldCooldown = 15f;
-
-            if (onShieldCooldown <= 0) 
-                PlaySound(Enums.Sounds.Powerup_BubbleShieldReady);
+            onShieldCooldown = 15f;     
             
-            
-        } else {
-            if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding || upInput)
-                return;
-
-            int count = 0;
-            foreach (FireballMover existingFire in FindObjectsOfType<FireballMover>()) {
-                if (existingFire.photonView.IsMine && ++count >= 6)
-                    return;
-            }
-
-            if (state == Enums.PowerupState.WaterFlower) {
-                canShootProjectile = false;
-                if (fireballTimer <= 0) {
-                    fireballTimer = 1.15f;
-                } else {
-                    return;
-                }
-            }
-        
-            Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
-                if (Utils.IsTileSolidAtWorldLocation(pos)) {
-                    photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{projectile}Wall", pos);
-                } else {
-                PhotonNetwork.Instantiate($"Prefabs/{projectile}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
-                }
-                photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
-
-            animator.SetTrigger("fireball");
-            wallJumpTimer = 0;
-        
         }   
-                 
+        
     }
 
     public void OnReserveItem(InputAction.CallbackContext context) {

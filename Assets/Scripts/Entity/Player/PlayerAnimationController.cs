@@ -143,7 +143,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         SetParticleEmission(glideParticle, !gameover && controller.gliding);
         SetParticleEmission(shieldParticle, !gameover && controller.inShield > 0);
         SetParticleEmission(shieldReadyParticle, !gameover && controller.state == Enums.PowerupState.WaterFlower && controller.onShieldCooldown <= 0);
-
+        
         //Blinking
         if (controller.dead) {
             eyeState = Enums.PlayerEyeState.Death;
