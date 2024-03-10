@@ -25113,6 +25113,7 @@ MonoBehaviour:
   squirrel: 0
   usedSquirrelThisJump: 0
   usedSquirrelHang: 0
+  usedStarSpinThisJump: 0
   stationaryGiantEnd: 0
   fireballKnockback: 0
   startedSliding: 0
@@ -25138,6 +25139,10 @@ MonoBehaviour:
   squirrelWallSlide: 0
   inShield: 0
   onShieldCooldown: 0
+  starspinTimer: 0
+  starspin: 0
+  onStarspinCooldown: 0
+  boostDuration: 0
   invincible: 0
   metal: 0
   giantTimer: 0

@@ -31,7 +31,7 @@ public static class Enums {
         [PowerupState.BuilderSuit] = new(2),
         [PowerupState.Bombro] = new(2),
         [PowerupState.TideFlower] = new(2),
-        [PowerupState.DashShroom] = new(2),
+        [PowerupState.CosmoShroom] = new(2),
         [PowerupState.GoldFlower] = new(2),
         [PowerupState.SuperAcorn] = new(2),
         [PowerupState.MagmaFlower] = new(2),
@@ -39,7 +39,7 @@ public static class Enums {
 
     };
     public enum PowerupState : byte {
-        None, MiniMushroom, Small, Mushroom, FireFlower, IceFlower, PropellerMushroom, BlueShell, MegaMushroom, StellarFlower, IceBreaker, BuilderSuit, Bombro, TideFlower, DashShroom, GoldFlower, SuperAcorn, MagmaFlower, WaterFlower
+        None, MiniMushroom, Small, Mushroom, FireFlower, IceFlower, PropellerMushroom, BlueShell, MegaMushroom, StellarFlower, IceBreaker, BuilderSuit, Bombro, TideFlower, CosmoShroom, GoldFlower, SuperAcorn, MagmaFlower, WaterFlower
     }
     #endregion
     #region ANIMATION & MUSIC

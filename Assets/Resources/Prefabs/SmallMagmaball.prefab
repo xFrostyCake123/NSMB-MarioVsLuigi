@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 6091953025159033845}
   - component: {fileID: 3450170468620705130}
   m_Layer: 9
-  m_Name: Magmaball2
+  m_Name: SmallMagmaball
   m_TagString: Fireball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,14 +58,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 0}
-  left: 1
+  left: 0
   isIceball: 0
   isStarball: 0
   isWaterball: 0
   isTidalwave: 0
   isMagmaball: 1
+  isBigMagmaball: 0
   worldHitbox: {fileID: 0}
-  speed: 4.25
+  speed: 3.5
   bounceHeight: 6
   terminalVelocity: 6.25
   despawnTimer: 0
@@ -107,8 +108,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -755315459
+  m_SortingLayer: 1
   m_SortingOrder: 2
   m_Sprite: {fileID: 471293037, guid: 310f7afc0a2331d449f84d2be10b486b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -312,7 +313,7 @@ Transform:
   m_GameObject: {fileID: 3779350421152805176}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.0019630825, y: 0.0030000014, z: 0.0021169398}
-  m_LocalScale: {x: 0.025806116, y: 0.025806116, z: 0.06451528}
+  m_LocalScale: {x: 0.029228006, y: 0.029228006, z: 0.07307}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1011982274984717416}
@@ -5183,8 +5184,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8143467996169431833}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.05, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.0018, z: 0}
+  m_LocalScale: {x: 0.16187, y: 0.16187, z: 1.6187}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1011982274984717416}
@@ -5759,7 +5760,7 @@ ParticleSystem:
         m_RotationOrder: 4
     randomizeRotationDirection: 0
     gravitySource: 0
-    maxNumParticles: 1000
+    maxNumParticles: 10
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -6649,9 +6650,10 @@ ParticleSystem:
     uvChannelMask: -1
     rowMode: 1
     sprites:
-    - sprite: {fileID: -8077568, guid: eddf8ec042b3e614e925d846a27642df, type: 3}
-    - sprite: {fileID: -2140104179, guid: eddf8ec042b3e614e925d846a27642df, type: 3}
-    - sprite: {fileID: -456267274, guid: eddf8ec042b3e614e925d846a27642df, type: 3}
+    - sprite: {fileID: -667942173, guid: 310f7afc0a2331d449f84d2be10b486b, type: 3}
+    - sprite: {fileID: -148876605, guid: 310f7afc0a2331d449f84d2be10b486b, type: 3}
+    - sprite: {fileID: 647542418, guid: 310f7afc0a2331d449f84d2be10b486b, type: 3}
+    - sprite: {fileID: 669506967, guid: 310f7afc0a2331d449f84d2be10b486b, type: 3}
     flipU: 0
     flipV: 0
   VelocityModule:
