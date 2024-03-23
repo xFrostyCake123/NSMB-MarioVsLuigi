@@ -31,12 +31,14 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         private set => _instance = value;
     }
 
-    public MusicData mainMusic, invincibleMusic, megaMushroomMusic, metalCapMusic;
+    public MusicData mainMusic, invincibleMusic, megaMushroomMusic, metalCapMusic, cobaltStarMusic;
 
     public int levelMinTileX, levelMinTileY, levelWidthTile, levelHeightTile;
     public float cameraMinY, cameraHeightY, cameraMinX = -1000, cameraMaxX = 1000;
     public bool loopingLevel = true, verticalLoopingLevel = false;
     public Vector3 spawnpoint;
+    public Enums.PowerupState startingPowerup = Enums.PowerupState.Small;
+    public Powerup startingReserve;
     public Tilemap tilemap;
     [ColorUsage(false)] public Color levelUIColor = new(24, 178, 170);
     public bool spawnBigPowerups = true, spawnVerticalPowerups = true;
@@ -756,6 +758,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     }
 
     private void HandleMusic() {
+        bool cobalt = false;
         bool metal = false;
         bool invincible = false;
         bool mega = false;
@@ -771,6 +774,8 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 invincible = true;
             if (player.metal > 0)
                 metal = true;
+            if (player.cobalting > 0)
+                cobalt = true;
             if ((player.stars + 1f) / starRequirement >= 0.95f || hurryup != false)
                 speedup = true;
             if (player.lives == 1 && players.Count <= 2)
@@ -785,6 +790,8 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             PlaySong(Enums.MusicState.Starman, invincibleMusic);
         } else if (metal) {
             PlaySong(Enums.MusicState.MetalCap, metalCapMusic);
+        } else if (cobalt) {
+            PlaySong(Enums.MusicState.CobaltStar, cobaltStarMusic);
         } else {
             PlaySong(Enums.MusicState.Normal, mainMusic);
         }

@@ -27,6 +27,14 @@ public class PiranhaPlantController : KillableEntity {
             if (!gm.musicEnabled)
                 return;
         }
+        foreach (var player in gm.players) {
+            if (player.cobalting > 0) {
+                animator.enabled = false;
+                return;
+            } else if (player.cobalting <= 0)  {
+                animator.enabled = true;
+            }
+        }
 
         left = false;
 

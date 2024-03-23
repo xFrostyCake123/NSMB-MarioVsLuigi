@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
 using Photon.Pun;
@@ -35,6 +35,17 @@ public class KoopaWalk : HoldableEntity {
             animator.enabled = false;
             body.isKinematic = true;
             return;
+        }
+        foreach (var player in GameManager.Instance.players) {
+            if (player.cobalting > 0) {
+                body.velocity = Vector2.zero;
+                animator.enabled = false;
+                body.isKinematic = true;
+                return;
+            } else if (player.cobalting <= 0) {
+                animator.enabled = true;
+                body.isKinematic = false;
+            } 
         }
         base.FixedUpdate();
 

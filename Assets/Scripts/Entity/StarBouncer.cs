@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
 using Photon.Pun;
@@ -79,7 +79,11 @@ public class StarBouncer : MonoBehaviourPun {
     public void Update() {
         if (GameManager.Instance?.gameover ?? false)
             return;
-
+        foreach (var player in GameManager.Instance.players) {
+            if (player.cobalting > 0) {
+                return;
+            }
+        }   
         if (stationary) {
             return;
         }
@@ -97,6 +101,15 @@ public class StarBouncer : MonoBehaviourPun {
             body.velocity = Vector2.zero;
             body.isKinematic = true;
             return;
+        }
+        foreach (var player in GameManager.Instance.players) {
+            if (player.cobalting > 0) {
+                body.velocity = Vector2.zero;
+                body.isKinematic = true;
+                return;
+            } else if (player.cobalting <= 0) {
+                body.isKinematic = false;
+            }
         }
 
         body.velocity = new(moveSpeed * (left ? -1 : 1) * (fast ? 2f : 1f), body.velocity.y);

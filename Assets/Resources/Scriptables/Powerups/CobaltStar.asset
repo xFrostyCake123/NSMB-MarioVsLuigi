@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea796f302b1a91d478efc94e21899d8d, type: 3}
-  m_Name: SuperAcorn
+  m_Name: CobaltStar
   m_EditorClassIdentifier: 
-  state: 16
-  prefab: SuperAcorn
+  state: 0
+  prefab: CobaltStar
   soundEffect: 16
-  spawnChance: 0.5
-  losingSpawnBonus: 1.5
+  spawnChance: 10
+  losingSpawnBonus: 3.1
   big: 0
   vertical: 0
   custom: 0
   lives: 0
   frosty: 1
-  temporary: 0
+  temporary: 1
   NSMB: 0
   wii: 0
-  reserveSprite: {fileID: -1604689058, guid: a87d3b028baa82640b06b88398a8c4f0, type: 3}
+  reserveSprite: {fileID: 0}

@@ -25119,6 +25119,7 @@ MonoBehaviour:
   startedSliding: 0
   canShootProjectile: 0
   gliding: 0
+  cannotUseStartReserve: 0
   jumpLandingTimer: 0
   landing: 0
   koyoteTime: 0
@@ -25145,6 +25146,7 @@ MonoBehaviour:
   boostDuration: 0
   invincible: 0
   metal: 0
+  cobalting: 0
   giantTimer: 0
   floorAngle: 0
   knockbackTimer: 0

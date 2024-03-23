@@ -15,6 +15,7 @@ public class UIUpdater : MonoBehaviour {
     public Sprite storedItemNull;
     public TMP_Text uiStars, uiCoins, uiDebug, uiLives, uiCountdown;
     public Image itemReserve, itemColor;
+    public GameObject cobaltEffect, protectedCobaltEffect;
     public float pingSample = 0;
 
     private Material timerMaterial;
@@ -49,6 +50,18 @@ public class UIUpdater : MonoBehaviour {
             pingSample = 0;
 
         uiDebug.text = "<mark=#000000b0 padding=\"20, 20, 20, 20\"><font=\"defaultFont\">Ping: " + (int) pingSample + "ms</font>";
+        
+        PlayerController cobalter = player;
+        foreach (var player in GameManager.Instance.players) {
+            if (player.cobalting > 0 && cobalter.cobalting > 0) {
+                protectedCobaltEffect.SetActive(true);
+            } else if (player.cobalting > 0  && cobalter.cobalting <= 0) {
+                cobaltEffect.SetActive(true);
+            } else if (player.cobalting <= 0) {
+                cobaltEffect.SetActive(false);
+                protectedCobaltEffect.SetActive(false);
+            }
+        }
 
         //Player stuff update.
         if (!player && GameManager.Instance.localPlayer)

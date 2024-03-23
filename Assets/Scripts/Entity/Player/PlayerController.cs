@@ -40,9 +40,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
     public PlayerAnimationController AnimationController { get; private set; }
 
-    public bool onGround, previousOnGround, crushGround, doGroundSnap, jumping, properJump, hitRoof, skidding, turnaround, facingRight = true, singlejump, doublejump, triplejump, bounce, crouching, groundpound, groundpoundLastFrame, sliding, knockback, hitBlock, running, functionallyRunning, jumpHeld, flying, drill, inShell, hitLeft, hitRight, stuckInBlock, alreadyStuckInBlock, propeller, usedPropellerThisJump, squirrel, usedSquirrelThisJump, usedSquirrelHang, usedStarSpinThisJump, stationaryGiantEnd, fireballKnockback, startedSliding, canShootProjectile, gliding;
+    public bool onGround, previousOnGround, crushGround, doGroundSnap, jumping, properJump, hitRoof, skidding, turnaround, facingRight = true, singlejump, doublejump, triplejump, bounce, crouching, groundpound, groundpoundLastFrame, sliding, knockback, hitBlock, running, functionallyRunning, jumpHeld, flying, drill, inShell, hitLeft, hitRight, stuckInBlock, alreadyStuckInBlock, propeller, usedPropellerThisJump, squirrel, usedSquirrelThisJump, usedSquirrelHang, usedStarSpinThisJump, stationaryGiantEnd, fireballKnockback, startedSliding, canShootProjectile, gliding, cannotUseStartReserve;
     public float jumpLandingTimer, landing, koyoteTime, groundpoundCounter, groundpoundStartTimer, pickupTimer, groundpoundDelay, hitInvincibilityCounter, powerupFlash, throwInvincibility, jumpBuffer, giantStartTimer, giantEndTimer, propellerTimer, propellerSpinTimer, fireballTimer, squirrelTimer, squirrelWallSlide, inShield, onShieldCooldown, starspinTimer, starspin, onStarspinCooldown, boostDuration;
-    public float invincible, metal, giantTimer, floorAngle, knockbackTimer, pipeTimer, slowdownTimer;
+    public float invincible, metal, cobalting, giantTimer, floorAngle, knockbackTimer, pipeTimer, slowdownTimer;
 
     //MOVEMENT STAGES
     private static readonly int WALK_STAGE = 1, RUN_STAGE = 3, STAR_STAGE = 4;
@@ -352,6 +352,19 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             animator.enabled = false;
             body.isKinematic = true;
             return;
+        }
+        foreach (var player in GameManager.Instance.players) {    
+            if (player.cobalting > 0 && cobalting <= 0) {
+
+                body.velocity = Vector2.zero;
+                animator.enabled = false;
+                body.isKinematic = true;
+                return;
+
+            } else if (player.cobalting <= 0) {
+                animator.enabled = true;
+                body.isKinematic = false;
+            }
         }
 
         groundpoundLastFrame = groundpound;
@@ -1371,6 +1384,22 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
             return;
         
+        } else if (powerup.prefab == "CobaltStar") {
+            //THE WORLD
+            cobalting = 15f;
+            PlaySound(powerup.soundEffect);
+
+            if (holding && photonView.IsMine) {
+                holding.photonView.RPC(nameof(KillableEntity.SpecialKill), RpcTarget.All, facingRight, false, 0);
+                holding = null;
+            }
+
+            if (view.IsMine)
+                PhotonNetwork.Destroy(view);
+            Destroy(view.gameObject);
+
+            return;
+
         } else if (powerup.prefab == "1-Up") {
             lives++;
             UpdateGameState();
@@ -1787,6 +1816,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         transform.localScale = Vector2.one;
         transform.position = body.position = GameManager.Instance.GetSpawnpoint(playerId);
         dead = false;
+        if (!cannotUseStartReserve) {
+            storedPowerup = GameManager.Instance.startingReserve;
+        }
         previousState = state = Enums.PowerupState.Small;
         AnimationController.DisableAllModels();
         spawned = false;
@@ -1817,7 +1849,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         gameObject.SetActive(true);
         dead = false;
         spawned = true;
-        state = Enums.PowerupState.Small;
+        state = GameManager.Instance.startingPowerup;
         previousState = Enums.PowerupState.Small;
         body.velocity = Vector2.zero;
         wallSlideLeft = false;
@@ -1840,6 +1872,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         onStarspinCooldown = 0;
         usedStarSpinThisJump = false;
         gliding = false;
+        cannotUseStartReserve = true;
 
         crouching = false;
         onGround = false;
@@ -2887,6 +2920,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         Utils.TickTimer(ref starspin, 0, delta);
         Utils.TickTimer(ref onStarspinCooldown, 0, delta);
         Utils.TickTimer(ref boostDuration, 0, delta);
+        Utils.TickTimer(ref cobalting, 0, delta);
         Utils.TickTimer(ref pipeTimer, 0, delta);
         Utils.TickTimer(ref wallSlideTimer, 0, delta);
         Utils.TickTimer(ref wallJumpTimer, 0, delta);

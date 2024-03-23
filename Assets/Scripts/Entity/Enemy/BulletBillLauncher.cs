@@ -19,7 +19,12 @@ public class BulletBillLauncher : MonoBehaviourPun {
     void Update() {
         if (!PhotonNetwork.IsMasterClient || GameManager.Instance.gameover)
             return;
-
+        
+        foreach (var player in GameManager.Instance.players) 
+            if (player.cobalting > 0) {
+                return;
+            }
+        
         if ((shootTimer -= Time.deltaTime) <= 0) {
             shootTimer = initialShootTimer;
             TryToShoot();

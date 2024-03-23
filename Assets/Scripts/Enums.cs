@@ -42,6 +42,11 @@ public static class Enums {
         None, MiniMushroom, Small, Mushroom, FireFlower, IceFlower, PropellerMushroom, BlueShell, MegaMushroom, StellarFlower, IceBreaker, BuilderSuit, Bombro, TideFlower, CosmoShroom, GoldFlower, SuperAcorn, MagmaFlower, WaterFlower
     }
     #endregion
+    #region ITEM BOX ITEMS
+    public enum ItemBoxItem : byte {
+        Banana, GreenShell, RedShell, Mushroom, Bobomb, BlueShell, TripleMushrooms, Star, Lightning
+    }
+    #endregion
     #region ANIMATION & MUSIC
     // Animation enums
     public enum PlayerEyeState {
@@ -53,6 +58,7 @@ public static class Enums {
         MegaMushroom,
         Starman,
         MetalCap,
+        CobaltStar,
     }
     //Sound effects
     public enum Sounds : byte {

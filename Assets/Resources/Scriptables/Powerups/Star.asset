@@ -21,4 +21,8 @@ MonoBehaviour:
   vertical: 0
   custom: 0
   lives: 0
+  frosty: 0
+  temporary: 1
+  NSMB: 0
+  wii: 0
   reserveSprite: {fileID: 0}
