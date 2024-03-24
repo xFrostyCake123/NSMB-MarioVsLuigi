@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 549419135642806217}
-  - component: {fileID: 549419135642806216}
   - component: {fileID: 549419135642806218}
   - component: {fileID: 549419135642806223}
   - component: {fileID: 549419135642806226}
@@ -19,6 +18,7 @@ GameObject:
   - component: {fileID: 5683304359912364406}
   - component: {fileID: 6378501322455324741}
   - component: {fileID: 8121598051915271649}
+  - component: {fileID: 6683863191118003403}
   m_Layer: 12
   m_Name: SPPCloud
   m_TagString: platform
@@ -34,28 +34,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549419135642806219}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.5, y: -1, z: 0}
+  m_LocalPosition: {x: 5.5, y: -0.9358, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &549419135642806216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 549419135642806219}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d8a7c9b2b5abfe469e44e69005186e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxY: 5.5
-  minY: -2.5
-  ySpeed: 1.5
 --- !u!212 &549419135642806218
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -97,13 +82,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 3009764857649989862, guid: 08ca7a03beeec1645846fedb6498ed5c,
-    type: 3}
+  m_Sprite: {fileID: 1925648133, guid: 8e78653ec76236e4e8d2d0cece4ddde5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 4, y: 1}
+  m_Size: {x: 4, y: 1.2568276}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -146,8 +130,9 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 1}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -2, y: 0}
-  - {x: 2, y: 0}
+  - {x: -1.7042017, y: -0.48910224}
+  - {x: -0.04636097, y: -0.48547524}
+  - {x: 1.646162, y: -0.47853684}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
@@ -207,7 +192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: 0
   behaviours:
-  - {fileID: 549419135642806216}
+  - {fileID: 0}
 --- !u!114 &5683304359912364406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,3 +244,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interpolate: 1
   body: {fileID: 549419135642806223}
+--- !u!95 &6683863191118003403
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 549419135642806219}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 08e768dd33f747a4c89a0dd4e012ddbc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
