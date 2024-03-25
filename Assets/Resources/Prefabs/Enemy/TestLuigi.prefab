@@ -21439,6 +21439,7 @@ MonoBehaviour:
   megaJumpVelocity: 12.65625
   launchVelocity: 12
   wallslideSpeed: -4.6875
+  acornWallSlideSpeed: 0.44
   giantStartTime: 1.5
   soundRange: 10
   slopeSlidingAngle: 12.5
@@ -21446,6 +21447,8 @@ MonoBehaviour:
   propellerLaunchVelocity: 6
   propellerFallSpeed: 2
   propellerSpinFallSpeed: 1.5
+  glidingFallSpeed: 1.35
+  squirrelJumpFallSpeed: 3
   propellerSpinTime: 0.5
   propellerDrillBuffer: 0
   heightSmallModel: 0.42
@@ -21487,11 +21490,17 @@ MonoBehaviour:
   alreadyStuckInBlock: 0
   propeller: 0
   usedPropellerThisJump: 0
+  squirrel: 0
+  usedSquirrelThisJump: 0
+  usedSquirrelHang: 0
+  usedStarSpinThisJump: 0
   stationaryGiantEnd: 0
   fireballKnockback: 0
   startedSliding: 0
   canShootProjectile: 0
-  dashing: 0
+  gliding: 0
+  cannotUseStartReserve: 0
+  gotCheckpoint: 0
   jumpLandingTimer: 0
   landing: 0
   koyoteTime: 0
@@ -21508,7 +21517,17 @@ MonoBehaviour:
   propellerTimer: 0
   propellerSpinTimer: 0
   fireballTimer: 0
+  squirrelTimer: 0
+  squirrelWallSlide: 0
+  inShield: 0
+  onShieldCooldown: 0
+  starspinTimer: 0
+  starspin: 0
+  onStarspinCooldown: 0
+  boostDuration: 0
   invincible: 0
+  metal: 0
+  cobalting: 0
   giantTimer: 0
   floorAngle: 0
   knockbackTimer: 0
@@ -21553,6 +21572,9 @@ MonoBehaviour:
   drillParticle: {fileID: 4430736674483794918}
   giantParticle: {fileID: 1382120724504233341}
   fireParticle: {fileID: 2621800665490406039}
+  glideParticle: {fileID: 0}
+  shieldParticle: {fileID: 0}
+  shieldReadyParticle: {fileID: 0}
   models: {fileID: 4741703498087908288}
   smallModel: {fileID: 1717812904357955791}
   largeModel: {fileID: 3839069354041722077}
@@ -21562,7 +21584,8 @@ MonoBehaviour:
   propeller: {fileID: 8585382974291583916}
   bombHelmet: {fileID: 8144036234015694000}
   tideShell: {fileID: 0}
-  tideHelmet: {fileID: 0}
+  squirrelHat: {fileID: 0}
+  squirrelCoat: {fileID: 0}
   glowMaterial: {fileID: 0}
   primaryColor: {r: 0, g: 0, b: 0, a: 0}
   secondaryColor: {r: 0, g: 0, b: 0, a: 0}

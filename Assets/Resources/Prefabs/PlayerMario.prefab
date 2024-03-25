@@ -25120,6 +25120,7 @@ MonoBehaviour:
   canShootProjectile: 0
   gliding: 0
   cannotUseStartReserve: 0
+  gotCheckpoint: 0
   jumpLandingTimer: 0
   landing: 0
   koyoteTime: 0

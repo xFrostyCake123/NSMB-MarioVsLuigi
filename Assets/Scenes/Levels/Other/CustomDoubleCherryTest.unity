@@ -8077,7 +8077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cd6e70ad40a93f419db4c4118455d7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: Prefabs/Enemy/TestLuigi
+  prefab: Prefabs/PlayerMario
   currentEntity: {fileID: 0}
 --- !u!1 &1854457137
 GameObject:

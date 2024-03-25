@@ -207,9 +207,13 @@ public static class Enums {
         public static string DrawTime { get; } = "Dt";
         public static string NewPowerups { get; } = "C";
         public static string FrostyPowerups { get; } = "F";
-        public static string teamsMatch { get; } = "Te";
-        public static string friendlyFire { get; } = "Fr";
-        public static string shareStars { get; } = "Sh";
+        public static string ProgressiveToRoulette { get; } = "Ptr";
+        public static string DeathmatchGame { get; } = "Dt";
+        public static string FireballDamage { get; } = "Fd";
+        public static string BalloonBattleGame { get; } = "Bb";
+        public static string TeamsMatch { get; } = "Te";
+        public static string FriendlyFire { get; } = "Fr";
+        public static string ShareStars { get; } = "Sh";
         public static string GameStarted { get; } = "G";
         public static string HostName { get; } = "H";
         public static string Debug { get; } = "D";

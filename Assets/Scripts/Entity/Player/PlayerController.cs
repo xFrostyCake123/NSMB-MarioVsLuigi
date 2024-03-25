@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
     public PlayerAnimationController AnimationController { get; private set; }
 
-    public bool onGround, previousOnGround, crushGround, doGroundSnap, jumping, properJump, hitRoof, skidding, turnaround, facingRight = true, singlejump, doublejump, triplejump, bounce, crouching, groundpound, groundpoundLastFrame, sliding, knockback, hitBlock, running, functionallyRunning, jumpHeld, flying, drill, inShell, hitLeft, hitRight, stuckInBlock, alreadyStuckInBlock, propeller, usedPropellerThisJump, squirrel, usedSquirrelThisJump, usedSquirrelHang, usedStarSpinThisJump, stationaryGiantEnd, fireballKnockback, startedSliding, canShootProjectile, gliding, cannotUseStartReserve;
+    public bool onGround, previousOnGround, crushGround, doGroundSnap, jumping, properJump, hitRoof, skidding, turnaround, facingRight = true, singlejump, doublejump, triplejump, bounce, crouching, groundpound, groundpoundLastFrame, sliding, knockback, hitBlock, running, functionallyRunning, jumpHeld, flying, drill, inShell, hitLeft, hitRight, stuckInBlock, alreadyStuckInBlock, propeller, usedPropellerThisJump, squirrel, usedSquirrelThisJump, usedSquirrelHang, usedStarSpinThisJump, stationaryGiantEnd, fireballKnockback, startedSliding, canShootProjectile, gliding, cannotUseStartReserve, gotCheckpoint;
     public float jumpLandingTimer, landing, koyoteTime, groundpoundCounter, groundpoundStartTimer, pickupTimer, groundpoundDelay, hitInvincibilityCounter, powerupFlash, throwInvincibility, jumpBuffer, giantStartTimer, giantEndTimer, propellerTimer, propellerSpinTimer, fireballTimer, squirrelTimer, squirrelWallSlide, inShield, onShieldCooldown, starspinTimer, starspin, onStarspinCooldown, boostDuration;
     public float invincible, metal, cobalting, giantTimer, floorAngle, knockbackTimer, pipeTimer, slowdownTimer;
 
@@ -690,7 +690,15 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 return;
 
             fireball.photonView.RPC(nameof(KillableEntity.Kill), RpcTarget.All);
+            Utils.GetCustomProperty(Enums.NetRoomProperties.FireballDamage, out bool doesDamage);
 
+            if (doesDamage && !fireball.isIceball) {
+                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, 1, true, fireball.photonView.ViewID);
+                photonView.RPC(nameof(Powerdown), RpcTarget.All, false);
+                return;
+            }
+
+            
             if (knockback || invincible > 0 || metal > 0 || state == Enums.PowerupState.MegaMushroom)
                 return;
 
@@ -701,8 +709,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 }
                 return;
             }
-            if (!fireball.isStarball) {
-                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, 1, true);
+            if (fireball.isStarball) {
+                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, 1, false);
+                return;
             }
 
             if (state == Enums.PowerupState.MiniMushroom) {
@@ -719,6 +728,14 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     return;
                 }
             }
+            break;
+        }
+        case "checkpoint": {    
+            if (gotCheckpoint) 
+                return;
+            
+            gotCheckpoint = true;
+            PlaySoundEverywhere(Enums.Sounds.World_Star_Collect_Self);
             break;
         }
         case "knockbacker":
@@ -743,6 +760,14 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         }
         case "BoostPad": {
             photonView.RPC(nameof(BoostPadBoosting), RpcTarget.All);
+            break;
+        }
+        case "punch": {
+            if (!onGround) {
+                photonView.RPC(nameof(Knockback), RpcTarget.All, facingRight, 1, false);
+            } else {
+                photonView.RPC(nameof(Knockback), RpcTarget.All, facingRight, 1, true);   
+            }
             break;
         }
         }
@@ -964,6 +989,13 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 return;
             
             photonView.RPC(nameof(CosmicSpin), RpcTarget.All);
+            break;
+        }
+        case Enums.PowerupState.Mushroom: {
+            if (groundpound || (flying && drill) || propeller || crouching || sliding || wallJumpTimer > 0 || !GameManager.Instance.sppLevel)
+                return;
+
+            photonView.RPC(nameof(Punch), RpcTarget.All);
             break;
         }
         }
@@ -1249,6 +1281,18 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         usedStarSpinThisJump = true;
         onStarspinCooldown = 2f;
 
+    }
+    [PunRPC]
+    public void Punch() {
+        string punch = "SuperPunch";
+        Enums.Sounds sound = Enums.Sounds.Player_Voice_DoubleJump;
+
+        Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
+        PhotonNetwork.Instantiate($"Prefabs/{punch}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
+        photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
+
+        animator.SetTrigger("fireball");
+        wallJumpTimer = 0;  
     }
 
     [PunRPC]
@@ -1814,7 +1858,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             return;
         }
         transform.localScale = Vector2.one;
-        transform.position = body.position = GameManager.Instance.GetSpawnpoint(playerId);
+        transform.position = body.position = gotCheckpoint ? GameManager.Instance.checkpoint : GameManager.Instance.GetSpawnpoint(playerId);
         dead = false;
         if (!cannotUseStartReserve) {
             storedPowerup = GameManager.Instance.startingReserve;
@@ -2080,6 +2124,11 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         if (knockback || fireballKnockback)
             starsToDrop = Mathf.Min(1, starsToDrop);
+
+        Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool deathmatch);
+        
+        if (deathmatch)
+            photonView.RPC(nameof(Powerdown), RpcTarget.All, false);
 
         knockback = true;
         knockbackTimer = 0.5f;

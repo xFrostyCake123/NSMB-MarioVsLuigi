@@ -35,8 +35,9 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
 
     public int levelMinTileX, levelMinTileY, levelWidthTile, levelHeightTile;
     public float cameraMinY, cameraHeightY, cameraMinX = -1000, cameraMaxX = 1000;
-    public bool loopingLevel = true, verticalLoopingLevel = false;
+    public bool loopingLevel = true, verticalLoopingLevel = false, raceLevel = false, sppLevel = false;
     public Vector3 spawnpoint;
+    public Vector3 checkpoint;
     public Enums.PowerupState startingPowerup = Enums.PowerupState.Small;
     public Powerup startingReserve;
     public Tilemap tilemap;
@@ -44,6 +45,8 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public bool spawnBigPowerups = true, spawnVerticalPowerups = true;
     public string levelDesigner = "", richPresenceId = "", levelName = "Unknown", starSkin = "Prefabs/Bigstar";
     private TileBase[] originalTiles;
+    private TileBase[] nonReplaceableTiles;
+    private TileBase replacementTile;
     private BoundsInt origin;
     private GameObject[] starSpawns;
     private readonly List<GameObject> remainingSpawns = new();
@@ -440,12 +443,23 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
 
         //Respawning Tilemaps
         origin = new BoundsInt(levelMinTileX, levelMinTileY, 0, levelWidthTile, levelHeightTile, 1);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.ProgressiveToRoulette, out bool ptr);
+        if (ptr)
+            // ru ru ru roulette
+            for (var x = tilemap.cellBounds.min.x; x < tilemap.cellBounds.max.x; x++)
+            for (var y = tilemap.cellBounds.min.y; y < tilemap.cellBounds.max.y; y++)
+            for (var z = tilemap.cellBounds.min.z; z < tilemap.cellBounds.max.z; z++)
+                if (!nonReplaceableTiles.Contains(tilemap.GetTile(new Vector3Int(x, y, z))))
+                    tilemap.SetTile(new Vector3Int(x, y, z), replacementTile);
         originalTiles = tilemap.GetTilesBlock(origin);
 
         //Star spawning
         starSpawns = GameObject.FindGameObjectsWithTag("StarSpawn");
         Utils.GetCustomProperty(Enums.NetRoomProperties.StarRequirement, out starRequirement);
         Utils.GetCustomProperty(Enums.NetRoomProperties.CoinRequirement, out coinRequirement);
+
+        if (raceLevel)
+            starRequirement = 1;
 
         SceneManager.SetActiveScene(gameObject.scene);
 
@@ -708,6 +722,9 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             alivePlayers.Add(player);
 
             if ((starGame && player.stars >= starRequirement) || timeUp) {
+                Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool deathmatch);
+                if (deathmatch) // deathmatch makes stars not give you the win
+                    return;
                 //we're in a state where this player would win.
                 //check if someone has more stars
                 if (player.stars > winningStars) {
@@ -903,6 +920,9 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             Gizmos.color = new Color((float) i / playersToVisualize, 0, 0, 0.75f);
             Gizmos.DrawCube(GetSpawnpoint(i, playersToVisualize) + Vector3.down/4f, Vector2.one/2f);
         }
+        
+        Gizmos.color = Color.green;
+        Gizmos.DrawCube(checkpoint, Vector2.one);
 
         Vector3 size = new(levelWidthTile/2f, levelHeightTile/2f);
         Vector3 origin = new(GetLevelMinX() + (levelWidthTile/4f), GetLevelMinY() + (levelHeightTile/4f), 1);
