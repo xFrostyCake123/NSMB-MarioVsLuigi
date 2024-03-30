@@ -57,6 +57,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 0}
+  luigiFireball: 0
   left: 0
   isIceball: 1
   isStarball: 0

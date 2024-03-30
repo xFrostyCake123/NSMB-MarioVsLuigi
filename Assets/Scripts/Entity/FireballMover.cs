@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 public class FireballMover : MonoBehaviourPun {
 public AudioSource audioSource;
 
-    public bool left, isIceball, isStarball, isWaterball, isTidalwave, isMagmaball, isBigMagmaball;
+    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isTidalwave, isMagmaball, isBigMagmaball;
     public BoxCollider2D worldHitbox;
 
     [SerializeField] private float speed = 3f, bounceHeight = 4.5f, terminalVelocity = 6.25f, despawnTimer = 0f;

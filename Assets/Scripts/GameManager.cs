@@ -44,9 +44,9 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     [ColorUsage(false)] public Color levelUIColor = new(24, 178, 170);
     public bool spawnBigPowerups = true, spawnVerticalPowerups = true;
     public string levelDesigner = "", richPresenceId = "", levelName = "Unknown", starSkin = "Prefabs/Bigstar";
-    private TileBase[] originalTiles;
-    private TileBase[] nonReplaceableTiles;
-    private TileBase replacementTile;
+    public TileBase[] originalTiles;
+    public TileBase[] replaceableTiles;
+    public TileBase replacementTile;
     private BoundsInt origin;
     private GameObject[] starSpawns;
     private readonly List<GameObject> remainingSpawns = new();
@@ -445,11 +445,11 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         origin = new BoundsInt(levelMinTileX, levelMinTileY, 0, levelWidthTile, levelHeightTile, 1);
         Utils.GetCustomProperty(Enums.NetRoomProperties.ProgressiveToRoulette, out bool ptr);
         if (ptr)
-            // ru ru ru roulette
+            // ruh roulette
             for (var x = tilemap.cellBounds.min.x; x < tilemap.cellBounds.max.x; x++)
             for (var y = tilemap.cellBounds.min.y; y < tilemap.cellBounds.max.y; y++)
             for (var z = tilemap.cellBounds.min.z; z < tilemap.cellBounds.max.z; z++)
-                if (!nonReplaceableTiles.Contains(tilemap.GetTile(new Vector3Int(x, y, z))))
+                if (replaceableTiles.Contains(tilemap.GetTile(new Vector3Int(x, y, z))))
                     tilemap.SetTile(new Vector3Int(x, y, z), replacementTile);
         originalTiles = tilemap.GetTilesBlock(origin);
 
@@ -598,9 +598,17 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         gameover = true;
         music.Stop();
         GameObject text = GameObject.FindWithTag("wintext");
-        text.GetComponent<TMP_Text>().text = winner != null ? $"{ winner.GetUniqueNickname() } Wins!" : "It's a draw...";
+        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamsOn);
+        var winnerCharacterIndex = -1;
+        if (winner != null && teamsOn)
+        {
+            winnerCharacterIndex = (int)winner.CustomProperties[Enums.NetPlayerProperties.Character];
+            text.GetComponent<TMP_Text>().text = "The" + "\n" + GlobalController.Instance.characters[winnerCharacterIndex].characterName + "Team" + "\n" + "Wins!";      
+                
+        } else {
+            text.GetComponent<TMP_Text>().text = winner != null ? $"{ winner.GetUniqueNickname() } Wins!" : "It's a draw...";
+        }
 
-        yield return new WaitForSecondsRealtime(1);
         text.GetComponent<Animator>().SetTrigger("start");
 
         AudioMixer mixer = music.outputAudioMixerGroup.audioMixer;
@@ -614,8 +622,10 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
 
         if (draw)
             music.PlayOneShot(Enums.Sounds.UI_Match_Draw.GetClip());
-        else if (win)
+        else if (win && !teamsOn)
             music.PlayOneShot(Enums.Sounds.UI_Match_Win.GetClip());
+        else if (teamsOn)
+            music.PlayOneShot(Enums.Sounds.UI_Match_Team_Win.GetClip());
         else
             music.PlayOneShot(Enums.Sounds.UI_Match_Lose.GetClip());
 

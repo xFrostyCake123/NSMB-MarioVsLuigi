@@ -15,11 +15,14 @@ MonoBehaviour:
   state: 12
   prefab: SuperHammer
   soundEffect: 16
-  spawnChance: 1.25
-  losingSpawnBonus: 1
+  spawnChance: 0
+  losingSpawnBonus: 0
   big: 0
   vertical: 0
   custom: 0
   lives: 0
   frosty: 1
+  temporary: 0
+  NSMB: 0
+  wii: 0
   reserveSprite: {fileID: 21300000, guid: 9c762f1b3e1643d4585edb62f02bb470, type: 3}

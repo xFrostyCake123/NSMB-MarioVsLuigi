@@ -63,7 +63,7 @@ public static class Enums {
     //Sound effects
     public enum Sounds : byte {
 
-        //CURRENT MAX: 102
+        //CURRENT MAX: 103
 
         //Enemy
         [SoundData("enemy/freeze")]                             Enemy_Generic_Freeze = 0,
@@ -150,6 +150,7 @@ public static class Enums {
         [SoundData("ui/loading")]                               UI_Loading = 61,
         [SoundData("ui/match_lose")]                            UI_Match_Lose = 62,
         [SoundData("ui/match_win")]                             UI_Match_Win = 63,
+        [SoundData("ui/match_team_win")]                       UI_Match_Team_Win = 103,
         [SoundData("ui/pause")]                                 UI_Pause = 64,
         [SoundData("ui/quit")]                                  UI_Quit = 65,
         [SoundData("ui/start_game")]                            UI_StartGame = 66,
@@ -208,6 +209,8 @@ public static class Enums {
         public static string NewPowerups { get; } = "C";
         public static string FrostyPowerups { get; } = "F";
         public static string ProgressiveToRoulette { get; } = "Ptr";
+        public static string NoMapCoins { get; } = "Nmp";
+        public static string DropReserve { get; } = "Dr";
         public static string DeathmatchGame { get; } = "Dt";
         public static string FireballDamage { get; } = "Fd";
         public static string BalloonBattleGame { get; } = "Bb";

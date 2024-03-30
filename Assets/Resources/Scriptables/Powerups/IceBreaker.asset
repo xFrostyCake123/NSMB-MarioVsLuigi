@@ -16,10 +16,13 @@ MonoBehaviour:
   prefab: IceBreaker
   soundEffect: 16
   spawnChance: 0
-  losingSpawnBonus: 1.5
+  losingSpawnBonus: 0
   big: 0
   vertical: 0
   custom: 0
   lives: 0
   frosty: 1
+  temporary: 0
+  NSMB: 0
+  wii: 0
   reserveSprite: {fileID: 230146947, guid: bfec0ae000d308d41910d04fcc21396f, type: 3}

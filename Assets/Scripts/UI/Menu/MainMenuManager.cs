@@ -30,7 +30,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public TMP_Dropdown levelDropdown, characterDropdown;
     public RoomIcon selectedRoomIcon, privateJoinRoom;
     public Button joinRoomBtn, createRoomBtn, startGameBtn;
-    public Toggle ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, fireballToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
+    public Toggle ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, teamToggle, friendlyFireToggle, fireballToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
     public GameObject playersContent, playersPrefab, chatContent, chatPrefab;
     public TMP_InputField nicknameField, starsText, coinsText, livesField, timeField, lobbyJoinField, chatTextField, bonusSettingsField;
     public Slider musicSlider, sfxSlider, masterSlider, lobbyPlayersSlider, changePlayersSlider;
@@ -220,6 +220,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.DrawTime, ChangeDrawTime);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.DeathmatchGame, ChangeDeathmatchGame);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.FireballDamage, ChangeFireballDamage);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.ProgressiveToRoulette, ChangeProgressiveToRoulette);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.TeamsMatch, ChangeTeamsMatch);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.FriendlyFire, ChangeFriendlyFire);
         AttemptToUpdateProperty<string>(updatedProperties, Enums.NetRoomProperties.HostName, ChangeLobbyHeader);
     }
 
@@ -1498,6 +1501,30 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
 
         Hashtable properties = new() {
             [Enums.NetRoomProperties.FireballDamage] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+    public void ChangeTeamsMatch(bool value) {
+        teamToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetTeamsMatch(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.TeamsMatch] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+     public void ChangeFriendlyFire(bool value) {
+        friendlyFireToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetFriendlyFire(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.FriendlyFire] = toggle.isOn
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
     }

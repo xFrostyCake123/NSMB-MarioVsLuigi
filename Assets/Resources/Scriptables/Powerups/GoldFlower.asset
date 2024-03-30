@@ -15,11 +15,14 @@ MonoBehaviour:
   state: 15
   prefab: GoldFlower
   soundEffect: 16
-  spawnChance: 0.3
-  losingSpawnBonus: 1.5
+  spawnChance: 0
+  losingSpawnBonus: 0
   big: 0
   vertical: 0
   custom: 0
   lives: 0
   frosty: 1
+  temporary: 0
+  NSMB: 0
+  wii: 0
   reserveSprite: {fileID: 21300000, guid: e26287ff9d675584fbb862fa7773d4af, type: 3}

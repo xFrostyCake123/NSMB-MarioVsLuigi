@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
     public int playerId = -1;
     public bool dead = false, spawned = false;
+    public bool Mario, Luigi, Yoshi;
     public Enums.PowerupState state = Enums.PowerupState.Small, previousState;
     public float slowriseGravity = 0.85f, normalGravity = 2.5f, flyingGravity = 0.8f, flyingTerminalVelocity = 1.25f, drillVelocity = 7f, groundpoundTime = 0.25f, groundpoundVelocity = 10, blinkingSpeed = 0.25f, terminalVelocity = -7f, jumpVelocity = 6.25f, megaJumpVelocity = 16f, launchVelocity = 12f, wallslideSpeed = -4.25f, acornWallSlideSpeed = 0.44f, giantStartTime = 1.5f, soundRange = 10f, slopeSlidingAngle = 12.5f, pickupTime = 0.5f;
     public float propellerLaunchVelocity = 6, propellerFallSpeed = 2, propellerSpinFallSpeed = 1.5f, glidingFallSpeed = 1.35f, squirrelJumpFallSpeed = 3, propellerSpinTime = 0.75f, propellerDrillBuffer, heightSmallModel = 0.42f, heightLargeModel = 0.82f;
@@ -478,7 +479,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         switch (collision.gameObject.tag) {
         case "Player": {
             //hit players
-
+            Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamedUp);
+            Utils.GetCustomProperty(Enums.NetRoomProperties.FriendlyFire, out bool friendlyfighting);
+        
             if (contacts.Length < collision.contactCount)
                 contacts = new ContactPoint2D[collision.contactCount];
             collision.GetContacts(contacts);
@@ -487,6 +490,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 GameObject otherObj = collision.gameObject;
                 PlayerController other = otherObj.GetComponent<PlayerController>();
                 PhotonView otherView = other.photonView;
+
+                if (teamedUp && !friendlyfighting && Mario && other.Mario || teamedUp && !friendlyfighting && Luigi && other.Luigi) 
+                    return;
 
                 if (other.invincible > 0) {
                     //They are invincible. let them decide if they've hit us.
@@ -685,8 +691,10 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         GameObject obj = collider.gameObject;
         switch (obj.tag) {
         case "Fireball": {
+            Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool inTeam);
+            Utils.GetCustomProperty(Enums.NetRoomProperties.FriendlyFire, out bool friendly);
             FireballMover fireball = obj.GetComponentInParent<FireballMover>();
-            if (fireball.photonView.IsMine || hitInvincibilityCounter > 0)
+            if (fireball.photonView.IsMine || hitInvincibilityCounter > 0 || Luigi && fireball.luigiFireball && inTeam && !friendly || Mario && !fireball.luigiFireball && inTeam && !friendly)
                 return;
 
             fireball.photonView.RPC(nameof(KillableEntity.Kill), RpcTarget.All);
@@ -908,6 +916,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             } else {
                 return;
             }
+            Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamed);
+            bool maro = Mario;
+            bool loogi = Luigi;
             bool upInput = joystick.y > analogDeadzone;
             bool ice = state == Enums.PowerupState.IceFlower;
             bool star = state == Enums.PowerupState.StellarFlower;
@@ -925,7 +936,28 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                   projectile = "Magmaball";
                   sound = Enums.Sounds.Powerup_MagmaShoot;
                 }
-            
+            if (teamed) {
+                if (loogi) {
+                    if (ice && !magma) {
+                        projectile = "LuigiIceball";
+                        sound = Enums.Sounds.Powerup_Iceball_Shoot;
+                    } else if (magma && upInput && !ice) {
+                        projectile = "LuigiBigMagmaball";
+                        sound = Enums.Sounds.Powerup_MagmaShoot;
+                    } else if (magma && !ice) {
+                        projectile = "LuigiMagmaball";
+                        sound = Enums.Sounds.Powerup_MagmaShoot;
+                    } else {
+                        projectile = "LuigiFireball";
+                        sound = Enums.Sounds.Powerup_Fireball_Shoot;
+                    }
+                } else if (maro) {
+                    if (ice && !magma) {
+                        projectile = "MarioIceball";
+                        sound = Enums.Sounds.Powerup_Iceball_Shoot;
+                    }
+                }
+            }
             if (waterball && upInput) {
                 projectile = "Waterball";
                 sound = Enums.Sounds.Powerup_WaterShoot;
@@ -1176,6 +1208,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         }
     }
     public void WaterBall() {
+        bool maro = Mario;
+        bool loogi = Luigi;
         bool upInput = joystick.y > analogDeadzone;
         string projectile = "WaterBubble";
         Enums.Sounds sound = Enums.Sounds.Powerup_WaterShoot;
@@ -1195,6 +1229,13 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             } else {
                 return;
             }
+        }
+        if (loogi) {
+            projectile = "LuigiWaterBubble";
+            sound = Enums.Sounds.Powerup_WaterShoot;
+        } else if (maro) {
+            projectile = "MarioWaterBubble";
+            sound = Enums.Sounds.Powerup_WaterShoot;
         }
         
         Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
@@ -1645,6 +1686,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         starScript.Collected = true;
 
         //we can collect
+
         photonView.RPC(nameof(CollectBigStar), RpcTarget.All, (Vector2) starScript.transform.position, starID, stars + 1);
         if (starScript.stationary)
             GameManager.Instance.SendAndExecuteEvent(Enums.NetEventIds.ResetTiles, null, SendOptions.SendReliable);
@@ -1657,6 +1699,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             return;
 
         //state
+        Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool deathmatch);
+        if (deathmatch)
+            return;
         stars = Mathf.Min(newCount, GameManager.Instance.starRequirement);
         UpdateGameState();
 

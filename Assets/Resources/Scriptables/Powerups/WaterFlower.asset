@@ -15,7 +15,7 @@ MonoBehaviour:
   state: 18
   prefab: WaterFlower
   soundEffect: 16
-  spawnChance: 2
+  spawnChance: 0.5
   losingSpawnBonus: 0.75
   big: 0
   vertical: 0

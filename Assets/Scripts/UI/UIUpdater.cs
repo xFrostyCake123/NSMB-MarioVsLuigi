@@ -73,12 +73,16 @@ public class UIUpdater : MonoBehaviour {
 
             return;
         }
+        Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool deathmatch);
+        if (deathmatch)
+            starsParent.SetActive(false);
 
         if (uiHidden)
             ToggleUI(false);
 
         UpdateStoredItemUI();
         UpdateTextUI();
+        
     }
 
     private void ToggleUI(bool hidden) {

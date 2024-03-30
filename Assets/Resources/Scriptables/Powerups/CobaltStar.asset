@@ -15,7 +15,7 @@ MonoBehaviour:
   state: 0
   prefab: CobaltStar
   soundEffect: 16
-  spawnChance: 10
+  spawnChance: -3
   losingSpawnBonus: 3.1
   big: 0
   vertical: 0
