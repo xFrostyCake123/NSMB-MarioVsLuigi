@@ -564,11 +564,14 @@ namespace NSMB.Utils {
         }
 
         public static Color GetPlayerColor(Player player, float s = 1, float v = 1) {
-
+            var teamPlayer = player;
+            var teamColor = -1;
+            
             int result = -1;
             int count = 0;
             foreach (var pl in PhotonNetwork.PlayerList) {
                 GetCustomProperty(Enums.NetPlayerProperties.Spectator, out bool spectating, pl.CustomProperties);
+                
                 if (spectating)
                     continue;
 
@@ -577,8 +580,13 @@ namespace NSMB.Utils {
 
                 count++;
             }
-
-            if (result == -1)
+            GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teaming);
+            teamColor = (int)teamPlayer.CustomProperties[Enums.NetPlayerProperties.Character];
+            if (teamColor == 1 && teaming)
+                return new Color(0f, 1f, 0f, 1f);
+            else if (teamColor == 0 && teaming)
+                return new Color(1f, 0f, 0f, 1f);
+            else if (result == -1 && !teaming)
                 return new Color(0.9f, 0.9f, 0.9f, 0.7f);
 
             return Color.HSVToRGB(result / ((float) count + 1), s, v);

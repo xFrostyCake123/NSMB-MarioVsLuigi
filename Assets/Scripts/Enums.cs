@@ -217,6 +217,7 @@ public static class Enums {
         public static string PropellerMush { get; } = "Pm";
         public static string OneUpMush { get; } = "1up";
         public static string DropReserve { get; } = "Dr";
+        public static string KinematicMega { get; } = "Km";
         public static string DeathmatchGame { get; } = "Dt";
         public static string FireballDamage { get; } = "Fd";
         public static string BalloonBattleGame { get; } = "Bb";

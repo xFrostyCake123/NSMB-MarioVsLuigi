@@ -461,10 +461,12 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         if (raceLevel)
             starRequirement = 1;
 
-        foreach (var coin in coins) {
-            Utils.GetCustomProperty(Enums.NetRoomProperties.NoMapCoins, out bool nocoin);
-            if (nocoin)
+        Utils.GetCustomProperty(Enums.NetRoomProperties.NoMapCoins, out bool nocoin);
+        if (nocoin) {
+            foreach (var coin in coins) {
                 Destroy(coin);
+            }
+            coins = new GameObject[0];
         }
 
         SceneManager.SetActiveScene(gameObject.scene);

@@ -1591,7 +1591,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
     }
-    
+
     public void ChangeFireballDamage(bool value) {
         fireballDamageToggle.SetIsOnWithoutNotify(value);
     }
