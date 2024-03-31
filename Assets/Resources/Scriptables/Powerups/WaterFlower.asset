@@ -16,13 +16,15 @@ MonoBehaviour:
   prefab: WaterFlower
   soundEffect: 16
   spawnChance: 0.5
-  losingSpawnBonus: 0.75
+  losingSpawnBonus: 1.5
   big: 0
   vertical: 0
-  custom: 1
+  custom: 0
   lives: 0
   frosty: 0
   temporary: 0
-  NSMB: 0
+  nsmb: 0
   wii: 0
-  reserveSprite: {fileID: 2046606621, guid: 97133be5bde40df479e4e8edd89b53a3, type: 3}
+  ten: 1
+  oneup: 0
+  reserveSprite: {fileID: 21300000, guid: a4600544c5e277b4fb1812af1e918273, type: 3}

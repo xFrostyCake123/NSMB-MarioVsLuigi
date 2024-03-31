@@ -461,6 +461,12 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         if (raceLevel)
             starRequirement = 1;
 
+        foreach (var coin in coins) {
+            Utils.GetCustomProperty(Enums.NetRoomProperties.NoMapCoins, out bool nocoin);
+            if (nocoin)
+                Destroy(coin);
+        }
+
         SceneManager.SetActiveScene(gameObject.scene);
 
         PhotonNetwork.IsMessageQueueRunning = true;

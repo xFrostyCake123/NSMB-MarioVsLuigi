@@ -63,7 +63,7 @@ public static class Enums {
     //Sound effects
     public enum Sounds : byte {
 
-        //CURRENT MAX: 103
+        //CURRENT MAX: 104
 
         //Enemy
         [SoundData("enemy/freeze")]                             Enemy_Generic_Freeze = 0,
@@ -116,6 +116,7 @@ public static class Enums {
         [SoundData("character/{char}/walljump")]                Player_Voice_WallJump = 39,
         [SoundData("character/{char}/mega_mushroom_collect")]   Player_Sound_MegaMushroom_Collect = 40, //HARDCODED: DO NOT CHANGE WITHOUT CHANGING POWERUPS SCRIPTABLES
         [SoundData("character/{char}/starspin")]                Player_Voice_StarSpin = 98,
+        [SoundData("character/{char}/fall_off")]                Player_Voice_FallOff = 104,
         //Powerup
         [SoundData("powerup/1-up")]                             Powerup_Sound_1UP = 78, //HARDCODED: DO NOT CHANGE WITHOUT CHANGING POWERUPS SCRIPTABLES
         [SoundData("powerup/blueshell_enter")]                  Powerup_BlueShell_Enter = 41,
@@ -210,6 +211,11 @@ public static class Enums {
         public static string FrostyPowerups { get; } = "F";
         public static string ProgressiveToRoulette { get; } = "Ptr";
         public static string NoMapCoins { get; } = "Nmp";
+        public static string TenPlayersPowerups { get; } = "Ten";
+        public static string NsmbPowerups { get; } = "Nsmb";
+        public static string TemporaryPowerups { get; } = "Temp";
+        public static string PropellerMush { get; } = "Pm";
+        public static string OneUpMush { get; } = "1up";
         public static string DropReserve { get; } = "Dr";
         public static string DeathmatchGame { get; } = "Dt";
         public static string FireballDamage { get; } = "Fd";

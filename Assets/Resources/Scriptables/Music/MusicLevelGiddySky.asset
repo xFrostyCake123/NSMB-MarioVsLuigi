@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e5478bfbe63c3c46b392d3ca752690c, type: 3}
   m_Name: MusicLevelGiddySky
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: dbbc21d3692023f4196a92adad8d4f53, type: 3}
-  fastClip: {fileID: 8300000, guid: be449ee439a720e48901f3b1ade45d29, type: 3}
+  clip: {fileID: 8300000, guid: be449ee439a720e48901f3b1ade45d29, type: 3}
+  fastClip: {fileID: 8300000, guid: 993936f366bc4a1429a35701bd40cfed, type: 3}
   loopStartSample: 0
   loopEndSample: 0

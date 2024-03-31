@@ -13,17 +13,18 @@ MonoBehaviour:
   m_Name: MagmaFlower
   m_EditorClassIdentifier: 
   state: 17
-  prefab: FireFlower
+  prefab: MagmaFlower
   soundEffect: 16
-  spawnChance: 0.75
+  spawnChance: 0.5
   losingSpawnBonus: 1.25
   big: 0
   vertical: 0
   custom: 0
   lives: 0
-  frosty: 1
+  frosty: 0
   temporary: 0
-  NSMB: 0
+  nsmb: 0
   wii: 0
-  reserveSprite: {fileID: -4773353537684922170, guid: a87d3b028baa82640b06b88398a8c4f0,
-    type: 3}
+  ten: 1
+  oneup: 0
+  reserveSprite: {fileID: 21300000, guid: d531c49948026ba49b8344552495389f, type: 3}

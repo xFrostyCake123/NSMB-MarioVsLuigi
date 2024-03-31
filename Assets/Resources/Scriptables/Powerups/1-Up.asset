@@ -15,14 +15,16 @@ MonoBehaviour:
   state: 0
   prefab: 1-Up
   soundEffect: 78
-  spawnChance: 0.1
-  losingSpawnBonus: 0
+  spawnChance: 0.08
+  losingSpawnBonus: 0.25
   big: 0
   vertical: 0
-  custom: 1
+  custom: 0
   lives: 1
   frosty: 0
   temporary: 0
-  NSMB: 0
+  nsmb: 0
   wii: 0
+  ten: 0
+  oneup: 1
   reserveSprite: {fileID: 0}

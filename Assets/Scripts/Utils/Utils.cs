@@ -404,7 +404,13 @@ namespace NSMB.Utils {
 
             GetCustomProperty(Enums.NetRoomProperties.StarRequirement, out int starsToWin);
             GetCustomProperty(Enums.NetRoomProperties.NewPowerups, out bool custom);
+            GetCustomProperty(Enums.NetRoomProperties.NsmbPowerups, out bool nsmb);
+            GetCustomProperty(Enums.NetRoomProperties.TenPlayersPowerups, out bool ten);
+            GetCustomProperty(Enums.NetRoomProperties.PropellerMush, out bool wii);
+            GetCustomProperty(Enums.NetRoomProperties.TemporaryPowerups, out bool temp);
+            GetCustomProperty(Enums.NetRoomProperties.OneUpMush, out bool oneup);
             GetCustomProperty(Enums.NetRoomProperties.FrostyPowerups, out bool frosty);
+            
             GetCustomProperty(Enums.NetRoomProperties.Lives, out int livesOn);
             bool lives = false;
             if (livesOn > 0)
@@ -417,7 +423,7 @@ namespace NSMB.Utils {
             foreach (Powerup powerup in powerups) {
                 if (powerup.name == "MegaMushroom" && gm.musicState == Enums.MusicState.MegaMushroom)
                     continue;
-                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty))
+                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty) || (powerup.ten && !ten) || (powerup.nsmb && !nsmb) || (powerup.wii && !wii) || (powerup.oneup && !oneup) || (powerup.temporary && !temp))
                     continue;
 
                 totalChance += powerup.GetModifiedChance(starsToWin, leaderStars, ourStars);
@@ -427,7 +433,7 @@ namespace NSMB.Utils {
             foreach (Powerup powerup in powerups) {
                 if (powerup.name == "MegaMushroom" && gm.musicState == Enums.MusicState.MegaMushroom)
                     continue;
-                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty))
+                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty) || (powerup.ten && !ten) || (powerup.nsmb && !nsmb) || (powerup.wii && !wii) || (powerup.oneup && !oneup) || (powerup.temporary && !temp))
                     continue;
 
                 float chance = powerup.GetModifiedChance(starsToWin, leaderStars, ourStars);

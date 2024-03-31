@@ -23,6 +23,8 @@ MonoBehaviour:
   lives: 0
   frosty: 1
   temporary: 0
-  NSMB: 0
+  nsmb: 0
   wii: 0
-  reserveSprite: {fileID: -1604689058, guid: a87d3b028baa82640b06b88398a8c4f0, type: 3}
+  ten: 0
+  oneup: 0
+  reserveSprite: {fileID: 21300000, guid: 1876012679db7c84db4dcdde136be2a6, type: 3}

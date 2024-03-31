@@ -766,6 +766,11 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             return;
         
         }
+        case "FallSoundTrigger": {
+            photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Player_Voice_FallOff);
+            break;
+        
+        }
         case "BoostPad": {
             photonView.RPC(nameof(BoostPadBoosting), RpcTarget.All);
             break;
@@ -862,7 +867,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             fireballTimer = 0.3f;
         }
 
-        if (running && (state == Enums.PowerupState.FireFlower || state == Enums.PowerupState.IceFlower || state == Enums.PowerupState.Bombro) && GlobalController.Instance.settings.fireballFromSprint)
+        if (running && (state == Enums.PowerupState.FireFlower || state == Enums.PowerupState.IceFlower || state == Enums.PowerupState.Bombro || state == Enums.PowerupState.StellarFlower || state == Enums.PowerupState.MagmaFlower || state == Enums.PowerupState.WaterFlower || state == Enums.PowerupState.TideFlower) && GlobalController.Instance.settings.fireballFromSprint)
             ActivatePowerupAction();
     }
 
@@ -904,7 +909,21 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     fireballTimer = 1.3f;
                 } else {
                     return;
-                }   
+                } 
+            } else if (state == Enums.PowerupState.TideFlower) {
+                canShootProjectile = false;
+                if (fireballTimer <= 0) {
+                    fireballTimer = 1.4f;
+                } else {
+                    return;
+                } 
+            } else if (state == Enums.PowerupState.MagmaFlower) {
+                canShootProjectile = false;
+                if (fireballTimer <= 0) {
+                    fireballTimer = 1.3f;
+                } else {
+                    return;
+                } 
             } else if (count <= 1) {
                 fireballTimer = 1.25f;
                 canShootProjectile = count == 0;
@@ -1575,7 +1594,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         case Enums.PowerupState.Bombro:
         case Enums.PowerupState.GoldFlower:
         case Enums.PowerupState.SuperAcorn:
-        case Enums.PowerupState.MagmaFlower: {
+        case Enums.PowerupState.MagmaFlower:
+        case Enums.PowerupState.WaterFlower: {
             state = Enums.PowerupState.Mushroom;
             powerupFlash = 2f;
             SpawnStars(1, false);
@@ -1698,15 +1718,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         if (!info.Sender.IsMasterClient)
             return;
 
-        //state
-        Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool deathmatch);
-        if (deathmatch)
-            return;
-        stars = Mathf.Min(newCount, GameManager.Instance.starRequirement);
-        UpdateGameState();
-
-        //game mechanics
-        GameManager.Instance.CheckForWinner();
 
         //fx
         PlaySoundEverywhere(photonView.IsMine ? Enums.Sounds.World_Star_Collect_Self : Enums.Sounds.World_Star_Collect_Enemy);
@@ -1719,6 +1730,16 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         } else {
             Destroy(star.gameObject);
         }
+        
+        //state
+        Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool deathmatch);
+        if (deathmatch)
+            return;
+        stars = Mathf.Min(newCount, GameManager.Instance.starRequirement);
+        UpdateGameState();
+
+        //game mechanics
+        GameManager.Instance.CheckForWinner();
     }
 
     [PunRPC]
@@ -1886,6 +1907,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         if (photonView.IsMine)
             ScoreboardUpdater.instance.OnDeathToggle();
+        
+        Utils.GetCustomProperty(Enums.NetRoomProperties.DropReserve, out bool dropIt);
+        if (dropIt)
+            photonView.RPC(nameof(SpawnReserveItem), RpcTarget.All);
+            storedPowerup = null;
+            UpdateGameState();
     }
 
     [PunRPC]
