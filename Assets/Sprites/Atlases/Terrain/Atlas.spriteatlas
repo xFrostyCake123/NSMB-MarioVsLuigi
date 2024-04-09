@@ -729,6 +729,10 @@ SpriteAtlas:
   - {fileID: 5118175505408131421, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
   - {fileID: -4053067319055912903, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
   - {fileID: -6300410782580505984, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
+  - {fileID: -713520937, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
+  - {fileID: -500232560, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
+  - {fileID: -1856502627, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
+  - {fileID: -1908418684, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
   - {fileID: 3460211445942149478, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
   - {fileID: 1548642490827387919, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
   - {fileID: -2837221730051091734, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
@@ -752,6 +756,9 @@ SpriteAtlas:
   - {fileID: 1231485242115983449, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
   - {fileID: -4530427751867993857, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
   - {fileID: 6276221612720772921, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
+  - {fileID: 465273722, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
+  - {fileID: -1189231660, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
+  - {fileID: 490509319, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
   - {fileID: 5449189118766894354, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
   - {fileID: -3937821555686740368, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
   - {fileID: -4862717808911733, guid: 18672b4e92026df448d06fc811e08fc3, type: 3}
@@ -1423,6 +1430,10 @@ SpriteAtlas:
   - 17 Snow (with ice)_2
   - 17 Snow (with ice)_1
   - 17 Snow (with ice)_0
+  - snow_6
+  - snow_4
+  - snow_1
+  - snow_0
   - 17 Snow (with ice)_12
   - 17 Snow (with ice)_13
   - 17 Snow (with ice)_10
@@ -1446,6 +1457,9 @@ SpriteAtlas:
   - 17 Snow (with ice)_22
   - 17 Snow (with ice)_21
   - 17 Snow (with ice)_20
+  - snow_12
+  - snow_10
+  - snow_11
   - 17 Snow (with ice)_85
   - 17 Snow (with ice)_84
   - 17 Snow (with ice)_82

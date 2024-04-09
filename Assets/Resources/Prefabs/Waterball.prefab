@@ -13,14 +13,12 @@ GameObject:
   - component: {fileID: 1011982274984717419}
   - component: {fileID: 1186833380152900418}
   - component: {fileID: -1769135492019179076}
-  - component: {fileID: 1011982274984717418}
   - component: {fileID: 1011982274984717417}
   - component: {fileID: -3035145909365686512}
   - component: {fileID: 376300006025663058}
   - component: {fileID: 2269455486527583307}
   - component: {fileID: 6091953025159033845}
   - component: {fileID: 3450170468620705130}
-  - component: {fileID: -7012054197112858393}
   m_Layer: 9
   m_Name: Waterball
   m_TagString: Fireball
@@ -66,8 +64,14 @@ MonoBehaviour:
   isTidalwave: 0
   isMagmaball: 0
   isBigMagmaball: 0
+  accelerates: 1
+  deccelerates: 0
+  accelOrDeccelTreshold: 6.5
+  flipsAround: 0
+  inverseFlipsAround: 0
+  spriteRenderer: {fileID: 0}
   worldHitbox: {fileID: 0}
-  speed: 4.25
+  speed: 5.25
   bounceHeight: 6
   terminalVelocity: 6.25
   despawnTimer: 0
@@ -109,8 +113,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -755315459
+  m_SortingLayer: 1
   m_SortingOrder: 2
   m_Sprite: {fileID: -1437997897, guid: aacb292e0076a384a9f9258b98e3d034, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -138,7 +142,7 @@ Rigidbody2D:
   m_Mass: 0.102805026
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 2.2
+  m_GravityScale: 1.8
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
@@ -170,26 +174,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.12634444, y: 0.13019016}
   m_EdgeRadius: 0
---- !u!95 &1011982274984717418
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1011982274984717421}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &1011982274984717417
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,19 +271,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interpolate: 1
   body: {fileID: 1186833380152900418}
---- !u!114 &-7012054197112858393
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1011982274984717421}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be307bb6ffde83e489d687907797359a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  explosionPrefab: Prefabs/WaterSpout
 --- !u!1 &4295026986443583635
 GameObject:
   m_ObjectHideFlags: 0

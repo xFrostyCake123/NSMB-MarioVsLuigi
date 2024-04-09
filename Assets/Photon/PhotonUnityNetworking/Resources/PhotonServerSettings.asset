@@ -99,6 +99,7 @@ MonoBehaviour:
   - BoostPadBoosting
   - CosmicSpin
   - Punch
+  - ResetMagmaGp
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

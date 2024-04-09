@@ -20,12 +20,12 @@ public class GoombaWalk : KillableEntity {
             return;
         }
         foreach (var player in GameManager.Instance.players) {
-            if (player.cobalting > 0) {
+            if (player.cobalting > 0.001f) {
                 body.velocity = Vector2.zero;
                 animator.enabled = false;
                 body.isKinematic = true;
                 return;
-            } else if (player.cobalting <= 0) {
+            } else if (player.cobalting == 0.001f) {
                 body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(terminalVelocity, body.velocity.y));
                 animator.enabled = true;
                 body.isKinematic = false;

@@ -7,12 +7,13 @@ using NSMB.Utils;
 public class PlayerAnimationController : MonoBehaviourPun {
 
     [SerializeField] private Avatar smallAvatar, largeAvatar;
-    [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle, glideParticle, shieldParticle, shieldReadyParticle;
-    [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell, squirrelHat, squirrelCoat;
+    [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle, glideParticle, shieldParticle, shieldReadyParticle, magmaReadyParticle;
+    [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell, squirrelHat, squirrelCoat, waterShield;
     [SerializeField] private Material glowMaterial;
     [SerializeField] private Color primaryColor = Color.clear, secondaryColor = Color.clear;
     [SerializeField] [ColorUsage(true, false)] private Color? _glowColor = null;
     [SerializeField] private float blinkDuration = 0.1f, pipeDuration = 2f, deathUpTime = 0.6f, deathForce = 7f;
+    
 
     private PlayerController controller;
     private Animator animator;
@@ -133,7 +134,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         }
 
         //Particles
-        SetParticleEmission(dust, !gameover && (controller.wallSlideLeft || controller.wallSlideRight || (controller.onGround && (controller.skidding || (controller.crouching && Mathf.Abs(body.velocity.x) > 1))) || (controller.sliding && Mathf.Abs(body.velocity.x) > 0.2 && controller.onGround)) && !controller.pipeEntering);
+        SetParticleEmission(dust, !gameover && ((controller.wallSlideLeft && controller.squirrelWallSlide !> 0) || (controller.wallSlideRight && controller.squirrelWallSlide !> 0) || (controller.onGround && (controller.skidding || (controller.crouching && Mathf.Abs(body.velocity.x) > 1))) || (controller.sliding && Mathf.Abs(body.velocity.x) > 0.2 && controller.onGround)) && !controller.pipeEntering);
         SetParticleEmission(drillParticle, !gameover && controller.drill);
         if (controller.drill)
             drillParticleAudio.clip = (controller.state == Enums.PowerupState.PropellerMushroom ? propellerDrill : normalDrill);
@@ -143,6 +144,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         SetParticleEmission(glideParticle, !gameover && controller.gliding);
         SetParticleEmission(shieldParticle, !gameover && controller.inShield > 0);
         SetParticleEmission(shieldReadyParticle, !gameover && controller.state == Enums.PowerupState.WaterFlower && controller.onShieldCooldown <= 0);
+        SetParticleEmission(magmaReadyParticle, !gameover && controller.state == Enums.PowerupState.MagmaFlower && controller.magmaGpCooldown <= 0);
         
         //Blinking
         if (controller.dead) {
@@ -218,7 +220,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
             }
             animator.SetFloat("velocityX", animatedVelocity);
             animator.SetFloat("velocityY", body.velocity.y);
-            animator.SetBool("doublejump", controller.doublejump);
+            animator.SetBool("doublejump", controller.doublejump || controller.ridingWave || controller.gliding);
             animator.SetBool("triplejump", controller.triplejump);
             animator.SetBool("holding", controller.holding != null);
             animator.SetBool("head carry", controller.holding != null && controller.holding is FrozenCube);
@@ -307,6 +309,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         tideShell.SetActive(controller.state == Enums.PowerupState.TideFlower);
         squirrelHat.SetActive(controller.state == Enums.PowerupState.SuperAcorn);
         squirrelCoat.SetActive(controller.state == Enums.PowerupState.SuperAcorn);
+        waterShield.SetActive(controller.inShield > 0);
         animator.avatar = large ? largeAvatar : smallAvatar;
         animator.runtimeAnimatorController = large ? controller.character.largeOverrides : controller.character.smallOverrides;
 
@@ -405,6 +408,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         tideShell.SetActive(false);
         squirrelHat.SetActive(false);
         squirrelCoat.SetActive(false);
+        waterShield.SetActive(false);
         animator.avatar = smallAvatar;
     }
 }

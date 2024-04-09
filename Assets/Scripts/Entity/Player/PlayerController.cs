@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     public float propellerLaunchVelocity = 6, propellerFallSpeed = 2, propellerSpinFallSpeed = 1.5f, glidingFallSpeed = 1.35f, squirrelJumpFallSpeed = 3, propellerSpinTime = 0.75f, propellerDrillBuffer, heightSmallModel = 0.42f, heightLargeModel = 0.82f;
     BoxCollider2D[] hitboxes;
     GameObject models;
+    public GameObject surfWave = null, waterBomb;
 
     public CameraController cameraController;
     public FadeOutManager fadeOut;
@@ -41,8 +42,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
     public PlayerAnimationController AnimationController { get; private set; }
 
-    public bool onGround, previousOnGround, crushGround, doGroundSnap, jumping, properJump, hitRoof, skidding, turnaround, facingRight = true, singlejump, doublejump, triplejump, bounce, crouching, groundpound, groundpoundLastFrame, sliding, knockback, hitBlock, running, functionallyRunning, jumpHeld, flying, drill, inShell, hitLeft, hitRight, stuckInBlock, alreadyStuckInBlock, propeller, usedPropellerThisJump, squirrel, usedSquirrelThisJump, usedSquirrelHang, usedStarSpinThisJump, stationaryGiantEnd, fireballKnockback, startedSliding, canShootProjectile, gliding, cannotUseStartReserve, gotCheckpoint;
-    public float jumpLandingTimer, landing, koyoteTime, groundpoundCounter, groundpoundStartTimer, pickupTimer, groundpoundDelay, hitInvincibilityCounter, powerupFlash, throwInvincibility, jumpBuffer, giantStartTimer, giantEndTimer, propellerTimer, propellerSpinTimer, fireballTimer, squirrelTimer, squirrelWallSlide, inShield, onShieldCooldown, starspinTimer, starspin, onStarspinCooldown, boostDuration;
+    public bool onGround, previousOnGround, crushGround, doGroundSnap, jumping, properJump, hitRoof, skidding, turnaround, facingRight = true, singlejump, doublejump, triplejump, bounce, crouching, groundpound, groundpoundLastFrame, sliding, knockback, hitBlock, running, functionallyRunning, jumpHeld, flying, drill, inShell, hitLeft, hitRight, stuckInBlock, alreadyStuckInBlock, propeller, usedPropellerThisJump, squirrel, usedSquirrelThisJump, usedSquirrelHang, usedStarSpinThisJump, stationaryGiantEnd, fireballKnockback, startedSliding, canShootProjectile, gliding, cannotUseStartReserve, gotCheckpoint, ridingWave;
+    public float jumpLandingTimer, landing, koyoteTime, groundpoundCounter, groundpoundStartTimer, pickupTimer, groundpoundDelay, hitInvincibilityCounter, powerupFlash, throwInvincibility, jumpBuffer, giantStartTimer, giantEndTimer, propellerTimer, propellerSpinTimer, fireballTimer, squirrelTimer, squirrelWallSlide, inShield, onShieldCooldown, starspinTimer, starspin, onStarspinCooldown, boostDuration, cantGrabStar, cantDoKnockback, magmaGpCooldown;
     public float invincible, metal, cobalting, giantTimer, floorAngle, knockbackTimer, pipeTimer, slowdownTimer;
 
     //MOVEMENT STAGES
@@ -355,19 +356,33 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             return;
         }
         foreach (var player in GameManager.Instance.players) {    
-            if (player.cobalting > 0 && cobalting <= 0) {
+            if (player.cobalting > 0.002f && cobalting <= 0) {
 
                 body.velocity = Vector2.zero;
                 animator.enabled = false;
                 body.isKinematic = true;
+                cantGrabStar = 0.5f;
+                cantDoKnockback = 0.5f;
                 return;
 
-            } else if (player.cobalting <= 0) {
+            } else if (player.cobalting == 0.001f) {
                 animator.enabled = true;
                 body.isKinematic = false;
             }
         }
+        if (surfWave) 
+            ridingWave = true;
+        else 
+            ridingWave = false;
 
+        if (ridingWave && surfWave != null)  
+            transform.position = surfWave.transform.position;
+
+        if (!jumpHeld)
+            gliding = false;
+        if (state == Enums.PowerupState.SuperAcorn && jumpHeld && !groundpound && body.velocity.y < 0 && !usedSquirrelThisJump && (!wallSlideLeft || !wallSlideRight) && squirrelWallSlide <= 0 && (!usedSquirrelHang && (!wallSlideLeft || !wallSlideRight)))   
+            photonView.RPC(nameof(SquirrelGlide), RpcTarget.All);
+        
         groundpoundLastFrame = groundpound;
         previousOnGround = onGround;
         if (!dead) {
@@ -389,6 +404,16 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         HandleLayerState();
         previousFrameVelocity = body.velocity;
         previousFramePosition = body.position;
+        if (!surfWave)
+            ridingWave = false;
+        if (Mathf.Abs(body.velocity.x) > 3 && state == Enums.PowerupState.SuperAcorn && gliding)
+            body.velocity = new(body.velocity.x, body.velocity.y / 2f);
+        if (wallSlideLeft && squirrelWallSlide > 0) {
+            facingRight = false;
+        } else if (wallSlideRight && squirrelWallSlide > 0) {
+            facingRight = true;
+        }
+
     }
     #endregion
 
@@ -492,6 +517,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 PhotonView otherView = other.photonView;
 
                 if (teamedUp && !friendlyfighting && Mario && other.Mario || teamedUp && !friendlyfighting && Luigi && other.Luigi) 
+                    return;
+                if (other.cantDoKnockback > 0)
                     return;
 
                 if (other.invincible > 0) {
@@ -819,6 +846,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         }
         case "bigstar": {
             Transform parent = obj.transform.parent;
+            if (cantGrabStar > 0)
+                return;
             photonView.RPC(nameof(AttemptCollectBigStar), RpcTarget.AllViaServer, parent.gameObject.GetPhotonView().ViewID);
             break;
         }
@@ -829,6 +858,13 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         }
         case "coin": {
             photonView.RPC(nameof(AttemptCollectCoin), RpcTarget.AllViaServer, obj.GetPhotonView().ViewID, new Vector2(obj.transform.position.x, collider.transform.position.y));
+            break;
+        }
+        case "Water" : {
+            BoxCollider2D path = obj.GetComponent<BoxCollider2D>();
+            BoxCollider2D road = obj.GetComponentInParent<BoxCollider2D>();
+            if (Mathf.Abs(body.velocity.x) > 1 && state == Enums.PowerupState.MiniMushroom)
+                RunOnWater(road, path);
             break;
         }
         }
@@ -855,6 +891,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         jumpHeld = context.ReadValue<float>() >= 0.5f;
         if (jumpHeld)
             jumpBuffer = 0.15f;
+        
+        ridingWave = false;     
     }
 
     public void OnSprint(InputAction.CallbackContext context) {
@@ -872,6 +910,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         if (running && (state == Enums.PowerupState.FireFlower || state == Enums.PowerupState.IceFlower || state == Enums.PowerupState.Bombro || state == Enums.PowerupState.StellarFlower || state == Enums.PowerupState.MagmaFlower || state == Enums.PowerupState.WaterFlower || state == Enums.PowerupState.TideFlower) && GlobalController.Instance.settings.fireballFromSprint)
             ActivatePowerupAction();
+        
+        if (running && crouching && onGround && state == Enums.PowerupState.TideFlower && !ridingWave)
+            WaveRide();
     }
 
     public void OnPowerupAction(InputAction.CallbackContext context) {
@@ -894,7 +935,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         case Enums.PowerupState.FireFlower:
         case Enums.PowerupState.StellarFlower:
         case Enums.PowerupState.IceBreaker:
-        case Enums.PowerupState.TideFlower:
         case Enums.PowerupState.Bombro:
         case Enums.PowerupState.GoldFlower:
         case Enums.PowerupState.MagmaFlower: {
@@ -945,7 +985,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             bool ice = state == Enums.PowerupState.IceFlower;
             bool star = state == Enums.PowerupState.StellarFlower;
             bool icecube = state == Enums.PowerupState.IceBreaker;
-            bool waterball = state == Enums.PowerupState.TideFlower;
             bool bomb = state == Enums.PowerupState.Bombro;
             bool gold = state == Enums.PowerupState.GoldFlower;
             bool magma = state == Enums.PowerupState.MagmaFlower;
@@ -980,13 +1019,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     }
                 }
             }
-            if (waterball && upInput) {
-                projectile = "Waterball";
-                sound = Enums.Sounds.Powerup_WaterShoot;
-              } else if (waterball) {
-                  projectile = "TidalWave";
-                  sound = Enums.Sounds.Powerup_WaterShoot;
-                }
             if (star) {
                 projectile = "Starball";
                 sound = Enums.Sounds.Powerup_StarShoot; 
@@ -1028,7 +1060,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             if (groundpound || (flying && drill) || squirrel || crouching || sliding || wallJumpTimer > 0) 
                 return;
 
-            photonView.RPC(nameof(SquirrelActions), RpcTarget.All);
+            photonView.RPC(nameof(SquirrelJump), RpcTarget.All);
             break; 
         }
         case Enums.PowerupState.WaterFlower: {
@@ -1050,6 +1082,13 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 return;
 
             photonView.RPC(nameof(Punch), RpcTarget.All);
+            break;
+        }
+        case Enums.PowerupState.TideFlower: {
+            if (groundpound || (flying && drill) || propeller || ridingWave || sliding || wallJumpTimer > 0)
+                return;
+            
+            WaterBomb();
             break;
         }
         }
@@ -1089,63 +1128,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     }
 
     [PunRPC]
-    public void SquirrelActions() {
-        bool upInput = joystick.y > analogDeadzone;
-        bool againstLeft = wallSlideLeft;
-        bool againstRight = wallSlideRight;
-        if (usedSquirrelThisJump)
-            return;
-        
-        if (gliding && upInput) { // override gliding and be able to squirrel jump while gliding
-            
-            body.velocity = new Vector2(body.velocity.x, propellerLaunchVelocity);
-            squirrelTimer = 0.65f;
-            PlaySound(Enums.Sounds.Powerup_PropellerMushroom_Spin);
-            SpawnParticle("Prefabs/Particle/GroundpoundDust", body.position);
-        
-            squirrel = true;
-            propeller = false;
-            flying = false;
-            crouching = false;
-            gliding = false;
-            starspin = 0;
+    public void SquirrelJump() {
 
-            singlejump = false;
-            doublejump = false;
-            triplejump = false;
-        
-
-            wallSlideLeft = false;
-            wallSlideRight = false;
-            squirrelWallSlide = 0;
-
-            if (onGround) {
-                onGround = false;
-                doGroundSnap = false;
-                body.position += Vector2.up * 0.15f;
-            }
-            usedSquirrelThisJump = true;
-        
-        } else if (gliding) { // stop gliding
-        
-            squirrel = false;
-            propeller = false;
-            flying = false;
-            crouching = false;
-            gliding = false;
-            starspin = 0;
-
-            singlejump = false;
-            doublejump = false;
-            triplejump = false;
-        
-
-            wallSlideLeft = false;
-            wallSlideRight = false;
-            squirrelWallSlide = 0;
-        
-        } else if (upInput) { // perform squirrel jump
-        
             body.velocity = new Vector2(body.velocity.x, propellerLaunchVelocity);
             squirrelTimer = 0.75f;
             PlaySound(Enums.Sounds.Powerup_PropellerMushroom_Spin);
@@ -1172,37 +1156,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 body.position += Vector2.up * 0.15f;
             }
             usedSquirrelThisJump = true;
-        
-        } else if (againstLeft || againstRight) { // start squirrel wall timer to ''hang'' to the wall
-            if (usedSquirrelHang)
-            return;
+    }
 
-            squirrelWallSlide = 2f;
-            PlaySound(Enums.Sounds.Powerup_SquirrelHang);
-
-            if (squirrelWallSlide > 0) {
-               
-               squirrel = false;
-               propeller = false;
-               flying = false;
-               crouching = false;
-               gliding = false;
-               starspin = 0;
-
-               singlejump = false;
-               doublejump = false;
-               triplejump = false;
-
-               wallSlideLeft = false;
-               wallSlideRight = false;
-           
-            }
+    [PunRPC]
+    public void SquirrelGlide() {
             
-            usedSquirrelHang = true;
-
-        } else { // start gliding
-            
-            animator.SetTrigger("swim_glide");
+            animator.SetTrigger("doublejump");
             squirrel = false;
             propeller = false;
             flying = false;
@@ -1218,9 +1177,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             wallSlideLeft = false;
             wallSlideRight = false;
             squirrelWallSlide = 0;
-        }
+
     }
-    
+   
     public void WaterActions() {
         bool upInput = joystick.y > analogDeadzone;
         if (upInput) {
@@ -1235,7 +1194,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         bool upInput = joystick.y > analogDeadzone;
         string projectile = "WaterBubble";
         Enums.Sounds sound = Enums.Sounds.Powerup_WaterShoot;
-        if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding || upInput)
+        if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding || (upInput && onShieldCooldown <= 0))
             return;
 
         int count = 0;
@@ -1252,11 +1211,15 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 return;
             }
         }
-        if (loogi) {
+        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teaming);
+        if (loogi && teaming) {
             projectile = "LuigiWaterBubble";
             sound = Enums.Sounds.Powerup_WaterShoot;
-        } else if (maro) {
+        } else if (maro && teaming) {
             projectile = "MarioWaterBubble";
+            sound = Enums.Sounds.Powerup_WaterShoot;
+        } else {
+            projectile = "WaterBubble";
             sound = Enums.Sounds.Powerup_WaterShoot;
         }
         
@@ -1356,6 +1319,111 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         animator.SetTrigger("fireball");
         wallJumpTimer = 0;  
+    }
+
+    public void WaterBomb() {
+        bool bombDeployed = waterBomb;
+        string bomb = "Waterball";
+        string explosion = "WaterSpout";
+        Enums.Sounds shootSound = Enums.Sounds.Powerup_WaterShoot;
+        Enums.Sounds explodeSound = Enums.Sounds.Powerup_BubbleShieldReady;
+        
+        if (!bombDeployed) {
+            if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || ridingWave || drill || crouching || sliding)
+                return;
+
+            int count = 0;
+            foreach (FireballMover existingFire in FindObjectsOfType<FireballMover>()) {
+                if (existingFire.photonView.IsMine && ++count >= 2)
+                    return;
+            }
+
+            if (state == Enums.PowerupState.TideFlower) {
+                canShootProjectile = false;
+                if (fireballTimer <= 0) {
+                    fireballTimer = 1.5f;
+                } else {
+                    return;
+                }
+            }
+        
+            Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
+                if (Utils.IsTileSolidAtWorldLocation(pos)) {
+                    photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{bomb}Wall", pos);
+                } else {
+                waterBomb = PhotonNetwork.Instantiate($"Prefabs/{bomb}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
+                }
+                photonView.RPC(nameof(PlaySound), RpcTarget.All, shootSound);
+
+            animator.SetTrigger("fireball");
+            wallJumpTimer = 0;
+
+        } else if (bombDeployed) {
+            PhotonNetwork.Instantiate($"Prefabs/{explosion}", waterBomb.transform.position, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
+            photonView.RPC(nameof(PlaySound), RpcTarget.All, explodeSound);
+            Destroy(waterBomb);
+            animator.SetTrigger("fireball");
+            wallJumpTimer = 0;
+        }
+    }
+    
+    public void WaveRide() { // funni..
+        string wave = "TidalWave";
+        Enums.Sounds rideSound = Enums.Sounds.Powerup_WaterShoot;
+        
+        int count = 0;
+        foreach (FireballMover existingFire in FindObjectsOfType<FireballMover>()) {
+            if (existingFire.photonView.IsMine && ++count >= 1)
+                return;
+        }
+
+        if (state == Enums.PowerupState.TideFlower) {
+            canShootProjectile = false;
+            if (fireballTimer <= 0) {
+                fireballTimer = 5f;
+            } else {
+                return;
+            }
+        }
+        Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
+            if (Utils.IsTileSolidAtWorldLocation(pos)) {
+                photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{wave}Wall", pos);
+            } else {
+            surfWave = PhotonNetwork.Instantiate($"Prefabs/{wave}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
+            }
+            photonView.RPC(nameof(PlaySound), RpcTarget.All, rideSound);
+
+        animator.SetTrigger("fireball");
+        wallJumpTimer = 0;
+        ridingWave = true;
+    }
+    public void MagmaGroundpound() {
+        string projectile = "SmallMagmaball";
+        string projectile2 = "SmallMagmaball2";
+        bool loogi = Luigi;
+        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamed);
+        if (loogi && teamed) {
+            projectile = "LuigiSmallMagmaball";
+            projectile2 = "LuigiSmallMagmaball2";
+        }
+        photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Powerup_MagmaGroundpound);
+        photonView.RPC(nameof(SpawnParticle), RpcTarget.All, "Prefabs/Particle/MagmaGroundpoundDust", body.position);
+        PhotonNetwork.Instantiate($"Prefabs/{projectile}", transform.position, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"),});
+        PhotonNetwork.Instantiate($"Prefabs/{projectile2}", transform.position, Quaternion.identity, 0, new object[] { facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), });
+    }
+    [PunRPC]
+    public void ResetMagmaGp() {
+        magmaGpCooldown = 3f;
+    }
+
+    public void RunOnWater(BoxCollider2D waterland, BoxCollider2D waterroad) {
+        
+        waterroad = waterland.GetComponentInParent<BoxCollider2D>();
+        
+        if (Mathf.Abs(body.velocity.x) > 1 && state == Enums.PowerupState.MiniMushroom)
+            waterroad.isTrigger = false;
+        else
+            waterroad.isTrigger = true;
     }
 
     [PunRPC]
@@ -2576,8 +2644,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         }
 
         HandleWallSlideChecks(currentWallDirection, holdingRight, holdingLeft);
-        if (squirrelWallSlide > 0)
-        return;
 
         wallSlideRight &= wallSlideTimer > 0 && hitRight;
         wallSlideLeft &= wallSlideTimer > 0 && hitLeft;
@@ -2596,6 +2662,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 triplejump = false;
                 onGround = false;
                 bounce = false;
+                squirrelWallSlide = 0;
                 photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Player_Sound_WallJump);
                 photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Player_Voice_WallJump, (byte) Random.Range(1, 3));
 
@@ -3046,6 +3113,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         Utils.TickTimer(ref onStarspinCooldown, 0, delta);
         Utils.TickTimer(ref boostDuration, 0, delta);
         Utils.TickTimer(ref cobalting, 0, delta);
+        Utils.TickTimer(ref magmaGpCooldown, 0, delta);
         Utils.TickTimer(ref pipeTimer, 0, delta);
         Utils.TickTimer(ref wallSlideTimer, 0, delta);
         Utils.TickTimer(ref wallJumpTimer, 0, delta);
@@ -3366,6 +3434,11 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             squirrelWallSlide = 0;
             SetHoldingOffset();
         }
+        if ((wallSlideLeft && state == Enums.PowerupState.SuperAcorn && !usedSquirrelHang && !usedSquirrelThisJump) || (wallSlideRight && state == Enums.PowerupState.SuperAcorn && !usedSquirrelHang && !usedSquirrelThisJump)) {
+            squirrelWallSlide = 2f;
+            usedSquirrelHang = true;
+            photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Powerup_SquirrelHang);
+        }
 
         //throwing held item
         ThrowHeldItem(left, right, crouch);
@@ -3544,8 +3617,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         } else if (squirrel) {
             float htv = RunningMaxSpeed * 0.55f;
             body.velocity = new(Mathf.Clamp(body.velocity.x, -htv, htv), Mathf.Max(body.velocity.y, -squirrelJumpFallSpeed));
-        } else if (wallSlideLeft || wallSlideRight) {
-            body.velocity = new(body.velocity.x, Mathf.Max(body.velocity.y, wallslideSpeed));
+        } else if ((wallSlideLeft  || wallSlideRight) && squirrelWallSlide !> 0) {
+            body.velocity = new(body.velocity.x, Mathf.Max(body.velocity.y, squirrelWallSlide > 0 ? acornWallSlideSpeed : wallslideSpeed));
         } else if (squirrelWallSlide > 0) {
             float htv = RunningMaxSpeed * 0f;
             body.velocity = new(Mathf.Clamp(body.velocity.x, -htv, htv), Mathf.Max(body.velocity.y, acornWallSlideSpeed));    
@@ -3695,6 +3768,10 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
                     photonView.RPC(nameof(SpawnParticle), RpcTarget.All, "Prefabs/Particle/GroundpoundDust", body.position);
                     groundpoundDelay = 0;
+                    if (state == Enums.PowerupState.MagmaFlower && magmaGpCooldown <= 0) {
+                        MagmaGroundpound();
+                        photonView.RPC(nameof(ResetMagmaGp), RpcTarget.All);
+                    }
                 } else {
                     CameraController.ScreenShake = 0.15f;
                 }

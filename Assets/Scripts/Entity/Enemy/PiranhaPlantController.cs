@@ -28,10 +28,10 @@ public class PiranhaPlantController : KillableEntity {
                 return;
         }
         foreach (var player in gm.players) {
-            if (player.cobalting > 0) {
+            if (player.cobalting > 0.001f) {
                 animator.enabled = false;
                 return;
-            } else if (player.cobalting <= 0)  {
+            } else if (player.cobalting == 0.001f)  {
                 animator.enabled = true;
             }
         }

@@ -21,7 +21,7 @@ public class BulletBillLauncher : MonoBehaviourPun {
             return;
         
         foreach (var player in GameManager.Instance.players) 
-            if (player.cobalting > 0) {
+            if (player.cobalting > 0.001f) {
                 return;
             }
         

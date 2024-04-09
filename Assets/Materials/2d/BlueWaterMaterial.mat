@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WaterMaterial 1
+  m_Name: BlueWaterMaterial
   m_Shader: {fileID: -6465566751694194690, guid: 219c4434dcc531e4886d9626fc332d7c,
     type: 3}
   m_Parent: {fileID: 0}
@@ -68,7 +68,7 @@ Material:
     - Points: 256
     - PointsPerTile: 4
     - TextureIndex: 5
-    - WaveHeight: 0.15
+    - WaveHeight: 0.3
     - WaveSpeed: 1
     - WaveWidth: 1
     - WidthTiles: 64
@@ -80,7 +80,7 @@ Material:
     - FoamColor: {r: 1, g: 0.91886795, b: 0.99505395, a: 1}
     - RippleColor: {r: 0.8113208, g: 0.4240299, b: 0.7696766, a: 1}
     - TopColor: {r: 1, g: 0, b: 0.29803923, a: 1}
-    - _Glow: {r: 1, g: 1, b: 1, a: 0}
+    - _Glow: {r: 0.22414559, g: 0.47211912, b: 0.6509434, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5362891914880258063
 MonoBehaviour:

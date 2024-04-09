@@ -68,6 +68,12 @@ MonoBehaviour:
   isTidalwave: 0
   isMagmaball: 0
   isBigMagmaball: 0
+  accelerates: 0
+  deccelerates: 0
+  accelOrDeccelTreshold: 0
+  flipsAround: 0
+  inverseFlipsAround: 0
+  spriteRenderer: {fileID: 0}
   worldHitbox: {fileID: 0}
   speed: 0
   bounceHeight: 15

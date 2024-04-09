@@ -36,10 +36,12 @@ public static class Enums {
         [PowerupState.SuperAcorn] = new(2),
         [PowerupState.MagmaFlower] = new(2),
         [PowerupState.WaterFlower] = new(2),
+        [PowerupState.BloomFlower] = new(2),
+        [PowerupState.CloudFlower] = new(2),
 
     };
     public enum PowerupState : byte {
-        None, MiniMushroom, Small, Mushroom, FireFlower, IceFlower, PropellerMushroom, BlueShell, MegaMushroom, StellarFlower, IceBreaker, BuilderSuit, Bombro, TideFlower, CosmoShroom, GoldFlower, SuperAcorn, MagmaFlower, WaterFlower
+        None, MiniMushroom, Small, Mushroom, FireFlower, IceFlower, PropellerMushroom, BlueShell, MegaMushroom, StellarFlower, IceBreaker, BuilderSuit, Bombro, TideFlower, CosmoShroom, GoldFlower, SuperAcorn, MagmaFlower, WaterFlower, BloomFlower, CloudFlower
     }
     #endregion
     #region ITEM BOX ITEMS
@@ -63,7 +65,7 @@ public static class Enums {
     //Sound effects
     public enum Sounds : byte {
 
-        //CURRENT MAX: 104
+        //CURRENT MAX: 108
 
         //Enemy
         [SoundData("enemy/freeze")]                             Enemy_Generic_Freeze = 0,
@@ -145,6 +147,10 @@ public static class Enums {
         [SoundData("powerup/squirrelhang")]                     Powerup_SquirrelHang = 100,
         [SoundData("powerup/BubbleShield")]                     Powerup_BubbleShield = 101,
         [SoundData("powerup/BubbleBounce")]                     Powerup_BubbleShieldReady = 102,
+        [SoundData("powerup/SpringPop")]                        Powerup_SpringPop = 105,
+        [SoundData("powerup/SpringBounce")]                     Powerup_SpringBounce = 106,
+        [SoundData("powerup/Water_Flower_Shoot")]               Powerup_WaterFlowerShoot = 107,
+        [SoundData("powerup/MagmaGroundpound")]               Powerup_MagmaGroundpound = 108,
 
         //UI Sounds / Songs / Jingles
         [SoundData("ui/hurry_up")]                              UI_HurryUp = 60,
@@ -224,6 +230,8 @@ public static class Enums {
         public static string TeamsMatch { get; } = "Te";
         public static string FriendlyFire { get; } = "Fr";
         public static string ShareStars { get; } = "Sh";
+        public static string RandomMap { get; } = "RandM";
+        public static string WholeRandomizer { get; } = "Rand";
         public static string GameStarted { get; } = "G";
         public static string HostName { get; } = "H";
         public static string Debug { get; } = "D";

@@ -581,7 +581,9 @@ namespace NSMB.Utils {
                 count++;
             }
             GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teaming);
-            teamColor = (int)teamPlayer.CustomProperties[Enums.NetPlayerProperties.Character];
+            if (teaming) {
+                teamColor = (int)teamPlayer.CustomProperties[Enums.NetPlayerProperties.Character];
+            }
             if (teamColor == 1 && teaming)
                 return new Color(0f, 1f, 0f, 1f);
             else if (teamColor == 0 && teaming)
