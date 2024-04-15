@@ -24,17 +24,17 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public GameObject lobbiesContent, lobbyPrefab;
     bool quit, validName;
     public GameObject connecting;
-    public GameObject title, bg, mainMenu, optionsMenu, lobbyMenu, createLobbyPrompt, inLobbyMenu, creditsMenu, controlsMenu, privatePrompt, updateBox, bonusSettingsPrompt;
+    public GameObject title, bg, mainMenu, optionsMenu, lobbyMenu, createLobbyPrompt, inLobbyMenu, creditsMenu, controlsMenu, privatePrompt, updateBox, bonusSettingsPrompt, powerupsPrompt;
     public GameObject[] levelCameraPositions;
     public GameObject sliderText, lobbyText, currentMaxPlayers, settingsPanel;
     public TMP_Dropdown levelDropdown, characterDropdown;
     public RoomIcon selectedRoomIcon, privateJoinRoom;
     public Button joinRoomBtn, createRoomBtn, startGameBtn;
-    public Toggle ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, nsmbPowerups, tenPlayersPowerups, timedPowerups, wiiPowerups, oneUpMushToggle, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, reserveDropToggle, mapCoinsToggle, teamToggle, friendlyFireToggle, fireballToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
+    public Toggle ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, nsmbPowerups, tenPlayersPowerups, timedPowerups, wiiPowerups, oneUpMushToggle, cobaltToggle, acornToggle, tideToggle, magmaToggle, blueShellToggle, fireToggle, miniToggle, starmanToggle, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, reserveDropToggle, mapCoinsToggle, teamToggle, friendlyFireToggle, fireballToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
     public GameObject playersContent, playersPrefab, chatContent, chatPrefab;
     public TMP_InputField nicknameField, starsText, coinsText, livesField, timeField, lobbyJoinField, chatTextField;
     public Slider musicSlider, sfxSlider, masterSlider, lobbyPlayersSlider, changePlayersSlider;
-    public GameObject mainMenuSelected, optionsSelected, lobbySelected, currentLobbySelected, createLobbySelected, creditsSelected, controlsSelected, privateSelected, reconnectSelected, updateBoxSelected, bonusSelected;
+    public GameObject mainMenuSelected, optionsSelected, lobbySelected, currentLobbySelected, createLobbySelected, creditsSelected, controlsSelected, privateSelected, reconnectSelected, updateBoxSelected, bonusSelected, powerupsSelected;
     public GameObject errorBox, errorButton, rebindPrompt, reconnectBox;
     public TMP_Text errorText, rebindCountdown, rebindText, reconnectText, updateText;
     public TMP_Dropdown region;
@@ -216,6 +216,14 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         AttemptToUpdateProperty<int>(updatedProperties, Enums.NetRoomProperties.Lives, ChangeLives);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.NewPowerups, ChangeNewPowerups);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.FrostyPowerups, ChangeFrostyPowerups);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.MagmaFlowerPowerup, ChangeMagmaPowerup);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.CobaltStarPowerup, ChangeCobaltPowerup);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.StarmanPowerup, ChangeStarmanPowerup);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.TideFlowerPowerup, ChangeTidePowerup);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.SuperAcornPowerup, ChangeAcornPowerup);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.FireFlowerPowerup, ChangeFirePowerup);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.MiniMushroomPowerup, ChangeMiniPowerup);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.BlueShellPowerup, ChangeBlueShellPowerup);
         AttemptToUpdateProperty<int>(updatedProperties, Enums.NetRoomProperties.Time, ChangeTime);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.DrawTime, ChangeDrawTime);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.DeathmatchGame, ChangeDeathmatchGame);
@@ -636,6 +644,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(mainMenuSelected);
     }
@@ -652,6 +661,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         privatePrompt.SetActive(false);
         updateBox.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(mainMenuSelected);
 
@@ -668,6 +678,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
 
         foreach (RoomIcon room in currentRooms.Values)
             room.UpdateUI(room.room);
@@ -686,6 +697,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
 
         privateToggle.isOn = false;
 
@@ -703,6 +715,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(optionsSelected);
     }
@@ -718,6 +731,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(controlsSelected);
     }
@@ -733,6 +747,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(true);
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(creditsSelected);
     }
@@ -748,12 +763,17 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(currentLobbySelected);
     }
     public void OpenBonusSettingsPrompt() {
         bonusSettingsPrompt.SetActive(true);
         EventSystem.current.SetSelectedGameObject(bonusSelected);
+    }
+    public void OpenPowerupsPrompt() {
+        powerupsPrompt.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(powerupsSelected);
     }
     public void OpenPrivatePrompt() {
         privatePrompt.SetActive(true);
@@ -1575,6 +1595,102 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
 
         Hashtable properties = new() {
             [Enums.NetRoomProperties.TemporaryPowerups] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+    public void ChangeCobaltPowerup(bool value) {
+        cobaltToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetCobaltPowerup(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.CobaltStarPowerup] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+    public void ChangeFirePowerup(bool value) {
+        fireToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetFirePowerup(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.FireFlowerPowerup] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+    public void ChangeMiniPowerup(bool value) {
+        miniToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetMiniPowerup(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.MiniMushroomPowerup] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+    public void ChangeBlueShellPowerup(bool value) {
+        blueShellToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetBlueShellPowerup(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.BlueShellPowerup] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+    public void ChangeStarmanPowerup(bool value) {
+        starmanToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetStarmanPowerup(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.StarmanPowerup] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+    public void ChangeAcornPowerup(bool value) {
+        acornToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetAcornPowerup(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.SuperAcornPowerup] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+    public void ChangeTidePowerup(bool value) {
+        tideToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetTidePowerup(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.TideFlowerPowerup] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+    public void ChangeMagmaPowerup(bool value) {
+        magmaToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetMagmaPowerup(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.MagmaFlowerPowerup] = toggle.isOn
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
     }

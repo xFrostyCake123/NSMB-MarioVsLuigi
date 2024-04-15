@@ -64,9 +64,13 @@ MonoBehaviour:
   isTidalwave: 0
   isMagmaball: 0
   isBigMagmaball: 0
+  goesUp: 0
+  terVelocityTreshold: -6.25
   accelerates: 1
   deccelerates: 0
+  fastAccelerates: 0
   accelOrDeccelTreshold: 6.5
+  accelMultiplier: 0
   flipsAround: 0
   inverseFlipsAround: 0
   spriteRenderer: {fileID: 0}

@@ -36,12 +36,12 @@ public class BulletBillMover : KillableEntity {
             return;
         }
         foreach (var player in GameManager.Instance.players) {
-            if (player.cobalting > 0.001f) {
+            if (player.cobalting > 0f) {
                 body.velocity = Vector2.zero;
                 animator.enabled = false;
                 body.isKinematic = true;
                 return;
-            } else if (player.cobalting == 0.001f) {
+            } else if (player.cobalting <= 0f && !Frozen && !dead) {
                 body.velocity = new(speed * (left ? -1 : 1), body.velocity.y);
                 body.isKinematic = false;
             }

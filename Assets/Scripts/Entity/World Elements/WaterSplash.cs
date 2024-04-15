@@ -9,6 +9,8 @@ public class WaterSplash : MonoBehaviour {
     public float heightTiles = 1;
     public float tension = 40, kconstant = 1.5f, damping = 0.92f, splashVelocity = 50f, resistance = 0f, animationSpeed = 1f;
     public string splashParticle;
+    public string exitSplashParticle;
+    public bool doesntSpawnParticle, antiGravity;
 
     private Texture2D heightTex;
     private SpriteRenderer spriteRenderer;
@@ -25,6 +27,9 @@ public class WaterSplash : MonoBehaviour {
     }
     private void OnValidate() {
         ValidationUtility.SafeOnValidate(Initialize);
+	if (exitSplashParticle == "") {
+            exitSplashParticle = splashParticle;
+	}
     }
 
     private void Initialize() {
@@ -98,7 +103,9 @@ public class WaterSplash : MonoBehaviour {
         spriteRenderer.SetPropertyBlock(properties);
     }
     public void OnTriggerEnter2D(Collider2D collider) {
-        Instantiate(Resources.Load(splashParticle), collider.transform.position, Quaternion.identity);
+        
+	if (!doesntSpawnParticle)
+	    Instantiate(Resources.Load(splashParticle), collider.transform.position, Quaternion.identity);
 
         Rigidbody2D body = collider.attachedRigidbody;
         float power = body ? body.velocity.y : -1;
@@ -110,9 +117,13 @@ public class WaterSplash : MonoBehaviour {
         }
     }
     public void OnTriggerStay2D(Collider2D collision) {
-        if (collision.attachedRigidbody == null)
+        if (collision.attachedRigidbody == null || antiGravity)
             return;
 
         collision.attachedRigidbody.velocity *= 1-Mathf.Clamp01(resistance);
+    }
+    public void OnTriggerExit2D(Collider2D collision) {
+	if (!doesntSpawnParticle)
+	    Instantiate(Resources.Load(exitSplashParticle), collision.transform.position, Quaternion.identity);
     }
 }

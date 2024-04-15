@@ -50595,11 +50595,14 @@ MonoBehaviour:
   Mario: 0
   Luigi: 1
   Yoshi: 0
+  Toadette: 0
   state: 0
   previousState: 0
   slowriseGravity: 1.05
   normalGravity: 3.25
   flyingGravity: 0.8
+  waterGravity: 2.2
+  waterCurrentGravity: 0.5
   flyingTerminalVelocity: 1.40625
   drillVelocity: 7.5
   groundpoundTime: 0.26666668
@@ -50615,6 +50618,7 @@ MonoBehaviour:
   soundRange: 10
   slopeSlidingAngle: 12.5
   pickupTime: 0.45
+  walkOnWater: 0
   propellerLaunchVelocity: 6
   propellerFallSpeed: 2
   propellerSpinFallSpeed: 1.5
@@ -50675,6 +50679,9 @@ MonoBehaviour:
   cannotUseStartReserve: 0
   gotCheckpoint: 0
   ridingWave: 0
+  runningOnWater: 0
+  inWater: 0
+  inWaterCurrent: 0
   jumpLandingTimer: 0
   landing: 0
   koyoteTime: 0

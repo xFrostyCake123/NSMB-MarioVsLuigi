@@ -12,7 +12,7 @@ public class PlayerListEntry : MonoBehaviour {
     public Player player;
 
     [SerializeField] private TMP_Text nameText, pingText;
-    [SerializeField] private Image colorStrip;
+    [SerializeField] private Image colorStrip, pingColorStrip;
 
     [SerializeField] private RectTransform background, options;
     [SerializeField] private GameObject blockerTemplate, firstButton;
@@ -30,11 +30,22 @@ public class PlayerListEntry : MonoBehaviour {
     }
 
     public void Update() {
-        nameText.color = Utils.GetRainbowColor();
+        if (nameText.text.Contains("FrostyCake")) {
+            nameText.color = Utils.GetRainbowColor();
+        } else if (nameText.text.Contains("BluCor")) {
+            nameText.color = Utils.GetBlucorColor();
+        } else if (nameText.text.Contains("vic")) {
+            nameText.color = Utils.GetVicColor();
+        } else if (nameText.text.Contains("KingKittyTurnip")) {
+            nameText.color = Utils.GetTurnipColor();
+        } else if (nameText.text.Contains("Foxyyy")) {
+            nameText.color = Utils.GetFoxyyyColor();
+        } 
     }
 
     public void UpdateText() {
         colorStrip.color = Utils.GetPlayerColor(player, 1f, 1f);
+	    pingColorStrip.color = Utils.GetPlayerColor(player, 1f, 1f);
         enabled = player.HasRainbowName();
 
         string permissionSymbol = "";

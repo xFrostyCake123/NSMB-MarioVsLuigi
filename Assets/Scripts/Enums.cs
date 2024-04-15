@@ -108,6 +108,7 @@ public static class Enums {
         [SoundData("player/walk/grass")]                        Player_Walk_Grass = 31,
         [SoundData("player/walk/snow")]                         Player_Walk_Snow = 32,
         [SoundData("player/walk/sand")]                         Player_Walk_Sand = 93,
+        [SoundData("player/walk/water")]                        Player_Walk_Water = 109,
 
         [SoundData("character/{char}/doublejump")]              Player_Voice_DoubleJump = 33,
         [SoundData("character/{char}/lava_death")]              Player_Voice_LavaDeath = 34,
@@ -150,7 +151,7 @@ public static class Enums {
         [SoundData("powerup/SpringPop")]                        Powerup_SpringPop = 105,
         [SoundData("powerup/SpringBounce")]                     Powerup_SpringBounce = 106,
         [SoundData("powerup/Water_Flower_Shoot")]               Powerup_WaterFlowerShoot = 107,
-        [SoundData("powerup/MagmaGroundpound")]               Powerup_MagmaGroundpound = 108,
+        [SoundData("powerup/MagmaGroundpound")]                 Powerup_MagmaGroundpound = 108,
 
         //UI Sounds / Songs / Jingles
         [SoundData("ui/hurry_up")]                              UI_HurryUp = 60,
@@ -215,6 +216,18 @@ public static class Enums {
         public static string DrawTime { get; } = "Dt";
         public static string NewPowerups { get; } = "C";
         public static string FrostyPowerups { get; } = "F";
+        public static string TideFlowerPowerup { get; } = "Tid";
+        public static string SuperAcornPowerup { get; } = "SupAc";
+        public static string BloomFlowerPowerup { get; } = "B";
+        public static string CloudFlowerPowerup { get; } = "Clo";
+        public static string SuperHammerPowerup { get; } = "SupHa";
+        public static string CobaltStarPowerup { get; } = "Cob";
+        public static string StarmanPowerup { get; } = "Star";
+        public static string MegaMushroomPowerup { get; } = "Meg";
+        public static string MiniMushroomPowerup { get; } = "Min";
+        public static string FireFlowerPowerup { get; } = "Fir";
+        public static string BlueShellPowerup { get; } = "Blue";
+        public static string MagmaFlowerPowerup { get; } = "Mag";
         public static string ProgressiveToRoulette { get; } = "Ptr";
         public static string NoMapCoins { get; } = "Nmp";
         public static string TenPlayersPowerups { get; } = "Ten";
@@ -223,6 +236,9 @@ public static class Enums {
         public static string PropellerMush { get; } = "Pm";
         public static string OneUpMush { get; } = "1up";
         public static string DropReserve { get; } = "Dr";
+        public static string StartingPowerup { get; } = "StPw";
+        public static string GameStartReserve { get; } = "GRes";
+        public static string MarioKartMode { get; } = "MK";
         public static string KinematicMega { get; } = "Km";
         public static string DeathmatchGame { get; } = "Dt";
         public static string FireballDamage { get; } = "Fd";

@@ -23,9 +23,18 @@ MonoBehaviour:
   lives: 0
   frosty: 0
   temporary: 0
-  nsmb: 1
+  nsmb: 0
   wii: 0
   ten: 0
+  tide: 0
+  magma: 0
+  acorn: 0
+  fire: 0
+  star: 0
+  mini: 0
+  mega: 0
+  cobalt: 0
+  blue: 1
   oneup: 0
   reserveSprite: {fileID: 2664608197882872095, guid: a87d3b028baa82640b06b88398a8c4f0,
     type: 3}

@@ -36,17 +36,7 @@ public class KoopaWalk : HoldableEntity {
             body.isKinematic = true;
             return;
         }
-        foreach (var player in GameManager.Instance.players) {
-            if (player.cobalting > 0.001f) {
-                body.velocity = Vector2.zero;
-                animator.enabled = false;
-                body.isKinematic = true;
-                return;
-            } else if (player.cobalting == 0.001f) {
-                animator.enabled = true;
-                body.isKinematic = false;
-            } 
-        }
+        
         base.FixedUpdate();
 
         if (Frozen || dead)
@@ -66,6 +56,17 @@ public class KoopaWalk : HoldableEntity {
                 transform.eulerAngles.x,
                 transform.eulerAngles.y,
                 wakeupTimer < 3 && wakeupTimer > 0 ? (Mathf.Sin(wakeupTimer * 120f) * 15f) : 0);
+        }
+        foreach (var player in GameManager.Instance.players) {
+            if (player.cobalting > 0) {
+                body.velocity = Vector2.zero;
+                animator.enabled = false;
+                body.isKinematic = true;
+                return;
+            } else if (player.cobalting <= 0) {
+                animator.enabled = true;
+                body.isKinematic = false;
+            } 
         }
 
         if (shell) {

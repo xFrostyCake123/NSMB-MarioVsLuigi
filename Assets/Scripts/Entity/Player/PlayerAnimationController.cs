@@ -134,7 +134,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         }
 
         //Particles
-        SetParticleEmission(dust, !gameover && ((controller.wallSlideLeft && controller.squirrelWallSlide !> 0) || (controller.wallSlideRight && controller.squirrelWallSlide !> 0) || (controller.onGround && (controller.skidding || (controller.crouching && Mathf.Abs(body.velocity.x) > 1))) || (controller.sliding && Mathf.Abs(body.velocity.x) > 0.2 && controller.onGround)) && !controller.pipeEntering);
+        SetParticleEmission(dust, !gameover && (controller.wallSlideLeft || controller.wallSlideRight || (controller.onGround && (controller.skidding || (controller.crouching && Mathf.Abs(body.velocity.x) > 1))) || (controller.sliding && Mathf.Abs(body.velocity.x) > 0.2 && controller.onGround)) && !controller.pipeEntering);
         SetParticleEmission(drillParticle, !gameover && controller.drill);
         if (controller.drill)
             drillParticleAudio.clip = (controller.state == Enums.PowerupState.PropellerMushroom ? propellerDrill : normalDrill);

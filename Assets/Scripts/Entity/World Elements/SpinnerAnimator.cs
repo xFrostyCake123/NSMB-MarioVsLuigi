@@ -7,6 +7,8 @@ public class SpinnerAnimator : MonoBehaviour {
     [SerializeField] private Vector3 idleSpinSpeed = new(0, -100, 0), fastSpinSpeed = new(0, -1800, 0);
     [SerializeField] private Transform topArmBone;
 
+    public Vector2 launchVelocity = new(0f, 12f);
+
     private float spinPercentage = 0;
     private readonly List<PlayerController> playersInside = new();
 

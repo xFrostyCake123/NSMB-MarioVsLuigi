@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 
 public class ParallaxMover : MonoBehaviour {
-    [SerializeField] private float speed;
-    private Vector3 moveBy;
+    [SerializeField] protected float speed;
+    protected Vector3 moveBy;
+
+    public void OnValidate() {
+        moveBy = Vector3.right * speed;
+    }
 
     public void Start() {
         moveBy = new(speed, 0, 0);
@@ -14,7 +18,7 @@ public class ParallaxMover : MonoBehaviour {
         }
     }
 
-    public void Update() {
+    public virtual void Update() {
         transform.position += Time.deltaTime * moveBy;
     }
 }

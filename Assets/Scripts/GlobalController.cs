@@ -14,6 +14,10 @@ public class GlobalController : Singleton<GlobalController>, IInRoomCallbacks, I
 
     public PlayerColorSet[] skins;
     public Gradient rainbowGradient;
+    public Gradient blucorGradient;
+    public Gradient turnipGradient;
+    public Gradient vicGradient;
+    public Gradient foxyyyGradient;
 
     public GameObject ndsCanvas, fourByThreeImage, anyAspectImage, graphy;
 

@@ -410,6 +410,14 @@ namespace NSMB.Utils {
             GetCustomProperty(Enums.NetRoomProperties.TemporaryPowerups, out bool temp);
             GetCustomProperty(Enums.NetRoomProperties.OneUpMush, out bool oneup);
             GetCustomProperty(Enums.NetRoomProperties.FrostyPowerups, out bool frosty);
+            GetCustomProperty(Enums.NetRoomProperties.SuperAcornPowerup, out bool acorn);
+            GetCustomProperty(Enums.NetRoomProperties.TideFlowerPowerup, out bool tide);
+            GetCustomProperty(Enums.NetRoomProperties.FireFlowerPowerup, out bool fire);
+            GetCustomProperty(Enums.NetRoomProperties.CobaltStarPowerup, out bool cobalt);
+            GetCustomProperty(Enums.NetRoomProperties.StarmanPowerup, out bool star);
+            GetCustomProperty(Enums.NetRoomProperties.BlueShellPowerup, out bool blue);
+            GetCustomProperty(Enums.NetRoomProperties.MiniMushroomPowerup, out bool mini);
+            GetCustomProperty(Enums.NetRoomProperties.MagmaFlowerPowerup, out bool magma);
             
             GetCustomProperty(Enums.NetRoomProperties.Lives, out int livesOn);
             bool lives = false;
@@ -423,7 +431,9 @@ namespace NSMB.Utils {
             foreach (Powerup powerup in powerups) {
                 if (powerup.name == "MegaMushroom" && gm.musicState == Enums.MusicState.MegaMushroom)
                     continue;
-                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty) || (powerup.ten && !ten) || (powerup.nsmb && !nsmb) || (powerup.wii && !wii) || (powerup.oneup && !oneup) || (powerup.temporary && !temp))
+                if (powerup.name == "CobaltStar" && gm.musicState == Enums.MusicState.CobaltStar)
+                    continue;
+                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty) || (powerup.ten && !ten) || (powerup.nsmb && !nsmb) || (powerup.wii && !wii) || (powerup.oneup && !oneup) || (powerup.temporary && !temp) || (powerup.cobalt && !cobalt) || (powerup.star && !star) || (powerup.blue && !blue) || (powerup.acorn && !acorn) || (powerup.fire && !fire) || (powerup.mini && !mini) || (powerup.tide && !tide) || (powerup.magma && !magma))
                     continue;
 
                 totalChance += powerup.GetModifiedChance(starsToWin, leaderStars, ourStars);
@@ -433,7 +443,9 @@ namespace NSMB.Utils {
             foreach (Powerup powerup in powerups) {
                 if (powerup.name == "MegaMushroom" && gm.musicState == Enums.MusicState.MegaMushroom)
                     continue;
-                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty) || (powerup.ten && !ten) || (powerup.nsmb && !nsmb) || (powerup.wii && !wii) || (powerup.oneup && !oneup) || (powerup.temporary && !temp))
+                if (powerup.name == "CobaltStar" && gm.musicState == Enums.MusicState.CobaltStar)
+                    continue;
+                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty) || (powerup.ten && !ten) || (powerup.nsmb && !nsmb) || (powerup.wii && !wii) || (powerup.oneup && !oneup) || (powerup.temporary && !temp) || (powerup.cobalt && !cobalt) || (powerup.star && !star) || (powerup.blue && !blue) || (powerup.acorn && !acorn) || (powerup.fire && !fire) || (powerup.mini && !mini) || (powerup.tide && !tide) || (powerup.magma && !magma))
                     continue;
 
                 float chance = powerup.GetModifiedChance(starsToWin, leaderStars, ourStars);
@@ -603,5 +615,26 @@ namespace NSMB.Utils {
             time %= 1;
             return GlobalController.Instance.rainbowGradient.Evaluate((float) time);
         }
+        public static Color GetTurnipColor() {
+            double time = PhotonNetwork.Time * 0.1;
+            time %= 1;
+            return GlobalController.Instance.turnipGradient.Evaluate((float) time);
+        }
+        public static Color GetVicColor() {
+            double time = PhotonNetwork.Time * 0.1;
+            time %= 1;
+            return GlobalController.Instance.vicGradient.Evaluate((float) time);
+        }
+        public static Color GetBlucorColor() {
+            double time = PhotonNetwork.Time * 0.1;
+            time %= 1;
+            return GlobalController.Instance.blucorGradient.Evaluate((float) time);
+        }
+        public static Color GetFoxyyyColor() {
+            double time = PhotonNetwork.Time * 0.1;
+            time %= 1;
+            return GlobalController.Instance.foxyyyGradient.Evaluate((float) time);
+        }
     }
+    
 }

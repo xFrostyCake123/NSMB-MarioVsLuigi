@@ -33,7 +33,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 5.2, y: 28.41}
+        m_Scale: {x: 0, y: 0}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
@@ -51,10 +51,10 @@ Material:
     m_Floats:
     - PlatformWidth: 2
     - _DisplacementHeight: 1
-    - _Distortion: 0.0001
+    - _Distortion: 0.001
     - _Height: 0.2
     - _PlatformWidth: 8
-    - _Speed: 2.21
+    - _Speed: 1
     m_Colors: []
   m_BuildTextureStacks: []
 --- !u!114 &7303321804663059113

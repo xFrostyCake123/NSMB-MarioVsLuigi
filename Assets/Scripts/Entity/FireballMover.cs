@@ -6,9 +6,11 @@ using UnityEngine.Tilemaps;
 public class FireballMover : MonoBehaviourPun {
 public AudioSource audioSource;
 
-    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isTidalwave, isMagmaball, isBigMagmaball;
-    public bool accelerates, deccelerates;
+    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isTidalwave, isMagmaball, isBigMagmaball, goesUp;
+    public float terVelocityTreshold = -6.25f;
+    public bool accelerates, deccelerates, fastAccelerates;
     public float accelOrDeccelTreshold;
+    public float accelMultiplier;
     public bool flipsAround, inverseFlipsAround;
     public SpriteRenderer spriteRenderer;
     public BoxCollider2D worldHitbox;
@@ -48,11 +50,11 @@ public AudioSource audioSource;
             return;
         }
         foreach (var player in GameManager.Instance.players) {
-            if (player.cobalting > 0.001f) {
+            if (player.cobalting > 0f) {
                 body.velocity = Vector2.zero;
                 body.isKinematic = true;
                 return;
-            } else if (player.cobalting == 0.001f) {
+            } else if (player.cobalting <= 0f) {
                 body.isKinematic = false;
             }
         }
@@ -60,11 +62,19 @@ public AudioSource audioSource;
             speed += Time.fixedDeltaTime;
         } else if (deccelerates && speed != accelOrDeccelTreshold) {
             speed -= Time.fixedDeltaTime;
+        } else if (accelerates && speed != accelOrDeccelTreshold) {
+            speed += Time.fixedDeltaTime * accelMultiplier;
         }
         HandleCollision();
 
         float gravityInOneFrame = body.gravityScale * Physics2D.gravity.y * Time.fixedDeltaTime;
-        body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(-terminalVelocity, body.velocity.y));
+        if (!goesUp)
+            body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(-terminalVelocity, body.velocity.y));
+        else if (goesUp)
+            body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(terminalVelocity, body.velocity.y));
+        
+        if (goesUp && terminalVelocity != terVelocityTreshold)
+            terminalVelocity -= Time.fixedDeltaTime * 8f;
 
         if (despawnTimer > 0 && (despawnTimer -= Time.fixedDeltaTime) <= 0) {
             PhotonNetwork.Destroy(gameObject);

@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             //Debug.Log((sender.IsMasterClient ? "[H] " : "") + sender.NickName + " (" + sender.UserId + ") - Instantiating " + prefab);
 
             //even the host can't be trusted...
-            if ((sender?.IsMasterClient ?? false) && (prefab.Contains("Static") || prefab.Contains("1-Up") || (musicEnabled && prefab.Contains("Player")))) {
+            if ((sender?.IsMasterClient ?? false) && (prefab.Contains("Static") || (musicEnabled && prefab.Contains("Player")))) {
                 //abandon ship
                 PhotonNetwork.Disconnect();
                 return;

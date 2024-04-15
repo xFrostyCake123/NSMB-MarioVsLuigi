@@ -15,8 +15,8 @@ MonoBehaviour:
   state: 0
   prefab: 1-Up
   soundEffect: 78
-  spawnChance: 0.08
-  losingSpawnBonus: 0.25
+  spawnChance: 0.05
+  losingSpawnBonus: 0.05
   big: 0
   vertical: 0
   custom: 0
@@ -26,5 +26,14 @@ MonoBehaviour:
   nsmb: 0
   wii: 0
   ten: 0
+  tide: 0
+  magma: 0
+  acorn: 0
+  fire: 0
+  star: 0
+  mini: 0
+  mega: 0
+  cobalt: 0
+  blue: 0
   oneup: 1
   reserveSprite: {fileID: 0}
