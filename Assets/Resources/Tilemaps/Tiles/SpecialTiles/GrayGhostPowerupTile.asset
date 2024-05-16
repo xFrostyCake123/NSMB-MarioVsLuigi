@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0306218905469bb42b7b9e5e08bf8812, type: 3}
+  m_Name: GrayGhostPowerupTile
+  m_EditorClassIdentifier: 
+  m_AnimatedSprites:
+  - {fileID: 5242519309527336308, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
+  - {fileID: -5785169764808499753, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
+  - {fileID: 2286950547735446004, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
+  - {fileID: 105889491633116753, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
+  - {fileID: 5242519309527336308, guid: f4b7221be8b79c94c9c8919163014cb0, type: 3}
+  m_MinSpeed: 8
+  m_MaxSpeed: 8
+  m_AnimationStartTime: 0
+  m_AnimationStartFrame: 0
+  m_TileColliderType: 2
+  particleColor: {r: 0.6392157, g: 0.6392157, b: 0.6392157, a: 0}
+  breakableBySmallMario: 0
+  breakableByLargeMario: 0
+  breakableByGiantMario: 1
+  breakableByShells: 0
+  breakableByBombs: 1
+  breakableByStars: 0
+  bumpIfNotBroken: 0
+  bumpIfBroken: 0
+  launchVelocities:
+  - {x: 1, y: 0.5}
+  - {x: 0.5, y: 1}
+  - {x: -0.5, y: 1}
+  - {x: -1, y: 0.5}
+  - {x: 0.25, y: 0.75}
+  - {x: -0.25, y: 0.75}
+  smallPowerup: {fileID: 1017215213198693191, guid: 6dbe32ab0e6d5bc4c8fe9722f4c86d19,
+    type: 3}
+  powerup: {fileID: 7205141821402601890, guid: d456b58d55e1ccc4eab91b85f3e4d08f, type: 3}
+  instantiatedObject: {fileID: 1017215213198693191, guid: 6dbe32ab0e6d5bc4c8fe9722f4c86d19,
+    type: 3}
+  resultTile: SpecialTiles/EmptyGrayQuestion

@@ -28,7 +28,6 @@ public abstract class InteractableTile : AnimatedTile {
             switch (obj.tag) {
             case "Player": {
                 PlayerController player = obj.GetComponent<PlayerController>();
-
                 if (player.gameObject == interacter.gameObject)
                     continue;
 

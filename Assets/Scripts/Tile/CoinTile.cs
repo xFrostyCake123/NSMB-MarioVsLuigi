@@ -19,6 +19,8 @@ public class CoinTile : BreakableBrickTile {
             player = controller;
         if (interacter is KoopaWalk koopa)
             player = koopa.previousHolder;
+        if (interacter is FireballMover playerFireball)
+            player = playerFireball.player;
 
         if (player) {
             if (player.state == Enums.PowerupState.MegaMushroom) {

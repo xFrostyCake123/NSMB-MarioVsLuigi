@@ -51,7 +51,7 @@ Material:
     m_Floats:
     - PlatformWidth: 2
     - _DisplacementHeight: 1
-    - _Distortion: 0.001
+    - _Distortion: 0.0002
     - _Height: 0.2
     - _PlatformWidth: 8
     - _Speed: 1

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Heatwave 1
-  m_Shader: {fileID: 4800000, guid: a499c77a597e63a4d9be463e35fd0e26, type: 3}
+  m_Shader: {fileID: 4800000, guid: e6c49e3fd57c30b49a86f6a3b9d1dcb0, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -32,7 +32,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: a87fd22190ed50a4f94ac7ca9f287d47, type: 3}
         m_Scale: {x: 5.2, y: 28.41}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:

@@ -370,9 +370,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 body.isKinematic = false;
             }
         }
-        if (surfWave) 
-            ridingWave = true;
-        else 
+        if (!surfWave)
             ridingWave = false;
 
         if (ridingWave && surfWave != null)  
@@ -516,8 +514,11 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 GameObject otherObj = collision.gameObject;
                 PlayerController other = otherObj.GetComponent<PlayerController>();
                 PhotonView otherView = other.photonView;
+                bool MarioTeam = Mario && other.Mario;
+                bool LuigiTeam = Luigi && other.Luigi;
+                bool ToadetteTeam = Toadette && other.Toadette;
 
-                if (teamedUp && !friendlyfighting && Mario && other.Mario || teamedUp && !friendlyfighting && Luigi && other.Luigi) 
+                if (teamedUp && !friendlyfighting && Mario && other.Mario || teamedUp && !friendlyfighting && Luigi && other.Luigi || teamedUp && !friendlyfighting && Toadette && other.Toadette) 
                     return;
 
                 if (other.invincible > 0) {
@@ -528,8 +529,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                         
                         //oh, we both are. bonk.
                         if (other.cantDoKnockback <= 0)
-                            photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
-                        other.photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, 1, true, photonView.ViewID);
+                            photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, otherView.ViewID);
+                        other.photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, photonView.ViewID);
                     }
                     return;
                 }
@@ -541,7 +542,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                         return;
 
                         //wait fuck-
-                        photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
+                        photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, otherView.ViewID);
                         return;
                     }
 
@@ -557,8 +558,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                         return;
                         
                         //oh, we both are. bonk.
-                        photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
-                        other.photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, 1, true, photonView.ViewID);
+                        photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, otherView.ViewID);
+                        other.photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, photonView.ViewID);
                     }
                     return;
                 }
@@ -570,7 +571,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                         return;
                         
                         //oh shi-
-                        photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
+                        photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, otherView.ViewID);
                         return;
                     }
 
@@ -611,8 +612,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                         //hit them. powerdown them
                         if (other.inShell) {
                             //collide with both
-                            otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, 1, true, photonView.ViewID);
-                            photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
+                            otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, photonView.ViewID);
+                            photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, otherView.ViewID);
                         } else {
                             otherView.RPC(nameof(Powerdown), RpcTarget.All, false);
                         }
@@ -642,7 +643,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     if (state == Enums.PowerupState.MiniMushroom && other.state != Enums.PowerupState.MiniMushroom) {
                         //we are mini, they arent. special rules.
                         if (groundpounded) {
-                            otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, 1, false, photonView.ViewID);
+                            otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, false, photonView.ViewID);
                             groundpound = false;
                             bounce = true;
                         } else {
@@ -650,14 +651,14 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                         }
                     } else if (other.state == Enums.PowerupState.MiniMushroom && groundpounded) {
                         //we are big, groundpounding a mini opponent. squish.
-                        otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 3, false, photonView.ViewID);
+                        otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 3, false, photonView.ViewID);
                         bounce = false;
                     } else {
                         if (other.state == Enums.PowerupState.MiniMushroom && groundpounded) {
                             otherView.RPC(nameof(Powerdown), RpcTarget.All, false);
                         } else {
                             if (cantDoKnockback <= 0)
-                                otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, groundpounded ? 3 : 1, false, photonView.ViewID);
+                                otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : groundpounded && (!MarioTeam || !LuigiTeam || !ToadetteTeam) ? 3 : 1, false, photonView.ViewID);
                         }
                     }
                     body.velocity = new Vector2(previousFrameVelocity.x, body.velocity.y);
@@ -667,9 +668,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     //bump
                     if (inShield > 0)  // protecc shield!!
                         return;
-                    otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, 1, true, photonView.ViewID);
+                    otherView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x < body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, photonView.ViewID);
                     if (other.cantDoKnockback <= 0)
-                        photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, 1, true, otherView.ViewID);
+                        photonView.RPC(nameof(Knockback), RpcTarget.All, otherObj.transform.position.x > body.position.x, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, otherView.ViewID);
                 }
             }
             break;
@@ -717,7 +718,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             return;
         }
         if (collider.CompareTag("Water")) {
-            RunOnWater();
+            photonView.RPC(nameof(HandleWater), RpcTarget.All);
             return;
         }
 
@@ -727,7 +728,10 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool inTeam);
             Utils.GetCustomProperty(Enums.NetRoomProperties.FriendlyFire, out bool friendly);
             FireballMover fireball = obj.GetComponentInParent<FireballMover>();
-            if (fireball.photonView.IsMine || hitInvincibilityCounter > 0 || Luigi && fireball.luigiFireball && inTeam && !friendly || Mario && !fireball.luigiFireball && inTeam && !friendly)
+            bool MarioTeam = Mario && fireball.player.Mario && inTeam;
+            bool LuigiTeam = Luigi && fireball.player.Luigi && inTeam;
+            bool ToadetteTeam = Toadette && fireball.player.Toadette && inTeam;
+            if (fireball.photonView.IsMine || hitInvincibilityCounter > 0 || (Luigi && fireball.player.Luigi || Mario && fireball.player.Mario || Toadette && fireball.player.Toadette) && inTeam && !friendly)
                 return;
 
             fireball.photonView.RPC(nameof(KillableEntity.Kill), RpcTarget.All);
@@ -737,12 +741,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 return;
             
             if (doesDamage && !fireball.isIceball && !fireball.isStarball) {
-                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, 1, true, fireball.photonView.ViewID);
+                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, fireball.photonView.ViewID);
                 photonView.RPC(nameof(Powerdown), RpcTarget.All, false);
                 return;
             }
             if (doesDamage && fireball.isStarball) {
-                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, 1, false, fireball.photonView.ViewID);
+                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, false, fireball.photonView.ViewID);
                 photonView.RPC(nameof(Powerdown), RpcTarget.All, false);
                 return;
             }
@@ -754,7 +758,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 return;
             }
             if (fireball.isStarball) {
-                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, 1, false, fireball.photonView.ViewID);
+                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, false, fireball.photonView.ViewID);
                 return;
             }
 
@@ -764,7 +768,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             }
 
             if (!fireball.isIceball) {
-                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, 1, true, fireball.photonView.ViewID);
+                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, (MarioTeam || LuigiTeam || ToadetteTeam) ? 0 : 1, true, fireball.photonView.ViewID);
             } else {
                 if (!Frozen && !frozenObject && !pipeEntering) {
                     GameObject cube = PhotonNetwork.Instantiate("Prefabs/FrozenCube", transform.position, Quaternion.identity, 0, new object[] { photonView.ViewID });
@@ -831,7 +835,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             return;
         }
         if (obj.CompareTag("Water")) {
-            RunOnWater();
+            photonView.RPC(nameof(HandleWater), RpcTarget.All);
             return;
         }
 
@@ -878,7 +882,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             onSpinner = null;
         
         if (collider.CompareTag("Water"))
-            RunOnWater();
+            photonView.RPC(nameof(HandleWater), RpcTarget.All);
     }
     #endregion
 
@@ -988,7 +992,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamed);
             bool maro = Mario;
             bool loogi = Luigi;
-            bool upInput = joystick.y > analogDeadzone;
+            bool upInput = joystick.y > 0.5;
             bool ice = state == Enums.PowerupState.IceFlower;
             bool star = state == Enums.PowerupState.StellarFlower;
             bool icecube = state == Enums.PowerupState.IceBreaker;
@@ -998,7 +1002,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             string projectile = ice ? "Iceball" : "Fireball";
             Enums.Sounds sound = ice ? Enums.Sounds.Powerup_Iceball_Shoot : Enums.Sounds.Powerup_Fireball_Shoot;
             if (magma && upInput) {
-                projectile = "BigMagmaball";
+                projectile = "MagmaballUp";
                 sound = Enums.Sounds.Powerup_MagmaShoot;
               } else if (magma) {
                   projectile = "Magmaball";
@@ -1010,7 +1014,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                         projectile = "LuigiIceball";
                         sound = Enums.Sounds.Powerup_Iceball_Shoot;
                     } else if (magma && upInput && !ice) {
-                        projectile = "LuigiBigMagmaball";
+                        projectile = "LuigiMagmaballUp";
                         sound = Enums.Sounds.Powerup_MagmaShoot;
                     } else if (magma && !ice) {
                         projectile = "LuigiMagmaball";
@@ -1043,7 +1047,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 projectile = "GoldFireball";
                 sound = Enums.Sounds.Powerup_Fireball_Shoot;
             }
-
             Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
             if (Utils.IsTileSolidAtWorldLocation(pos)) {
                 photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{projectile}Wall", pos);
@@ -1064,7 +1067,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             break;
         }
         case Enums.PowerupState.SuperAcorn: {
-            if (groundpound || (flying && drill) || squirrel || crouching || sliding || wallJumpTimer > 0) 
+            if (groundpound || (flying && drill) || squirrel || usedSquirrelThisJump || crouching || sliding || wallJumpTimer > 0) 
                 return;
 
             photonView.RPC(nameof(SquirrelJump), RpcTarget.All);
@@ -1188,7 +1191,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     }
    
     public void WaterActions() {
-        bool upInput = joystick.y > analogDeadzone;
+        bool upInput = joystick.y > 0.5;
         if (upInput) {
             photonView.RPC(nameof(WaterShield), RpcTarget.All);
         } else {
@@ -1198,7 +1201,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     public void WaterBall() {
         bool maro = Mario;
         bool loogi = Luigi;
-        bool upInput = joystick.y > analogDeadzone;
+        bool upInput = joystick.y > 0.5;
         string projectile = "WaterBubble";
         Enums.Sounds sound = Enums.Sounds.Powerup_WaterShoot;
         if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding || (upInput && onShieldCooldown <= 0))
@@ -1206,18 +1209,18 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         int count = 0;
         foreach (FireballMover existingFire in FindObjectsOfType<FireballMover>()) {
-            if (existingFire.photonView.IsMine && ++count >= 2)
+            if (existingFire.photonView.IsMine && ++count >= 3)
                 return;
         }
 
         if (state == Enums.PowerupState.WaterFlower) {
-            canShootProjectile = false;
-            if (fireballTimer <= 0) {
-                fireballTimer = 1f;
-            } else {
-                return;
+                canShootProjectile = false;
+                if (fireballTimer <= 0) {
+                    fireballTimer = 1.5f;
+                } else {
+                    return;
+                }
             }
-        }
         Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teaming);
         if (loogi && teaming) {
             projectile = "LuigiWaterBubble";
@@ -1229,7 +1232,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             projectile = "WaterBubble";
             sound = Enums.Sounds.Powerup_WaterShoot;
         }
-        
         Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
             if (Utils.IsTileSolidAtWorldLocation(pos)) {
                 photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{projectile}Wall", pos);
@@ -1239,13 +1241,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
 
         animator.SetTrigger("fireball");
-        wallJumpTimer = 0;
-           
+        wallJumpTimer = 0;  
     }
     
     [PunRPC]
     public void WaterShield() {
-        bool upInput = joystick.y > analogDeadzone;
+        bool upInput = joystick.y > 0.5;
         
         if (upInput) { //generate shield
             if (onShieldCooldown > 0) 
@@ -1353,7 +1354,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     return;
                 }
             }
-        
             Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
                 if (Utils.IsTileSolidAtWorldLocation(pos)) {
                     photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{bomb}Wall", pos);
@@ -1364,11 +1364,10 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
             animator.SetTrigger("fireball");
             wallJumpTimer = 0;
-
         } else if (bombDeployed) {
             PhotonNetwork.Instantiate($"Prefabs/{explosion}", waterBomb.transform.position, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
             photonView.RPC(nameof(PlaySound), RpcTarget.All, explodeSound);
-            Destroy(waterBomb);
+            PhotonNetwork.Destroy(waterBomb);
             animator.SetTrigger("fireball");
             wallJumpTimer = 0;
         }
@@ -1402,7 +1401,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         animator.SetTrigger("fireball");
         wallJumpTimer = 0;
-        ridingWave = true;
+        ridingWave = true; 
     }
     public void MagmaGroundpound() {
         string projectile = "SmallMagmaball";
@@ -1422,23 +1421,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     public void ResetMagmaGp() {
         magmaGpCooldown = 3f;
     }
-
-    public void RunOnWater() {
-        GameObject water = GameObject.FindWithTag("Water");
-        Collider2D waterland = water.GetComponentInParent<Collider2D>();
     
-        bool canWalkOnWater = (Mathf.Abs(body.velocity.x) > 0.25 || (Mathf.Abs(joystick.x) > analogDeadzone && body.velocity.x != 0)) && state == Enums.PowerupState.MiniMushroom;
-        if ((canWalkOnWater || walkOnWater > 0) && !groundpound && !crouching && !inWater) {
-            if (canWalkOnWater)
-              walkOnWater = 0.25f;
-            waterland.isTrigger = false;
-            runningOnWater = true;
-            footstepSound = Enums.Sounds.Player_Walk_Water;
-        } else {
-            waterland.isTrigger = true;
-            inWater = true;
-        }
+    [PunRPC]
+    public void HandleWater() {
+        inWater = true;
     }
+    
 
 
     [PunRPC]

@@ -49,6 +49,11 @@ public static class Enums {
         Banana, GreenShell, RedShell, Mushroom, Bobomb, BlueShell, TripleMushrooms, Star, Lightning
     }
     #endregion
+    #region SWITCH EVENTS
+    public enum SwitchEvent : byte {
+        Move, Scale, EnableAndDisable, AllStar
+    }
+    #endregion
     #region ANIMATION & MUSIC
     // Animation enums
     public enum PlayerEyeState {
@@ -61,11 +66,12 @@ public static class Enums {
         Starman,
         MetalCap,
         CobaltStar,
+        Switch,
     }
     //Sound effects
     public enum Sounds : byte {
 
-        //CURRENT MAX: 108
+        //CURRENT MAX: 113
 
         //Enemy
         [SoundData("enemy/freeze")]                             Enemy_Generic_Freeze = 0,
@@ -158,12 +164,15 @@ public static class Enums {
         [SoundData("ui/loading")]                               UI_Loading = 61,
         [SoundData("ui/match_lose")]                            UI_Match_Lose = 62,
         [SoundData("ui/match_win")]                             UI_Match_Win = 63,
-        [SoundData("ui/match_team_win")]                       UI_Match_Team_Win = 103,
+        [SoundData("ui/match_team_win")]                        UI_Match_Team_Win = 103,
+        [SoundData("ui/match_cancelled")]                       UI_Match_Cancelled = 111,
+        [SoundData("ui/file_select")]                           UI_FileSelect = 112,
         [SoundData("ui/pause")]                                 UI_Pause = 64,
         [SoundData("ui/quit")]                                  UI_Quit = 65,
         [SoundData("ui/start_game")]                            UI_StartGame = 66,
         [SoundData("ui/player_connect")]                        UI_PlayerConnect = 79,
         [SoundData("ui/player_disconnect")]                     UI_PlayerDisconnect = 80,
+        [SoundData("ui/host_transfer")]                         UI_HostTransfer = 110,
         [SoundData("ui/decide")]                                UI_Decide = 81,
         [SoundData("ui/back")]                                  UI_Back = 82,
         [SoundData("ui/cursor")]                                UI_Cursor = 83,
@@ -187,6 +196,7 @@ public static class Enums {
         [SoundData("world/star_nearby")]                        World_Star_Nearby = 75,
         [SoundData("world/star_spawn")]                         World_Star_Spawn = 76,
         [SoundData("world/water_splash")]                       World_Water_Splash = 77,
+        [SoundData("world/switch_pressed")]                     World_Switch_Pressed = 113,
     }
 
     #endregion
@@ -236,9 +246,11 @@ public static class Enums {
         public static string PropellerMush { get; } = "Pm";
         public static string OneUpMush { get; } = "1up";
         public static string DropReserve { get; } = "Dr";
+        public static string DropCoins { get; } = "Dc";
         public static string StartingPowerup { get; } = "StPw";
         public static string GameStartReserve { get; } = "GRes";
         public static string MarioKartMode { get; } = "MK";
+        public static string MirrorMode { get; } = "Mir";
         public static string KinematicMega { get; } = "Km";
         public static string DeathmatchGame { get; } = "Dt";
         public static string FireballDamage { get; } = "Fd";

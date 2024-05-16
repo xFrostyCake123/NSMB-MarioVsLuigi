@@ -71,8 +71,16 @@ MonoBehaviour:
   fastAccelerates: 0
   accelOrDeccelTreshold: 6.5
   accelMultiplier: 0
+  boomerangs: 0
+  controllableBoomerang: 0
+  arched: 0
+  boomerangTreshold: 1.25
+  boomerangMultiplier: 3
+  boomerangArchVelocity: 2
+  archMultiplier: 5
   flipsAround: 0
   inverseFlipsAround: 0
+  player: {fileID: 0}
   spriteRenderer: {fileID: 0}
   worldHitbox: {fileID: 0}
   speed: 5.25

@@ -10,6 +10,7 @@ using NSMB.Utils;
 public class PlayerListEntry : MonoBehaviour {
 
     public Player player;
+    public bool isPartOfGameManager;
 
     [SerializeField] private TMP_Text nameText, pingText;
     [SerializeField] private Image colorStrip, pingColorStrip;
@@ -134,8 +135,13 @@ public class PlayerListEntry : MonoBehaviour {
     }
 
     public void PromotePlayer() {
-        MainMenuManager.Instance.Promote(player);
-        HideDropdown(true);
+        if (isPartOfGameManager) {
+            GameManager.Instance.AttemptTransferHost(player);
+            HideDropdown(true);
+        } else {
+            MainMenuManager.Instance.Promote(player);
+            HideDropdown(true);
+        }
     }
 
     public void CopyPlayerId() {

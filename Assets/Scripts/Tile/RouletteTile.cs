@@ -18,7 +18,7 @@ public class RouletteTile : BreakableBrickTile {
         string spawnResult = "Mushroom";
 
         if ((interacter is PlayerController) || (interacter is KoopaWalk koopa && koopa.previousHolder != null)) {
-            PlayerController player = interacter is PlayerController controller ? controller : ((KoopaWalk) interacter).previousHolder;
+            PlayerController player = interacter is PlayerController controller ? controller : interacter is KoopaWalk koop ? koop.previousHolder : ((FireballMover)interacter).player;
             if (player.state == Enums.PowerupState.MegaMushroom) {
                 //Break
 

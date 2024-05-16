@@ -65,6 +65,24 @@ MonoBehaviour:
   isTidalwave: 0
   isMagmaball: 0
   isBigMagmaball: 0
+  goesUp: 0
+  terVelocityTreshold: -6.25
+  accelerates: 0
+  deccelerates: 0
+  fastAccelerates: 0
+  accelOrDeccelTreshold: 0
+  accelMultiplier: 0
+  boomerangs: 0
+  controllableBoomerang: 0
+  arched: 0
+  boomerangTreshold: 1.25
+  boomerangMultiplier: 3
+  boomerangArchVelocity: 2
+  archMultiplier: 5
+  flipsAround: 0
+  inverseFlipsAround: 0
+  player: {fileID: 0}
+  spriteRenderer: {fileID: 0}
   worldHitbox: {fileID: 0}
   speed: 6.25
   bounceHeight: 6.75

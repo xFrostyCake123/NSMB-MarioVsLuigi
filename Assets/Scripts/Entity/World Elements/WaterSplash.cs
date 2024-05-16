@@ -122,8 +122,5 @@ public class WaterSplash : MonoBehaviour {
 
         collision.attachedRigidbody.velocity *= 1-Mathf.Clamp01(resistance);
     }
-    public void OnTriggerExit2D(Collider2D collision) {
-	if (!doesntSpawnParticle)
-	    Instantiate(Resources.Load(exitSplashParticle), collision.transform.position, Quaternion.identity);
-    }
+
 }

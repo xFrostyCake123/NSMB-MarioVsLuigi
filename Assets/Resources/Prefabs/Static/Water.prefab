@@ -136,6 +136,8 @@ MonoBehaviour:
   resistance: 0
   animationSpeed: 9
   splashParticle: Prefabs/Particle/WaterEnterSplash
+  exitSplashParticle: Prefabs/Particle/WaterEnterSplash
+  doesntSpawnParticle: 0
   antiGravity: 0
 --- !u!1 &6205609809630467188
 GameObject:

@@ -106,11 +106,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ColorableOption_0
+      name: colorable_option
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 48
         width: 15
         height: 15
       alignment: 0
@@ -127,11 +127,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ColorableOption_1
+      name: colorable_option_selected
       rect:
         serializedVersion: 2
         x: 16
-        y: 0
+        y: 48
         width: 15
         height: 15
       alignment: 0
@@ -148,11 +148,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ColorableOption_2
+      name: colorable_option_pressed
       rect:
         serializedVersion: 2
         x: 32
-        y: 0
+        y: 48
         width: 15
         height: 15
       alignment: 0
@@ -169,11 +169,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ColorableOption_3
+      name: colorable_option_disabled
       rect:
         serializedVersion: 2
         x: 48
-        y: 0
+        y: 48
         width: 15
         height: 15
       alignment: 0
@@ -189,6 +189,132 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: colorable_bar
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6e792d719d307a4d83282909b47069a
+      internalID: 908710614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: colorable_bar_selected
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d4b80e7d017b7e4a8227edea5def4dc
+      internalID: 1844447847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: colorable_bar_pressed
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbc74608b7e14dd408efe242270c7fa1
+      internalID: -1960185347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: colorable_bar_disabled
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89e2be8e02015564b9c2ba51194fac8e
+      internalID: -226525482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: colorable_bar_filled
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 10
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 3, y: 4, z: 4, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c03094310aa589e479d2942dfc88467b
+      internalID: -545084016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: colorable_bar_empty
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 10
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 3, y: 4, z: 4, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 283af1f8af31a3743b6fbac76e85d3b5
+      internalID: -1707560623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -200,10 +326,20 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ColorableOption_0: -1583801506
-      ColorableOption_1: -1795355414
-      ColorableOption_2: -197577694
-      ColorableOption_3: -146555104
+      ColorableOption_10: -2078198468
+      ColorableOption_9: -2065538646
+      colorable_option_selected: -1795355414
+      colorable_bar_filled: -545084016
+      colorable_bar: 908710614
+      colorable_option_pressed: -197577694
+      colorable_option_disabled: -146555104
+      colorable_option: -1583801506
+      ColorableOption_11: 1409542593
+      colorable_bar_empty: -1707560623
+      colorable_bar_selected: 1844447847
+      colorable_bar_pressed: -1960185347
+      colorable_bar_disabled: -226525482
+      ColorableOption_8: 1271771471
   spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 

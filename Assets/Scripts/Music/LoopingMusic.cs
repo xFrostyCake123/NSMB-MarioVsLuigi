@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class LoopingMusic : MonoBehaviour {
 
@@ -29,8 +30,13 @@ public class LoopingMusic : MonoBehaviour {
 
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private MusicData currentSong;
+    [SerializeField] private List<MusicData> randomSongs;
+    [SerializeField] private bool isRandomSelection;
 
     public void Start() {
+        if (isRandomSelection)
+            currentSong = randomSongs[Random.Range(0, randomSongs.Count)];
+        
         if (currentSong)
             Play(currentSong);
     }

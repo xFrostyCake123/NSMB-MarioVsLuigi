@@ -596,13 +596,15 @@ namespace NSMB.Utils {
             if (teaming) {
                 teamColor = (int)teamPlayer.CustomProperties[Enums.NetPlayerProperties.Character];
             }
-            if (teamColor == 1 && teaming)
-                return new Color(0f, 1f, 0f, 1f);
-            else if (teamColor == 0 && teaming)
+            if (teamColor == 0 && teaming)
                 return new Color(1f, 0f, 0f, 1f);
+            else if (teamColor == 1 && teaming)
+                return new Color(0f, 1f, 0f, 1f);
+            else if (teamColor == 2 && teaming)
+                return new Color(1f, 0.2f, 0.5f, 1f);
+            
             else if (result == -1 && !teaming)
                 return new Color(0.9f, 0.9f, 0.9f, 0.7f);
-
             return Color.HSVToRGB(result / ((float) count + 1), s, v);
         }
 

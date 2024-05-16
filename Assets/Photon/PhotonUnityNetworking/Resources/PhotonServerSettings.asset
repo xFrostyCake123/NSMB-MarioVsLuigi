@@ -100,6 +100,9 @@ MonoBehaviour:
   - CosmicSpin
   - Punch
   - ResetMagmaGp
+  - StarExplosion
+  - StarEvent
+  - HandleWater
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

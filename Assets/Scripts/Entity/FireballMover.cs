@@ -1,5 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
 using NSMB.Utils;
 using UnityEngine.Tilemaps;
 
@@ -8,10 +10,15 @@ public AudioSource audioSource;
 
     public bool luigiFireball, left, isIceball, isStarball, isWaterball, isTidalwave, isMagmaball, isBigMagmaball, goesUp;
     public float terVelocityTreshold = -6.25f;
+    private float analogDeadzone = 0.35f;
     public bool accelerates, deccelerates, fastAccelerates;
     public float accelOrDeccelTreshold;
     public float accelMultiplier;
+    public bool boomerangs, controllableBoomerang;
+    public bool arched;
+    public float boomerangTreshold = 1.25f, boomerangMultiplier = 3f, boomerangArchVelocity = 2f, archMultiplier = 5f;
     public bool flipsAround, inverseFlipsAround;
+    public PlayerController player;
     public SpriteRenderer spriteRenderer;
     public BoxCollider2D worldHitbox;
 
@@ -36,10 +43,25 @@ public AudioSource audioSource;
             spriteRenderer.flipX = left;
         } else if (inverseFlipsAround) {
             spriteRenderer = GetComponent<SpriteRenderer>();
-            spriteRenderer.flipX = left;
+            spriteRenderer.flipX = !left;
         }
-        
 
+        PhotonView fireballView = GetComponent<PhotonView>();
+        if (fireballView != null && fireballView.Owner != null)
+        {
+            int ownerId = photonView.Owner.ActorNumber;
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+            foreach (GameObject p in players)
+            {
+                PhotonView playerView = p.GetComponent<PhotonView>();
+                if (playerView != null && playerView.Owner != null && playerView.Owner.ActorNumber == ownerId)
+                {
+                    player = p.GetComponent<PlayerController>();
+                    break;
+                }
+            }
+        }
     }
 
        public void FixedUpdate() {
@@ -65,10 +87,26 @@ public AudioSource audioSource;
         } else if (accelerates && speed != accelOrDeccelTreshold) {
             speed += Time.fixedDeltaTime * accelMultiplier;
         }
+
+        if (boomerangs) {
+            if (speed != boomerangTreshold) {
+                speed -= Time.fixedDeltaTime * boomerangMultiplier;  
+            }
+            if (controllableBoomerang) {
+                if (player.joystick.y > 0.5) {
+                    boomerangArchVelocity += Time.fixedDeltaTime * archMultiplier;
+                } else if (player.joystick.y < -analogDeadzone) {
+                    boomerangArchVelocity -= Time.fixedDeltaTime * archMultiplier;  
+                }  
+                body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(boomerangArchVelocity, body.velocity.y));       
+            }
+
+        }
+
         HandleCollision();
 
         float gravityInOneFrame = body.gravityScale * Physics2D.gravity.y * Time.fixedDeltaTime;
-        if (!goesUp)
+        if (!goesUp && !controllableBoomerang)
             body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(-terminalVelocity, body.velocity.y));
         else if (goesUp)
             body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(terminalVelocity, body.velocity.y));
@@ -94,13 +132,14 @@ public AudioSource audioSource;
             Vector2 p = point.point + (point.normal * -0.15f);
             if (point.collider.gameObject.layer == Layers.LayerGround) {
                 Vector3Int tileLoc = Utils.WorldToTilemapPosition(p);
-                TileBase tile = GameManager.Instance.tilemap.GetTile(tileLoc);
-                if (tile is InteractableTile it) {
-                    bool ret = it.Interact(this, InteractableTile.InteractionDirection.Up, Utils.TilemapToWorldPosition(tileLoc));
-                    destroySelf |= !ret;
-                }  else if (tile) {
-                      destroySelf = true;
-                    
+                foreach (Tilemap tilemaps in FindObjectsOfType<Tilemap>()) {
+                    TileBase tile = tilemaps.GetTile(tileLoc);
+                    if (tile is InteractableTile it) {
+                        bool ret = it.Interact(this, InteractableTile.InteractionDirection.Up, Utils.TilemapToWorldPosition(tileLoc));
+                        destroySelf |= !ret;
+                    } else if (tile) {
+                        destroySelf = true;
+                    }
                 }
             }
         }
@@ -135,6 +174,7 @@ public AudioSource audioSource;
     public void OnDestroy() {
         if (!GameManager.Instance.gameover)
             Instantiate(Resources.Load("Prefabs/Particle/" + (isIceball ? "IceballWall" : isStarball ? "Starballwall" : isWaterball ? "Waterballwall" : isTidalwave ? "Waterballwall" : "FireballWall")), transform.position, Quaternion.identity);
+            
     }
 
     [PunRPC]
@@ -158,7 +198,8 @@ public AudioSource audioSource;
             KillableEntity en = collider.gameObject.GetComponentInParent<KillableEntity>();
             if (en.dead || en.Frozen)
                 return;
-
+            if (isStarball)
+                photonView.RPC(nameof(StarExplosion), RpcTarget.All);
             if (isIceball) {
                 PhotonNetwork.Instantiate("Prefabs/FrozenCube", en.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity, 0, new object[] { en.photonView.ViewID });
                 PhotonNetwork.Destroy(gameObject);
@@ -166,13 +207,17 @@ public AudioSource audioSource;
                 en.photonView.RPC("SpecialKill", RpcTarget.All, !left, false, 0);
                 PhotonNetwork.Destroy(gameObject);
             }
+            
             break;
+            
         }
         case "frozencube": {
             FrozenCube fc = collider.gameObject.GetComponentInParent<FrozenCube>();
             if (fc.dead)
                 return;
             // TODO: Stuff here
+            if (isStarball)
+                photonView.RPC(nameof(StarExplosion), RpcTarget.All);
 
             if (isIceball) {
                 PhotonNetwork.Destroy(gameObject);
@@ -180,6 +225,7 @@ public AudioSource audioSource;
                 fc.gameObject.GetComponent<FrozenCube>().photonView.RPC("Kill", RpcTarget.All);
                 PhotonNetwork.Destroy(gameObject);
             }
+            
             break;
         }
         case "Fireball": {
@@ -192,10 +238,13 @@ public AudioSource audioSource;
         }
         case "bulletbill": {
             KillableEntity bb = collider.gameObject.GetComponentInParent<BulletBillMover>();
+            if (isStarball)
+                photonView.RPC(nameof(StarExplosion), RpcTarget.All);
             if (isIceball && !bb.Frozen) {
                 PhotonNetwork.Instantiate("Prefabs/FrozenCube", bb.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity, 0, new object[] { bb.photonView.ViewID });
             }
             PhotonNetwork.Destroy(gameObject);
+            
 
             break;
         }
@@ -203,6 +252,8 @@ public AudioSource audioSource;
             BobombWalk bobomb = collider.gameObject.GetComponentInParent<BobombWalk>();
             if (bobomb.dead || bobomb.Frozen)
                 return;
+            if (isStarball)
+                photonView.RPC(nameof(StarExplosion), RpcTarget.All);
             if (!isIceball) {
                 if (!bobomb.lit) {
                     bobomb.photonView.RPC("Light", RpcTarget.All);
@@ -210,16 +261,22 @@ public AudioSource audioSource;
                     bobomb.photonView.RPC("Kick", RpcTarget.All, body.position.x < bobomb.body.position.x, 0f, false);
                 }
                 PhotonNetwork.Destroy(gameObject);
+            } else if (isStarball) {
+                bobomb.photonView.RPC("Detonate", RpcTarget.All);
+                PhotonNetwork.Destroy(gameObject); 
             } else {
                 PhotonNetwork.Instantiate("Prefabs/FrozenCube", bobomb.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity, 0, new object[] { bobomb.photonView.ViewID });
                 PhotonNetwork.Destroy(gameObject);
             }
+            
             break;
         }
         case "piranhaplant": {
             KillableEntity killa = collider.gameObject.GetComponentInParent<KillableEntity>();
             if (killa.dead)
                 return;
+            if (isStarball)
+                photonView.RPC(nameof(StarExplosion), RpcTarget.All);
             AnimatorStateInfo asi = killa.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
             if (asi.IsName("end") && asi.normalizedTime > 0.5f)
                 return;
@@ -229,8 +286,42 @@ public AudioSource audioSource;
             } else {
                 PhotonNetwork.Instantiate("Prefabs/FrozenCube", killa.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity, 0, new object[] { killa.photonView.ViewID });
             }
+            
             break;
         }
+        }
+        
+    }
+    [PunRPC]
+    public void StarExplosion() {
+        GameObject starryExplosion = (GameObject) Resources.Load("Prefabs/Particle/StarFireworkExplosion");
+        Instantiate(starryExplosion, transform.position, Quaternion.identity);
+
+        if (!photonView.IsMine)
+            return;
+
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position + new Vector3(0,0.5f), 1f, Vector2.zero);
+        foreach (RaycastHit2D hit in hits) {
+            GameObject obj = hit.collider.gameObject;
+
+            if (obj == gameObject)
+                continue;
+
+            if (obj.GetComponent<KillableEntity>() is KillableEntity en) {
+                en.photonView.RPC("SpecialKill", RpcTarget.All, transform.position.x < obj.transform.position.x, false, 0);
+                continue;
+            }
+
+            switch (hit.collider.tag) {
+            case "Player": {
+                PlayerController possibleOwner = obj.GetComponent<PlayerController>();
+                if (player = possibleOwner)
+                    return;
+
+                obj.GetPhotonView().RPC("Knockback", RpcTarget.All, left, 1, true);
+                break;
+            }
+            }
         }
     }
 }

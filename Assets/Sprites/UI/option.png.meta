@@ -729,6 +729,258 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: bar_blue_filled
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 10
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 3, y: 4, z: 4, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b80899a7b014d494984369a9d4f01eba
+      internalID: 672967636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_blue_empty
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 10
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 3, y: 4, z: 4, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 81dd17dec80ffcd458789e7260a51c92
+      internalID: -693796437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_red_filled
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 10
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 3, y: 4, z: 4, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5331dac7a58693b499f460f26de6fbc5
+      internalID: 348373288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_red_empty
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 10
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 3, y: 4, z: 4, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c503ae9ff8e0a764598984f39a35063b
+      internalID: -1136822269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_blue
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 19
+        width: 12
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aeaf2c869d585f547b50eec780a2859d
+      internalID: -952746720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_blue_selected
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98b4c9ce008b44a4ea22805e51dd9088
+      internalID: -219231546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_blue_pressed
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c6db9ba392816f45906cb14b7c8459c
+      internalID: -1409339828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_blue_presse
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 265c31b120f15a74aa5536dd1eb1f9da
+      internalID: -1837492117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_red
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2cd6b4cc192a6a4d82c66fa0e482403
+      internalID: 1322799878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_red_selected
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e1192622bc6ea0a42b583f23ddacd049
+      internalID: -751280574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_red_pressed
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ae29ccb461e1cd4ba5e78f5adede318
+      internalID: 1319533478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bar_red_disabled
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 18
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f3a9a1cb7f6a934cb324fb133d5113f
+      internalID: -1881174038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -744,30 +996,46 @@ TextureImporter:
       option_green_pressed: 1611290607
       option_red_pressed: 87811832
       bar_green_pressed: 1253250550
-      bar_green: 1988032188
-      option_green_disabled: 613028815
+      bar_red_selected: -751280574
+      bar_blue_presse: -1837492117
+      option_2: -1434872294
       option_yellow_selected: -634966080
       option_red_selected: 1150358858
-      bar_green_filled: 2056141543
+      bar_red_empty: -1136822269
       option_red_disabled: 1657813663
+      bar_blue_filled: 672967636
+      bar_red_disabled: -1881174038
       option_yellow_pressed: 1292347602
+      bar_red_pressed: 1319533478
+      bar_yellow_pressed: 1361422749
+      option_blue_disabled: 1291356150
+      bar_green_empty: 654580174
+      bar_blue_selected: -219231546
+      bar_blue_pressed: -1409339828
+      bar_green_disabled: -136452746
+      option_1: -2055916606
+      option_green_selected: -808684277
+      option_5: 981694643
+      bar_yelllow_empty: -93316979
+      option_blue_selected: 1303659493
+      bar_blue_empty: -693796437
+      bar_green: 1988032188
+      option_green_disabled: 613028815
+      bar_red_filled: 348373288
+      bar_green_filled: 2056141543
+      bar_blue: -952746720
+      option_6: 116397542
       bar_yellow_filled: 850112226
       bar_yellow: 1573181257
       bar_green_selected: 1264872561
       option_meter_dis: 2135415530
       option_yellow_disabled: 918296707
-      bar_yellow_pressed: 1361422749
       option_green: -655794942
-      option_blue_disabled: 1291356150
-      bar_green_empty: 654580174
       option_yellow: -1008673158
-      bar_green_disabled: -136452746
-      option_green_selected: -808684277
-      bar_yelllow_empty: -93316979
       option_red: -248825290
       bar_yellow_disabled: 594883156
       option_blue_pressed: 995382058
-      option_blue_selected: 1303659493
+      bar_red: 1322799878
       option_blue: 921158468
   spritePackingTag: 
   pSDRemoveMatte: 0

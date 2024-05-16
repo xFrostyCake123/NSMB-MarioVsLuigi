@@ -22,5 +22,6 @@ MonoBehaviour:
     type: 3}
   readySprite: {fileID: -7975249404588759376, guid: 70672da71d9d71a4daaf5f3fc58531e6,
     type: 3}
+  readyTextGradient: {fileID: 11400000, guid: bb465710e2192394d99695f37ea3c7ff, type: 2}
   smallOverrides: {fileID: 22100000, guid: a1854453357bb034e89ec419b0f57906, type: 2}
   largeOverrides: {fileID: 22100000, guid: 671e2adc5dbd26a45abdf5c18398a86e, type: 2}

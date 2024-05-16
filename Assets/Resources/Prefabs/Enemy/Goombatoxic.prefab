@@ -68,6 +68,7 @@ MonoBehaviour:
   speed: 0.875
   deathTimer: -1
   terminalVelocity: -8
+  dontFallOffEdge: 0
 --- !u!212 &7523289063499453457
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -41,9 +41,6 @@ public class BulletBillMover : KillableEntity {
                 animator.enabled = false;
                 body.isKinematic = true;
                 return;
-            } else if (player.cobalting <= 0f && !Frozen && !dead) {
-                body.velocity = new(speed * (left ? -1 : 1), body.velocity.y);
-                body.isKinematic = false;
             }
         }
         if (Frozen) {
