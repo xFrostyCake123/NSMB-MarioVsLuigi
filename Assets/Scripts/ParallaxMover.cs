@@ -2,6 +2,9 @@
 
 public class ParallaxMover : MonoBehaviour {
     [SerializeField] protected float speed;
+    [SerializeField] protected bool noLimit;
+    [SerializeField] protected bool moveVertically;
+    [SerializeField] protected float verticalSpeed;
     protected Vector3 moveBy;
 
     public void OnValidate() {
@@ -9,12 +12,14 @@ public class ParallaxMover : MonoBehaviour {
     }
 
     public void Start() {
-        moveBy = new(speed, 0, 0);
+        moveBy = new(speed, moveVertically ? verticalSpeed : 0, 0);
+        if (!noLimit) {
         foreach (var mover in GetComponentsInParent<ParallaxMover>()) {
             if (mover.transform != transform) {
                 enabled = false;
                 break;
             }
+        }
         }
     }
 

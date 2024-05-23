@@ -7,7 +7,7 @@ using NSMB.Utils;
 public class PlayerAnimationController : MonoBehaviourPun {
 
     [SerializeField] private Avatar smallAvatar, largeAvatar;
-    [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle, glideParticle, shieldParticle, shieldReadyParticle, magmaReadyParticle;
+    [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle, glideParticle, shieldParticle, shieldReadyParticle, magmaReadyParticle, tideReadyParticle;
     [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell, squirrelHat, squirrelCoat, waterShield, starRod;
     [SerializeField] private Material glowMaterial;
     [SerializeField] private Color primaryColor = Color.clear, secondaryColor = Color.clear;
@@ -145,7 +145,12 @@ public class PlayerAnimationController : MonoBehaviourPun {
         SetParticleEmission(shieldParticle, !gameover && controller.inShield > 0);
         SetParticleEmission(shieldReadyParticle, !gameover && controller.state == Enums.PowerupState.WaterFlower && controller.onShieldCooldown <= 0);
         SetParticleEmission(magmaReadyParticle, !gameover && controller.state == Enums.PowerupState.MagmaFlower && controller.magmaGpCooldown <= 0);
-        
+        SetParticleEmission(tideReadyParticle, !gameover && controller.state == Enums.PowerupState.MagmaFlower && controller.tideWaveCooldown <= 0);
+        if (!controller.facingRight) {
+            glideParticle.transform.rotation = Quaternion.Euler(0, 180, 0);
+        } else {
+            glideParticle.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
         //Blinking
         if (controller.dead) {
             eyeState = Enums.PlayerEyeState.Death;
@@ -201,7 +206,6 @@ public class PlayerAnimationController : MonoBehaviourPun {
         animator.SetBool("facingRight", (left ^ right) ? right : controller.facingRight);
         animator.SetBool("flying", controller.flying);
         animator.SetBool("drill", controller.drill);
-        animator.SetBool("glide", controller.gliding);
 
         if (photonView.IsMine) {
             //Animation

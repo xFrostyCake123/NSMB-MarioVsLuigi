@@ -132,15 +132,14 @@ public AudioSource audioSource;
             Vector2 p = point.point + (point.normal * -0.15f);
             if (point.collider.gameObject.layer == Layers.LayerGround) {
                 Vector3Int tileLoc = Utils.WorldToTilemapPosition(p);
-                foreach (Tilemap tilemaps in FindObjectsOfType<Tilemap>()) {
-                    TileBase tile = tilemaps.GetTile(tileLoc);
-                    if (tile is InteractableTile it) {
-                        bool ret = it.Interact(this, InteractableTile.InteractionDirection.Up, Utils.TilemapToWorldPosition(tileLoc));
-                        destroySelf |= !ret;
-                    } else if (tile) {
-                        destroySelf = true;
-                    }
+                TileBase tile = GameManager.Instance.tilemap.GetTile(tileLoc);
+                if (tile is InteractableTile it) {
+                    bool ret = it.Interact(this, InteractableTile.InteractionDirection.Up, Utils.TilemapToWorldPosition(tileLoc));
+                    destroySelf |= !ret;
+                } else if (tile) {
+                    destroySelf = true;
                 }
+                
             }
         }
         return destroySelf;
@@ -307,7 +306,7 @@ public AudioSource audioSource;
             if (obj == gameObject)
                 continue;
 
-            if (obj.GetComponent<KillableEntity>() is KillableEntity en) {
+            if (obj.GetComponent<KillableEntity>() is KillableEntity en && !en.dead) {
                 en.photonView.RPC("SpecialKill", RpcTarget.All, transform.position.x < obj.transform.position.x, false, 0);
                 continue;
             }
