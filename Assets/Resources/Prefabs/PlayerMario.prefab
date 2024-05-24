@@ -34697,6 +34697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: -1
+  team: -1
   dead: 0
   spawned: 0
   Mario: 1

@@ -51,7 +51,7 @@ public static class Enums {
     #endregion
     #region SWITCH EVENTS
     public enum SwitchEvent : byte {
-        Move, Scale, EnableAndDisable, AllStar
+        Move, Scale, EnableAndDisable, AllStar, SpawnEnemies, ScaleEnemies, DestroyBlocks, CreateBlocks,
     }
     #endregion
     #region ANIMATION & MUSIC
@@ -209,6 +209,7 @@ public static class Enums {
         public static string GameState { get; } = "S";
         public static string Status { get; } = "St";
         public static string Spectator { get; } = "Sp";
+        public static string Team { get; } = "T";
     }
     public static class NetPlayerGameState {
         public static string Stars { get; } = "S";
@@ -256,6 +257,7 @@ public static class Enums {
         public static string FireballDamage { get; } = "Fd";
         public static string BalloonBattleGame { get; } = "Bb";
         public static string TeamsMatch { get; } = "Te";
+        public static string TeamCollision { get; } = "TeC";
         public static string FriendlyFire { get; } = "Fr";
         public static string ShareStars { get; } = "Sh";
         public static string RandomMap { get; } = "RandM";

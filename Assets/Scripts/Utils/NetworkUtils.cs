@@ -37,7 +37,7 @@ namespace NSMB.Utils {
             [Enums.NetRoomProperties.DeathmatchGame] = false,
             [Enums.NetRoomProperties.FireballDamage] = false,
             [Enums.NetRoomProperties.TeamsMatch] = false,
-            [Enums.NetRoomProperties.FriendlyFire] = false,
+            [Enums.NetRoomProperties.FriendlyFire] = 0,
             [Enums.NetRoomProperties.MirrorMode] = false,
             [Enums.NetRoomProperties.ProgressiveToRoulette] = false,
             [Enums.NetRoomProperties.DropReserve] = false,

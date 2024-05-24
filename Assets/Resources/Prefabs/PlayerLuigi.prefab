@@ -50706,6 +50706,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: -1
+  team: -1
   dead: 0
   spawned: 0
   Mario: 0
@@ -50825,6 +50826,7 @@ MonoBehaviour:
   cantGrabStar: 0
   cantDoKnockback: 0
   magmaGpCooldown: 0
+  tideWaveCooldown: 0
   invincible: 0
   metal: 0
   cobalting: 0
@@ -50876,6 +50878,7 @@ MonoBehaviour:
   shieldParticle: {fileID: 1599305166526208216}
   shieldReadyParticle: {fileID: 415619719434563194}
   magmaReadyParticle: {fileID: 2281414138274568442}
+  tideReadyParticle: {fileID: 0}
   models: {fileID: 4741703498087908288}
   smallModel: {fileID: 1717812904357955791}
   largeModel: {fileID: 3839069354041722077}

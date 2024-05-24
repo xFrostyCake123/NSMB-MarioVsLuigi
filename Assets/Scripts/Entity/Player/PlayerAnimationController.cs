@@ -145,7 +145,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         SetParticleEmission(shieldParticle, !gameover && controller.inShield > 0);
         SetParticleEmission(shieldReadyParticle, !gameover && controller.state == Enums.PowerupState.WaterFlower && controller.onShieldCooldown <= 0);
         SetParticleEmission(magmaReadyParticle, !gameover && controller.state == Enums.PowerupState.MagmaFlower && controller.magmaGpCooldown <= 0);
-        SetParticleEmission(tideReadyParticle, !gameover && controller.state == Enums.PowerupState.MagmaFlower && controller.tideWaveCooldown <= 0);
+        SetParticleEmission(tideReadyParticle, !gameover && controller.state == Enums.PowerupState.TideFlower && controller.tideWaveCooldown <= 0);
         if (!controller.facingRight) {
             glideParticle.transform.rotation = Quaternion.Euler(0, 180, 0);
         } else {

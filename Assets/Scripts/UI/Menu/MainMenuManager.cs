@@ -24,18 +24,18 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public GameObject lobbiesContent, lobbyPrefab;
     bool quit, validName;
     public GameObject connecting;
-    public GameObject title, bg, mainMenu, optionsMenu, lobbyMenu, createLobbyPrompt, inLobbyMenu, creditsMenu, controlsMenu, privatePrompt, updateBox, bonusSettingsPrompt, powerupsPrompt;
+    public GameObject title, bg, mainMenu, optionsMenu, lobbyMenu, createLobbyPrompt, inLobbyMenu, creditsMenu, controlsMenu, privatePrompt, updateBox, bonusSettingsPrompt, powerupsPrompt, frostypediaMenu, menuTogglesMenu, powerupGuideMenu, welcomePrompt;
     public GameObject[] levelCameraPositions;
     public GameObject randomMapCameraPosition;
     public GameObject sliderText, lobbyText, currentMaxPlayers, settingsPanel;
-    public TMP_Dropdown levelDropdown, characterDropdown, startingPowerupDropdown, startingReserveDropdown;
+    public TMP_Dropdown levelDropdown, characterDropdown, startingPowerupDropdown, startingReserveDropdown, friendlyFireDropdown, teamDropdown;
     public RoomIcon selectedRoomIcon, privateJoinRoom;
     public Button joinRoomBtn, createRoomBtn, startGameBtn;
-    public Toggle randomMapToggle, ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, nsmbPowerups, tenPlayersPowerups, timedPowerups, wiiPowerups, oneUpMushToggle, cobaltToggle, acornToggle, tideToggle, magmaToggle, blueShellToggle, fireToggle, miniToggle, starmanToggle, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, reserveDropToggle, mapCoinsToggle, teamToggle, mirrorModeToggle, friendlyFireToggle, fireballToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
+    public Toggle randomMapToggle, ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, nsmbPowerups, tenPlayersPowerups, timedPowerups, wiiPowerups, oneUpMushToggle, cobaltToggle, acornToggle, tideToggle, magmaToggle, blueShellToggle, fireToggle, miniToggle, starmanToggle, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, reserveDropToggle, mapCoinsToggle, teamToggle, mirrorModeToggle, fireballToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
     public GameObject playersContent, playersPrefab, chatContent, chatPrefab;
     public TMP_InputField nicknameField, starsText, coinsText, livesField, timeField, lobbyJoinField, chatTextField;
     public Slider musicSlider, sfxSlider, masterSlider, lobbyPlayersSlider, changePlayersSlider;
-    public GameObject mainMenuSelected, optionsSelected, lobbySelected, currentLobbySelected, createLobbySelected, creditsSelected, controlsSelected, privateSelected, reconnectSelected, updateBoxSelected, bonusSelected, powerupsSelected;
+    public GameObject mainMenuSelected, optionsSelected, lobbySelected, currentLobbySelected, createLobbySelected, creditsSelected, controlsSelected, privateSelected, reconnectSelected, updateBoxSelected, bonusSelected, powerupsSelected, frostypediaSelected, togglesMenuSelected, powerupGuideSelected;
     public GameObject errorBox, errorButton, rebindPrompt, reconnectBox;
     public TMP_Text errorText, rebindCountdown, rebindText, reconnectText, updateText;
     public TMP_Dropdown region;
@@ -55,6 +55,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public List<string> maps, debugMaps;
     public List<string> MapNotes, MapNoteColor, MapSetColor;
     public List<string> startPowerups, startReserves;
+    public List<string> friendlyFireTypes;
 
     private bool pingsReceived, joinedLate;
     private List<string> formattedRegions;
@@ -243,7 +244,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.OneUpMush, Change1upMush);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.PropellerMush, ChangePropeller);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.TeamsMatch, ChangeTeamsMatch);
-        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.FriendlyFire, ChangeFriendlyFire);
+        AttemptToUpdateProperty<int>(updatedProperties, Enums.NetRoomProperties.FriendlyFire, ChangeFriendlyFireType);
         AttemptToUpdateProperty<string>(updatedProperties, Enums.NetRoomProperties.HostName, ChangeLobbyHeader);
     }
 
@@ -337,6 +338,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public void OnLeftRoom() {
         OpenLobbyMenu();
         ClearChat();
+        welcomePrompt.SetActive(false);
         GlobalController.Instance.DiscordController.UpdateActivity();
     }
     public void OnJoinRandomFailed(short reasonId, string reasonMessage) {
@@ -458,6 +460,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         levelDropdown.AddOptions(maps);
         startingPowerupDropdown.AddOptions(startPowerups);
         startingReserveDropdown.AddOptions(startReserves);
+        friendlyFireDropdown.AddOptions(friendlyFireTypes);
         LoadSettings(!PhotonNetwork.InRoom);
 
         //Photon stuff.
@@ -635,7 +638,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         GlobalController.Instance.DiscordController.UpdateActivity();
 
         Utils.GetCustomProperty(Enums.NetPlayerProperties.Spectator, out bool spectating, PhotonNetwork.LocalPlayer.CustomProperties);
+        Utils.GetCustomProperty(Enums.NetPlayerProperties.Team, out int team, PhotonNetwork.LocalPlayer.CustomProperties);
         spectateToggle.isOn = spectating;
+        teamDropdown.value = team;
         chatTextField.SetTextWithoutNotify("");
     }
 
@@ -659,6 +664,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
         powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(mainMenuSelected);
     }
@@ -676,6 +684,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         updateBox.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
         powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(mainMenuSelected);
 
@@ -693,6 +704,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
         powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(false);
 
         foreach (RoomIcon room in currentRooms.Values)
             room.UpdateUI(room.room);
@@ -712,6 +726,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
         powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(false);
 
         privateToggle.isOn = false;
 
@@ -730,6 +747,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
         powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(optionsSelected);
     }
@@ -746,6 +766,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
         powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(controlsSelected);
     }
@@ -762,6 +785,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
         powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(creditsSelected);
     }
@@ -778,8 +804,68 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         privatePrompt.SetActive(false);
         bonusSettingsPrompt.SetActive(false);
         powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(currentLobbySelected);
+    }
+    public void OpenFrostypediaMenu() {
+        title.SetActive(false);
+        bg.SetActive(true);
+        mainMenu.SetActive(false);
+        optionsMenu.SetActive(false);
+        controlsMenu.SetActive(false);
+        lobbyMenu.SetActive(false);
+        createLobbyPrompt.SetActive(false);
+        inLobbyMenu.SetActive(false);
+        creditsMenu.SetActive(false);
+        privatePrompt.SetActive(false);
+        bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(true);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(false);
+
+        EventSystem.current.SetSelectedGameObject(frostypediaSelected);
+    }
+    public void OpenMenuTogglesMenu() {
+        title.SetActive(false);
+        bg.SetActive(true);
+        mainMenu.SetActive(false);
+        optionsMenu.SetActive(false);
+        controlsMenu.SetActive(false);
+        lobbyMenu.SetActive(false);
+        createLobbyPrompt.SetActive(false);
+        inLobbyMenu.SetActive(false);
+        creditsMenu.SetActive(false);
+        privatePrompt.SetActive(false);
+        bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(true);
+        powerupGuideMenu.SetActive(false);
+
+        EventSystem.current.SetSelectedGameObject(togglesMenuSelected);
+    }
+    public void OpenPowerupsGuide() {
+        title.SetActive(false);
+        bg.SetActive(true);
+        mainMenu.SetActive(false);
+        optionsMenu.SetActive(false);
+        controlsMenu.SetActive(false);
+        lobbyMenu.SetActive(false);
+        createLobbyPrompt.SetActive(false);
+        inLobbyMenu.SetActive(false);
+        creditsMenu.SetActive(false);
+        privatePrompt.SetActive(false);
+        bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(true);
+
+        EventSystem.current.SetSelectedGameObject(powerupGuideSelected);
     }
     public void OpenBonusSettingsPrompt() {
         bonusSettingsPrompt.SetActive(true);
@@ -919,7 +1005,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public void ChangeLevel(int index) {
         levelDropdown.SetValueWithoutNotify(index);
         Utils.GetCustomProperty(Enums.NetRoomProperties.GameStarted, out bool started);
-        if (!started && randomMapToggle.isOn) {
+        if (randomMapToggle.isOn) {
             LocalChatMessage("Map set to: " + " ? ? ? ", Color.red);
             LocalChatMessage("" + " ? ? ? ", Color.blue);
         } else {
@@ -982,6 +1068,38 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
             [Enums.NetRoomProperties.GameStartReserve] = startingReserveDropdown.value
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(table);
+    }
+    public void ChangeFriendlyFireType(int index) {
+        friendlyFireDropdown.SetValueWithoutNotify(index);
+        LocalChatMessage("Friendly fire type set to: " + friendlyFireDropdown.options[index].text, Color.blue);
+    }
+    public void SetFriendlyFireType() {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        int newFFTIndex = friendlyFireDropdown.value;
+        if (newFFTIndex == (int) PhotonNetwork.CurrentRoom.CustomProperties[Enums.NetRoomProperties.FriendlyFire])
+            return;
+
+        //ChangeFriendlyFireType(newFFTIndex);
+
+        Hashtable table = new() {
+            [Enums.NetRoomProperties.FriendlyFire] = friendlyFireDropdown.value
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(table);
+    }
+    public void ChangeTeam(int index) {
+        teamDropdown.SetValueWithoutNotify(index);
+    }
+    public void SetTeam() {
+        int newTeamIndex = teamDropdown.value;
+
+        //ChangeTeam(newTeamIndex);
+
+        Hashtable prop = new() {
+            { Enums.NetPlayerProperties.Team, teamDropdown.value }
+        };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(prop);
     }
     public void ChangeRandomMap(bool value) {
         randomMapToggle.SetIsOnWithoutNotify(value);
@@ -1086,6 +1204,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         livesField.interactable = PhotonNetwork.IsMasterClient && livesEnabled.isOn;
         timeField.interactable = PhotonNetwork.IsMasterClient && timeEnabled.isOn;
         drawTimeupToggle.interactable = PhotonNetwork.IsMasterClient && timeEnabled.isOn;
+        teamDropdown.interactable = teamToggle.isOn;
 
         Utils.GetCustomProperty(Enums.NetRoomProperties.Debug, out bool debug);
         privateToggleRoom.interactable = PhotonNetwork.IsMasterClient && !debug;
@@ -1388,7 +1507,6 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         Settings.Instance.skin = index;
         Settings.Instance.SaveSettingsToPreferences();
     }
-
     private void UpdateNickname() {
         validName = PhotonNetwork.NickName.IsValidUsername();
         if (!validName) {
@@ -1834,18 +1952,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
     }
-     public void ChangeFriendlyFire(bool value) {
-        friendlyFireToggle.SetIsOnWithoutNotify(value);
-    }
-    public void SetFriendlyFire(Toggle toggle) {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
-
-        Hashtable properties = new() {
-            [Enums.NetRoomProperties.FriendlyFire] = toggle.isOn
-        };
-        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
-    }
+    
     public int ParseTimeToSeconds(string time) {
 
         int minutes;
