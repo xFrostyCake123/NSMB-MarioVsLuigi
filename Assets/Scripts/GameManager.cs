@@ -33,13 +33,13 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     }
 
     public MusicData mainMusic, invincibleMusic, megaMushroomMusic, metalCapMusic, cobaltStarMusic, switchEventMusic;
+    public TeamController teamController;
 
     public int levelMinTileX, levelMinTileY, levelWidthTile, levelHeightTile;
     public float cameraMinY, cameraHeightY, cameraMinX = -1000, cameraMaxX = 1000;
     public bool loopingLevel = true, verticalLoopingLevel = false, raceLevel = false, sppLevel = false;
-    public bool matchCancelled;
     public bool inSwitchEvent;
-    public TMP_ColorGradient matchCancelGradient, drawGameGradient;
+    public TMP_ColorGradient matchCancelGradient, drawGameGradient, colorableTeamGradient;
     public Slider masterSlider, musicSlider, sfxSlider;
     public Toggle ndsResolutionToggle, aspectToggle;
     public Vector3 spawnpoint;
@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
 
     public int playerCount = 1;
     public List<PlayerController> players = new();
+    public int redTeamStars, yellowTeamStars, greenTeamStars, blueTeamStars, purpleTeamStars;
     public EnemySpawnpoint[] enemySpawnpoints;
 
     private GameObject[] coins;
@@ -635,18 +636,35 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         music.Stop();
         GameObject text = GameObject.FindWithTag("wintext");
         Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamsOn);
-        var winnerCharacterIndex = -1;
+        var winnerTeamIndex = -1;
+        bool red = winnerTeamIndex == 0;
+        bool yellow = winnerTeamIndex == 1;
+        bool green = winnerTeamIndex == 2;
+        bool blue = winnerTeamIndex == 3;
+        
+        string teamName = "Purple ";
+        if (red) {
+            teamName = "Red ";
+        } else if (yellow) {
+            teamName = "Yellow ";
+        } else if (green) {
+            teamName = "green ";
+        } else if (blue) {
+            teamName = "blue ";
+        } 
         if (winner != null && teamsOn)
         {
-            winnerCharacterIndex = (int)winner.CustomProperties[Enums.NetPlayerProperties.Character];
-            text.GetComponent<TMP_Text>().text = "The " + GlobalController.Instance.characters[winnerCharacterIndex].characterName + "Team" + "\n" + "Wins!";      
-            text.GetComponent<TMP_Text>().colorGradientPreset = GlobalController.Instance.characters[winnerCharacterIndex].readyTextGradient; 
+            winnerTeamIndex = (int)winner.CustomProperties[Enums.NetPlayerProperties.Team];
+            text.GetComponent<TMP_Text>().text = "The " + teamName + "Team" + "\n" + "Wins!";      
+            text.GetComponent<TMP_Text>().colorGradientPreset = colorableTeamGradient;
+            text.GetComponent<TMP_Text>().color = Utils.GetPlayerColor(winner);
+    
         } else {
-            text.GetComponent<TMP_Text>().text = winner != null ? $"{ winner.GetUniqueNickname() } Wins!" : matchCancelled ? "The Match was" + "\n" + "Cancelled..." : "It's a draw...";
+            text.GetComponent<TMP_Text>().text = winner != null ? $"{ winner.GetUniqueNickname() } Wins!" : "It's a draw...";
         }
-        if (matchCancelled) {
+        bool badStart = winner == null;
+        if (badStart) {
             text.GetComponent<Animator>().SetTrigger("badstart");
-            text.GetComponent<TMP_Text>().colorGradientPreset = matchCancelGradient;
         } else {
             text.GetComponent<Animator>().SetTrigger("start");
         }
@@ -658,11 +676,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         mixer.SetFloat("MusicPitch", 1f);
         
         bool win = winner != null && winner.IsLocal;
-        bool marioWin = winnerCharacterIndex == 0;
-        bool luigiWin = winnerCharacterIndex == 1;
-        bool toadetteWin = winnerCharacterIndex == 2;
-        bool draw = winner == null && !matchCancelled;
-        PlayerController winningTeammate = localPlayer.GetComponent<PlayerController>();
+        bool draw = winner == null;
         int secondsUntilMenu;
         secondsUntilMenu = draw ? 5 : teamsOn ? 5 : 4;
         
@@ -670,13 +684,11 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             text.GetComponent<TMP_Text>().colorGradientPreset = drawGameGradient;
         }
 
-        if (draw && !matchCancelled)
+        if (draw)
             music.PlayOneShot(Enums.Sounds.UI_Match_Draw.GetClip());
-        else if (matchCancelled)
-            music.PlayOneShot(Enums.Sounds.UI_Match_Cancelled.GetClip());
         else if (win && !teamsOn)
             music.PlayOneShot(Enums.Sounds.UI_Match_Win.GetClip());
-        else if (teamsOn && (marioWin && winningTeammate.Mario) || (luigiWin && winningTeammate.Luigi) || (toadetteWin && winningTeammate.Toadette))
+        else if (teamsOn && winnerTeamIndex == (int)PhotonNetwork.LocalPlayer.CustomProperties[Enums.NetPlayerProperties.Team])
             music.PlayOneShot(Enums.Sounds.UI_Match_Team_Win.GetClip());
         else
             music.PlayOneShot(Enums.Sounds.UI_Match_Lose.GetClip());
@@ -744,6 +756,12 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             }
         }
 
+        redTeamStars = teamController.GetTeamStars(0);
+        yellowTeamStars = teamController.GetTeamStars(1);
+        greenTeamStars = teamController.GetTeamStars(2);
+        blueTeamStars = teamController.GetTeamStars(3);
+        purpleTeamStars = teamController.GetTeamStars(4);
+
         if (started && musicEnabled) {
             bool allNull = true;
             foreach (PlayerController controller in players) {
@@ -777,6 +795,10 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         int winningStars = -1;
         List<PlayerController> winningPlayers = new();
         List<PlayerController> alivePlayers = new();
+        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamsMode);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.ShareStars, out int sharingStars);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool deathmatch);
+        bool sharing = sharingStars == 1;
         foreach (var player in players) {
             if (player == null || player.lives == 0)
                 continue;
@@ -784,11 +806,13 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             alivePlayers.Add(player);
 
             if ((starGame && player.stars >= starRequirement) || timeUp) {
-                Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool deathmatch);
                 if (deathmatch) // deathmatch makes stars not give you the win
                     return;
+                
+                
                 //we're in a state where this player would win.
                 //check if someone has more stars
+                
                 if (player.stars > winningStars) {
                     winningPlayers.Clear();
                     winningStars = player.stars;
@@ -796,6 +820,57 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 } else if (player.stars == winningStars) {
                     winningPlayers.Add(player);
                 }
+                
+            }
+        }
+        if (teamsMode && sharing) {
+            if (deathmatch)
+                return;
+
+            if (redTeamStars > winningStars) {
+                winningPlayers.Clear();
+                winningStars = redTeamStars;
+                foreach (PlayerController red in teamController.redTeamMembers)
+                    winningPlayers.Add(red);
+            } else if (redTeamStars == winningStars) {
+                foreach (PlayerController red in teamController.redTeamMembers)
+                    winningPlayers.Add(red);
+            }
+            if (yellowTeamStars > winningStars) {
+                winningPlayers.Clear();
+                winningStars = yellowTeamStars;
+                foreach (PlayerController yellow in teamController.yellowTeamMembers)
+                    winningPlayers.Add(yellow);
+            } else if (yellowTeamStars == winningStars) {
+                foreach (PlayerController yellow in teamController.yellowTeamMembers)
+                    winningPlayers.Add(yellow);
+            }
+            if (greenTeamStars > winningStars) {
+                winningPlayers.Clear();
+                winningStars = greenTeamStars;
+                foreach (PlayerController green in teamController.greenTeamMembers)
+                    winningPlayers.Add(green);
+            } else if (greenTeamStars == winningStars) {
+                foreach (PlayerController green in teamController.greenTeamMembers)
+                    winningPlayers.Add(green);
+            }
+            if (blueTeamStars > winningStars) {
+                winningPlayers.Clear();
+                winningStars = blueTeamStars;
+                foreach (PlayerController blue in teamController.blueTeamMembers)
+                    winningPlayers.Add(blue);
+            } else if (blueTeamStars == winningStars) {
+                foreach (PlayerController blue in teamController.blueTeamMembers)
+                    winningPlayers.Add(blue);
+            }
+            if (purpleTeamStars > winningStars) {
+                winningPlayers.Clear();
+                winningStars = purpleTeamStars;
+                foreach (PlayerController purple in teamController.purpleTeamMembers)
+                    winningPlayers.Add(purple);
+            } else if (purpleTeamStars == winningStars) {
+                foreach (PlayerController purple in teamController.purpleTeamMembers)
+                    winningPlayers.Add(purple);
             }
         }
         //LIVES CHECKS
@@ -803,7 +878,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             //everyone's dead...? ok then, draw?
             PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, null, NetworkUtils.EventAll, SendOptions.SendReliable);
             return;
-        } else if (alivePlayers.Count == 1 && playerCount >= 2) {
+        } else if ((alivePlayers.Count == 1 || (teamsMode && alivePlayers.Count != 0 && alivePlayers.All(player => teamController.IsPlayerTeammate(alivePlayers[0], player)))) && playerCount >= 2) {
             //one player left alive (and not in a solo game). winner!
             PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, alivePlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
             return;
@@ -815,17 +890,21 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             if (draw)
                 // it's a draw! Thanks for playing the demo!
                 PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, null, NetworkUtils.EventAll, SendOptions.SendReliable);
+            else if (winningPlayers.Count == 1 || (teamsMode && alivePlayers.Count != 0 && alivePlayers.All(player => teamController.IsPlayerTeammate(alivePlayers[0], player))))
+                PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, winningPlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
+
+            return;
+        }
+        
+        if (starGame && winningStars >= starRequirement) {
+            if (teamsMode && winningPlayers.Count >= 1)
+                PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, winningPlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
             else if (winningPlayers.Count == 1)
                 PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, winningPlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
 
             return;
         }
-        if (starGame && winningStars >= starRequirement) {
-            if (winningPlayers.Count == 1)
-                PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, winningPlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
-
-            return;
-        }
+        
     }
 
     private void PlaySong(Enums.MusicState state, MusicData musicToPlay) {
@@ -861,6 +940,17 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             if (player.lives == 1 && players.Count <= 2)
                 speedup = true;
         }
+
+        if ((redTeamStars + 1f) / starRequirement >= 0.95f || hurryup != false)
+            speedup = true;
+        if ((yellowTeamStars + 1f) / starRequirement >= 0.95f || hurryup != false)
+            speedup = true;
+        if ((greenTeamStars + 1f) / starRequirement >= 0.95f || hurryup != false)
+            speedup = true;
+        if ((blueTeamStars + 1f) / starRequirement >= 0.95f || hurryup != false)
+            speedup = true;
+        if ((purpleTeamStars + 1f) / starRequirement >= 0.95f || hurryup != false)
+            speedup = true;
 
         switchMusic = inSwitchEvent;
         
@@ -959,7 +1049,6 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public void HostEndMatch() {
         pauseUI.SetActive(false);
         sfx.PlayOneShot(Enums.Sounds.UI_Decide.GetClip());
-        matchCancelled = true;
         PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, null, NetworkUtils.EventAll, SendOptions.SendReliable);
     }
 

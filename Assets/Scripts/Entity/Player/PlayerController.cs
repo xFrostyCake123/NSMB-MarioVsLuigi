@@ -272,18 +272,30 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
     public void OnPreNetDestroy(PhotonView rootView) {
         GameManager.Instance.players.Remove(this);
+        if (team == 0)
+            GameManager.Instance.teamController.redTeamMembers.Remove(this);
+        if (team == 1)
+            GameManager.Instance.teamController.yellowTeamMembers.Remove(this);
+        if (team == 2)
+            GameManager.Instance.teamController.greenTeamMembers.Remove(this);
+        if (team == 3)
+            GameManager.Instance.teamController.blueTeamMembers.Remove(this);
+        if (team == 4)
+            GameManager.Instance.teamController.purpleTeamMembers.Remove(this);
     }
 
     public void Start() {
         hitboxes = GetComponents<BoxCollider2D>();
         trackIcon = UIUpdater.Instance.CreatePlayerIcon(this);
         transform.position = body.position = GameManager.Instance.spawnpoint;
-        Utils.GetCustomProperty(Enums.NetPlayerProperties.Team, out int chosenTeam);
+        Utils.GetCustomProperty(Enums.NetPlayerProperties.Team, out int chosenTeam, photonView.Owner.CustomProperties);
         team = chosenTeam;
 
         LoadFromGameState();
         spawned = true;
         cameraController.Recenter();
+        
+        GameManager.Instance.teamController.AddPlayerToTeam(this);
     }
 
     public void OnDestroy() {
@@ -1796,10 +1808,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         if (deathmatch)
             return;
         stars = Mathf.Min(newCount, GameManager.Instance.starRequirement);
+        GameManager.Instance.teamController.CalculateTeamStars();
         UpdateGameState();
 
         //game mechanics
         GameManager.Instance.CheckForWinner();
+        
     }
 
     [PunRPC]
@@ -1911,6 +1925,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             amount--;
         }
         GameManager.Instance.CheckForWinner();
+        GameManager.Instance.teamController.CalculateTeamStars();
         UpdateGameState();
     }
     #endregion

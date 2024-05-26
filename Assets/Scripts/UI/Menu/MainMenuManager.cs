@@ -28,7 +28,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public GameObject[] levelCameraPositions;
     public GameObject randomMapCameraPosition;
     public GameObject sliderText, lobbyText, currentMaxPlayers, settingsPanel;
-    public TMP_Dropdown levelDropdown, characterDropdown, startingPowerupDropdown, startingReserveDropdown, friendlyFireDropdown, teamDropdown;
+    public TMP_Dropdown levelDropdown, characterDropdown, startingPowerupDropdown, startingReserveDropdown, friendlyFireDropdown, teamDropdown, starSharingDropdown;
     public RoomIcon selectedRoomIcon, privateJoinRoom;
     public Button joinRoomBtn, createRoomBtn, startGameBtn;
     public Toggle randomMapToggle, ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, nsmbPowerups, tenPlayersPowerups, timedPowerups, wiiPowerups, oneUpMushToggle, cobaltToggle, acornToggle, tideToggle, magmaToggle, blueShellToggle, fireToggle, miniToggle, starmanToggle, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, reserveDropToggle, mapCoinsToggle, teamToggle, mirrorModeToggle, fireballToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
@@ -245,6 +245,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.PropellerMush, ChangePropeller);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.TeamsMatch, ChangeTeamsMatch);
         AttemptToUpdateProperty<int>(updatedProperties, Enums.NetRoomProperties.FriendlyFire, ChangeFriendlyFireType);
+        AttemptToUpdateProperty<int>(updatedProperties, Enums.NetRoomProperties.ShareStars, ChangeStarSharing);
         AttemptToUpdateProperty<string>(updatedProperties, Enums.NetRoomProperties.HostName, ChangeLobbyHeader);
     }
 
@@ -461,6 +462,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         startingPowerupDropdown.AddOptions(startPowerups);
         startingReserveDropdown.AddOptions(startReserves);
         friendlyFireDropdown.AddOptions(friendlyFireTypes);
+        if (PhotonNetwork.PlayerList.Contains(PhotonNetwork.LocalPlayer)) {
+            welcomePrompt.SetActive(false);
+        }
         LoadSettings(!PhotonNetwork.InRoom);
 
         //Photon stuff.
@@ -1085,6 +1089,25 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
 
         Hashtable table = new() {
             [Enums.NetRoomProperties.FriendlyFire] = friendlyFireDropdown.value
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(table);
+    }
+    public void ChangeStarSharing(int index) {
+        starSharingDropdown.SetValueWithoutNotify(index);
+        LocalChatMessage("Star sharing type set to: " + starSharingDropdown.options[index].text, Color.blue);
+    }
+    public void SetStarSharing() {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        int newStarIndex = starSharingDropdown.value;
+        if (newStarIndex == (int) PhotonNetwork.CurrentRoom.CustomProperties[Enums.NetRoomProperties.ShareStars])
+            return;
+
+        //ChangeStarSharing(newStarIndex);
+
+        Hashtable table = new() {
+            [Enums.NetRoomProperties.ShareStars] = starSharingDropdown.value
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(table);
     }

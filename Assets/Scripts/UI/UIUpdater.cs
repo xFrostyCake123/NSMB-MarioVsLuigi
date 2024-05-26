@@ -13,13 +13,14 @@ public class UIUpdater : MonoBehaviour {
     public GameObject playerTrackTemplate, starTrackTemplate;
     public PlayerController player;
     public Sprite storedItemNull;
-    public TMP_Text uiStars, uiCoins, uiDebug, uiLives, uiCountdown;
+    public TMP_Text uiStars, uiCoins, uiDebug, uiLives, uiCountdown, redStars, yellowStars, greenStars, blueStars, purpleStars;
     public Image itemReserve, itemColor;
     public GameObject cobaltEffect, protectedCobaltEffect;
     public float pingSample = 0;
 
     private Material timerMaterial;
     private GameObject starsParent, coinsParent, livesParent, timerParent;
+    public GameObject teamsHeader;
     private readonly List<Image> backgrounds = new();
     private bool uiHidden;
 
@@ -77,6 +78,36 @@ public class UIUpdater : MonoBehaviour {
         if (deathmatch)
             starsParent.SetActive(false);
 
+        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamsGame);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.ShareStars, out int starSharing);
+        if (!teamsGame || starSharing != 1) 
+            teamsHeader.SetActive(false);
+
+        if (GameManager.Instance.teamController.redTeamMembers.Count == 0)
+            redStars.transform.parent.gameObject.SetActive(false);
+        else if (GameManager.Instance.teamController.redTeamMembers.Count > 0)
+            redStars.transform.parent.gameObject.SetActive(true);
+
+        if (GameManager.Instance.teamController.yellowTeamMembers.Count == 0)
+            yellowStars.transform.parent.gameObject.SetActive(false);
+        else if (GameManager.Instance.teamController.yellowTeamMembers.Count > 0)
+            yellowStars.transform.parent.gameObject.SetActive(true);
+
+        if (GameManager.Instance.teamController.greenTeamMembers.Count == 0)
+            greenStars.transform.parent.gameObject.SetActive(false);
+        else if (GameManager.Instance.teamController.greenTeamMembers.Count > 0)
+            greenStars.transform.parent.gameObject.SetActive(true);
+
+        if (GameManager.Instance.teamController.blueTeamMembers.Count == 0)
+            blueStars.transform.parent.gameObject.SetActive(false);
+        else if (GameManager.Instance.teamController.blueTeamMembers.Count > 0)
+            blueStars.transform.parent.gameObject.SetActive(true);
+
+        if (GameManager.Instance.teamController.purpleTeamMembers.Count == 0)
+            purpleStars.transform.parent.gameObject.SetActive(false);
+        else if (GameManager.Instance.teamController.purpleTeamMembers.Count > 0)
+            purpleStars.transform.parent.gameObject.SetActive(true);
+            
         if (uiHidden)
             ToggleUI(false);
 
@@ -122,6 +153,11 @@ public class UIUpdater : MonoBehaviour {
         } else {
             livesParent.SetActive(false);
         }
+        redStars.text = Utils.GetSymbolString("" + GameManager.Instance.redTeamStars);
+        yellowStars.text = Utils.GetSymbolString("" + GameManager.Instance.yellowTeamStars);
+        greenStars.text = Utils.GetSymbolString("" + GameManager.Instance.greenTeamStars);
+        blueStars.text = Utils.GetSymbolString("" + GameManager.Instance.blueTeamStars);
+        purpleStars.text = Utils.GetSymbolString("" + GameManager.Instance.purpleTeamStars);
 
         if (GameManager.Instance.timedGameDuration > 0) {
             int seconds = Mathf.CeilToInt((GameManager.Instance.endServerTime - PhotonNetwork.ServerTimestamp) / 1000f);
