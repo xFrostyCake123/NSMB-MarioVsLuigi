@@ -34739,7 +34739,10 @@ MonoBehaviour:
   surfWave: {fileID: 0}
   waterBomb: {fileID: 0}
   cameraController: {fileID: 0}
+  currentCamArea: {fileID: 0}
   fadeOut: {fileID: 0}
+  itemLimit: 3
+  itemLimitTrigger: 0
   sfx: {fileID: 0}
   sfxBrick: {fileID: 0}
   body: {fileID: 0}
@@ -34813,11 +34816,12 @@ MonoBehaviour:
   starspinTimer: 0
   starspin: 0
   onStarspinCooldown: 0
-  boostDuration: 0
+  boosting: 0
   cantGrabStar: 0
   cantDoKnockback: 0
   magmaGpCooldown: 0
   tideWaveCooldown: 0
+  shrunk: 0
   invincible: 0
   metal: 0
   cobalting: 0

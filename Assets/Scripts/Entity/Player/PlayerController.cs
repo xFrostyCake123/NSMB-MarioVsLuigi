@@ -35,7 +35,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     public GameObject surfWave = null, waterBomb;
 
     public CameraController cameraController;
+    public CameraArea currentCamArea;
     public FadeOutManager fadeOut;
+    public int itemLimit = 3, itemLimitTrigger;
 
     public AudioSource sfx, sfxBrick;
     private Animator animator;
@@ -44,7 +46,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     public PlayerAnimationController AnimationController { get; private set; }
 
     public bool onGround, previousOnGround, crushGround, doGroundSnap, jumping, properJump, hitRoof, skidding, turnaround, facingRight = true, singlejump, doublejump, triplejump, bounce, crouching, groundpound, groundpoundLastFrame, sliding, knockback, hitBlock, running, functionallyRunning, jumpHeld, flying, drill, inShell, hitLeft, hitRight, stuckInBlock, alreadyStuckInBlock, propeller, usedPropellerThisJump, squirrel, usedSquirrelThisJump, usedSquirrelHang, usedStarSpinThisJump, stationaryGiantEnd, fireballKnockback, startedSliding, canShootProjectile, gliding, cannotUseStartReserve, gotCheckpoint, ridingWave, runningOnWater, inWater, inWaterCurrent;
-    public float jumpLandingTimer, landing, koyoteTime, groundpoundCounter, groundpoundStartTimer, pickupTimer, groundpoundDelay, hitInvincibilityCounter, powerupFlash, throwInvincibility, jumpBuffer, giantStartTimer, giantEndTimer, propellerTimer, propellerSpinTimer, fireballTimer, squirrelTimer, squirrelWallSlide, inShield, onShieldCooldown, starspinTimer, starspin, onStarspinCooldown, boostDuration, cantGrabStar, cantDoKnockback, magmaGpCooldown, tideWaveCooldown;
+    public float jumpLandingTimer, landing, koyoteTime, groundpoundCounter, groundpoundStartTimer, pickupTimer, groundpoundDelay, hitInvincibilityCounter, powerupFlash, throwInvincibility, jumpBuffer, giantStartTimer, giantEndTimer, propellerTimer, propellerSpinTimer, fireballTimer, squirrelTimer, squirrelWallSlide, inShield, onShieldCooldown, starspinTimer, starspin, onStarspinCooldown, boosting, cantGrabStar, cantDoKnockback, magmaGpCooldown, tideWaveCooldown, shrunk;
     public float invincible, metal, cobalting, giantTimer, floorAngle, knockbackTimer, pipeTimer, slowdownTimer;
 
     //MOVEMENT STAGES
@@ -825,6 +827,14 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             }
             break;
         }
+        case "CameraArea": {
+            CameraArea cam = obj.GetComponent<CameraArea>();
+            if (currentCamArea = cam)
+                return;
+
+            cam.SetCameraBounds(this);
+            break;
+        }
         }
 
         OnTriggerStay2D(collider);
@@ -1432,7 +1442,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         GameObject boostObject = gameObject;
         BoostPad pad = boostObject.GetComponentInParent<BoostPad>();
 
-        boostDuration = pad.boostDuration;
+        boosting = pad.boostDuration;
 
     }
 
@@ -1443,6 +1453,15 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         if (storedPowerup == null || dead || !spawned) {
             PlaySound(Enums.Sounds.UI_Error);
             return;
+        }
+        if (GameManager.Instance.raceLevel) {
+            if (storedPowerup.name == "FireFlower" || storedPowerup.name == "IceFlower") {
+                CreateItem();
+                return;
+            } else {
+                photonView.RPC(nameof(CreateItem), RpcTarget.All);
+                return;
+            }
         }
 
         photonView.RPC(nameof(SpawnReserveItem), RpcTarget.All);
@@ -1884,7 +1903,71 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         storedPowerup = null;
         UpdateGameState();
     }
+    [PunRPC]
+    public void CreateItem() {
+        if (!photonView.IsMine)
+            return;
 
+        Powerup item = storedPowerup;
+
+        if (item == null)
+            return;
+
+        switch (item.name) {
+            case "FireFlower":
+            case "IceFlower": {
+                bool fire = item.name.Contains("FireFlower");
+                bool ice = item.name.Contains("IceFlower");
+    
+                string projectile = ice ? "Iceball" : "Fireball";
+                Enums.Sounds sound = ice ? Enums.Sounds.Powerup_Iceball_Shoot : Enums.Sounds.Powerup_Fireball_Shoot;
+                Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
+        
+                if (Utils.IsTileSolidAtWorldLocation(pos)) {
+                photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{projectile}Wall", pos);
+                } else {
+                    PhotonNetwork.Instantiate($"Prefabs/{projectile}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
+                }
+                photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
+                animator.SetTrigger("fireball");
+                wallJumpTimer = 0;
+
+                itemLimitTrigger++;
+                int powerupLimit = ice ? 2 : 1;
+                if (itemLimitTrigger >= (itemLimit - powerupLimit)) {
+                    storedPowerup = null;
+                    itemLimitTrigger = 0;
+                }
+                UpdateGameState();
+                break;
+            }
+            case "PropellerMushroom": {
+                photonView.RPC(nameof(StartPropeller), RpcTarget.All);
+                storedPowerup = null;
+                UpdateGameState();
+                break;
+            }
+            case "Mushroom": {
+                boosting = 1.5f;
+                storedPowerup = null;
+                UpdateGameState();
+                break;
+            }
+            case "MiniMushroom": {
+                shrunk = 7f;
+                photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Powerup_MiniMushroom_Collect);
+                storedPowerup = null;
+                UpdateGameState();
+                break;
+            }
+            case "Starman": {
+                invincible = 10f;
+                storedPowerup = null;
+                UpdateGameState();
+                break;
+            }
+        }
+    }
     public void SpawnCoinItem() {
         if (coins < GameManager.Instance.coinRequirement)
             return;
@@ -2013,6 +2096,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         }
         previousState = state = Enums.PowerupState.Small;
         AnimationController.DisableAllModels();
+        if (GameManager.Instance.hasMainCamera)
+            currentCamArea = GameManager.Instance.mainCamArea;
         spawned = false;
         animator.SetTrigger("respawn");
         invincible = 0;
@@ -2819,6 +2904,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     Enums.PowerupState.MegaMushroom => Enums.Sounds.Powerup_MegaMushroom_Jump,
                     _ => Enums.Sounds.Player_Sound_Jump,
                 };
+                if (shrunk > 0)
+                    sound = Enums.Sounds.Powerup_MiniMushroom_Jump;
                 photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
             }
             bounce = false;
@@ -2874,7 +2961,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         bool run = functionallyRunning && (!flying || state == Enums.PowerupState.MegaMushroom);
 
         int maxStage;
-        if (invincible > 0 && run && onGround || boostDuration > 0 && run && onGround || gliding)
+        if (invincible > 0 && run && onGround || boosting > 0 || gliding)
             maxStage = STAR_STAGE;
         else if (run)
             maxStage = RUN_STAGE;
@@ -3115,8 +3202,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         Utils.TickTimer(ref starspinTimer, 0, delta);
         Utils.TickTimer(ref starspin, 0, delta);
         Utils.TickTimer(ref onStarspinCooldown, 0, delta);
-        Utils.TickTimer(ref boostDuration, 0, delta);
+        Utils.TickTimer(ref boosting, 0, delta);
         Utils.TickTimer(ref cobalting, 0, delta);
+        Utils.TickTimer(ref shrunk, 0, delta);
         Utils.TickTimer(ref magmaGpCooldown, 0, delta);
         Utils.TickTimer(ref walkOnWater, 0, delta);
         Utils.TickTimer(ref cantGrabStar, 0, delta);
@@ -3590,6 +3678,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 gravityModifier *= 0.6f;
             if (inWater && inWaterCurrent)
                 gravityModifier *= waterCurrentGravity;
+            if (shrunk > 0)
+                gravityModifier = 0.4f;
             if (body.velocity.y > 2.5) {
                 if (jump || jumpHeld || state == Enums.PowerupState.MegaMushroom) {
                     body.gravityScale = slowriseGravity * slowriseModifier;
@@ -3776,6 +3866,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                         Enums.PowerupState.MiniMushroom => Enums.Sounds.Powerup_MiniMushroom_Groundpound,
                         _ => Enums.Sounds.Player_Sound_GroundpoundLanding,
                     };
+                    if (shrunk > 0)
+                        sound = Enums.Sounds.Powerup_MiniMushroom_Groundpound;
+
                     photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
                     photonView.RPC(nameof(SpawnParticle), RpcTarget.All, "Prefabs/Particle/GroundpoundDust", body.position);
                     groundpoundDelay = 0;

@@ -53,6 +53,12 @@ public class CameraController : MonoBehaviour {
         float minY = GameManager.Instance.cameraMinY, heightY = GameManager.Instance.cameraHeightY;
         float minX = GameManager.Instance.cameraMinX, maxX = GameManager.Instance.cameraMaxX;
 
+        if (controller.currentCamArea != null) {
+            minX = controller.currentCamArea.minBound.x;
+            maxX = controller.currentCamArea.maxBound.x;
+            minY = controller.currentCamArea.minBound.y;
+            heightY = controller.currentCamArea.maxBound.y;
+        }
         if (!controller.dead)
             playerPos = AntiJitter(transform.position);
 

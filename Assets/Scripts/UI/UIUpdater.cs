@@ -13,18 +13,18 @@ public class UIUpdater : MonoBehaviour {
     public GameObject playerTrackTemplate, starTrackTemplate;
     public PlayerController player;
     public Sprite storedItemNull;
-    public TMP_Text uiStars, uiCoins, uiDebug, uiLives, uiCountdown, redStars, yellowStars, greenStars, blueStars, purpleStars;
+    public TMP_Text uiStars, uiCoins, uiDebug, uiLives, uiCountdown, uiMiniTimer, redStars, yellowStars, greenStars, blueStars, purpleStars;
     public Image itemReserve, itemColor;
     public GameObject cobaltEffect, protectedCobaltEffect;
     public float pingSample = 0;
 
     private Material timerMaterial;
-    private GameObject starsParent, coinsParent, livesParent, timerParent;
+    private GameObject starsParent, coinsParent, livesParent, timerParent, miniParent;
     public GameObject teamsHeader;
     private readonly List<Image> backgrounds = new();
     private bool uiHidden;
 
-    private int coins = -1, stars = -1, lives = -1, timer = -1;
+    private int coins = -1, stars = -1, lives = -1, timer = -1, miniTimer = -1;
 
     public void Start() {
         Instance = this;
@@ -34,6 +34,7 @@ public class UIUpdater : MonoBehaviour {
         coinsParent = uiCoins.transform.parent.gameObject;
         livesParent = uiLives.transform.parent.gameObject;
         timerParent = uiCountdown.transform.parent.gameObject;
+        miniParent = uiMiniTimer.transform.parent.gameObject;
 
         backgrounds.Add(starsParent.GetComponentInChildren<Image>());
         backgrounds.Add(coinsParent.GetComponentInChildren<Image>());
@@ -180,6 +181,13 @@ public class UIUpdater : MonoBehaviour {
             }
         } else {
             timerParent.SetActive(false);
+        }
+
+        if (player.shrunk > 0) { 
+            uiMiniTimer.text = Utils.GetSymbolString("c" + player.shrunk);
+            miniParent.SetActive(true);
+        } else {
+            miniParent.SetActive(false);
         }
     }
 

@@ -103,6 +103,7 @@ MonoBehaviour:
   - StarExplosion
   - StarEvent
   - HandleWater
+  - CreateItem
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

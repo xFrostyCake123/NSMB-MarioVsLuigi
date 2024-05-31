@@ -78,7 +78,8 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public int starRequirement, timedGameDuration = -1, coinRequirement;
     public bool hurryup = false;
     public bool tenSecondCountdown = false;
-
+    public bool hasMainCamera;
+    public CameraArea mainCamArea = null;
     public int playerCount = 1;
     public List<PlayerController> players = new();
     public int redTeamStars, yellowTeamStars, greenTeamStars, blueTeamStars, purpleTeamStars;

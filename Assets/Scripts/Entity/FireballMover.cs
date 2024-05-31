@@ -52,11 +52,9 @@ public AudioSource audioSource;
             int ownerId = photonView.Owner.ActorNumber;
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-            foreach (GameObject p in players)
-            {
+            foreach (GameObject p in players) {
                 PhotonView playerView = p.GetComponent<PhotonView>();
-                if (playerView != null && playerView.Owner != null && playerView.Owner.ActorNumber == ownerId)
-                {
+                if (playerView != null && playerView.Owner != null && playerView.Owner.ActorNumber == ownerId) {
                     player = p.GetComponent<PlayerController>();
                     break;
                 }
@@ -133,7 +131,7 @@ public AudioSource audioSource;
             if (point.collider.gameObject.layer == Layers.LayerGround) {
                 Vector3Int tileLoc = Utils.WorldToTilemapPosition(p);
                 TileBase tile = GameManager.Instance.tilemap.GetTile(tileLoc);
-                if (tile is InteractableTile it) {
+                if (tile is InteractableTile it && (tile is not CoinTile ct || tile is not PowerupTile pt || tile is not RouletteTile rt)) {
                     bool ret = it.Interact(this, InteractableTile.InteractionDirection.Up, Utils.TilemapToWorldPosition(tileLoc));
                     destroySelf |= !ret;
                 } else if (tile) {

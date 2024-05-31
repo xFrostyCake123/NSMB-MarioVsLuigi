@@ -12,7 +12,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
     [SerializeField] private Material glowMaterial;
     [SerializeField] private Color primaryColor = Color.clear, secondaryColor = Color.clear;
     [SerializeField] [ColorUsage(true, false)] private Color? _glowColor = null;
-    [SerializeField] private float blinkDuration = 0.1f, pipeDuration = 2f, deathUpTime = 0.6f, deathForce = 7f;
+    [SerializeField] private float blinkDuration = 0.1f, pipeDuration = 1f, deathUpTime = 0.6f, deathForce = 7f;
     
 
     private PlayerController controller;
@@ -230,7 +230,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
             animator.SetBool("head carry", controller.holding != null && controller.holding is FrozenCube);
             animator.SetBool("pipe", controller.pipeEntering != null);
             animator.SetBool("blueshell", controller.state == Enums.PowerupState.BlueShell);
-            animator.SetBool("mini", controller.state == Enums.PowerupState.MiniMushroom);
+            animator.SetBool("mini", controller.state == Enums.PowerupState.MiniMushroom || controller.shrunk > 0);
             animator.SetBool("mega", controller.state == Enums.PowerupState.MegaMushroom);
             animator.SetBool("inShell", controller.inShell || (controller.state == Enums.PowerupState.BlueShell && (controller.crouching || controller.groundpound) && controller.groundpoundCounter <= 0.15f));
         } else {
@@ -251,6 +251,8 @@ public class PlayerAnimationController : MonoBehaviourPun {
 
         if (controller.giantEndTimer > 0) {
             transform.localScale = Vector3.one + (Vector3.one * (Mathf.Min(1, controller.giantEndTimer / (controller.giantStartTime / 2f)) * 2.6f));
+        } else if (controller.shrunk > 0) {
+            transform.localScale = Vector3.one / 2;
         } else {
             transform.localScale = controller.state switch {
                 Enums.PowerupState.MiniMushroom => Vector3.one / 2,
@@ -373,10 +375,13 @@ public class PlayerAnimationController : MonoBehaviourPun {
 
         PipeManager pe = controller.pipeEntering;
 
+        if (controller.photonView.IsMine && pipeTimer + Time.fixedDeltaTime > (2 - 0.43f) && pipeTimer < (2 - 0.43f) && pe.fades)
+            controller.fadeOut.FadeOutAndIn(pe.fadeFloat1, pe.fadeFloat2);
+
         body.isKinematic = true;
         body.velocity = controller.pipeDirection;
 
-        if (pipeTimer < pipeDuration / 2f && pipeTimer + Time.fixedDeltaTime >= pipeDuration / 2f) {
+        if (pipeTimer < pipeDuration / 2f && pipeTimer + Time.fixedDeltaTime * 2f >= pipeDuration / 2f) {
             //tp to other pipe
             if (pe.otherPipe.bottom == pe.bottom)
                 controller.pipeDirection *= -1;
@@ -387,6 +392,9 @@ public class PlayerAnimationController : MonoBehaviourPun {
                 offset.y += size;
             }
             transform.position = body.position = new Vector3(pe.otherPipe.transform.position.x, pe.otherPipe.transform.position.y, 1) - (Vector3) offset;
+            if (pe.otherPipe.attachedCamera != null) 
+                controller.currentCamArea = pe.otherPipe.attachedCamera;    
+            
             photonView.RPC("PlaySound", RpcTarget.All, Enums.Sounds.Player_Sound_Powerdown);
             controller.cameraController.Recenter();
         }
@@ -401,7 +409,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
             controller.pipeTimer = 0.25f;
             body.velocity = Vector2.zero;
         }
-        pipeTimer += Time.fixedDeltaTime;
+        pipeTimer += Time.fixedDeltaTime * 2f;
     }
 
     public void DisableAllModels() {
