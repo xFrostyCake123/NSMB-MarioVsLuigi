@@ -5,6 +5,8 @@ public class ParallaxMover : MonoBehaviour {
     [SerializeField] protected bool noLimit;
     [SerializeField] protected bool moveVertically;
     [SerializeField] protected float verticalSpeed;
+    public bool movesFaster;
+    public float depthSpeed;
     protected Vector3 moveBy;
 
     public void OnValidate() {

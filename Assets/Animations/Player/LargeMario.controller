@@ -3838,7 +3838,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: pipe
-  m_Speed: 1
+  m_Speed: 0.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 7548003497379594976}
@@ -9380,7 +9380,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.13850452
+  m_TransitionDuration: 0.07492759
   m_TransitionOffset: 0
   m_ExitTime: 0
   m_HasExitTime: 1

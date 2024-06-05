@@ -75,6 +75,7 @@ MonoBehaviour:
   kickSpeed: 4.5
   detonationTime: 4
   explosionTileSize: 2
+  throwSpeed: {x: 12, y: 6}
   lit: 0
   detonated: 0
   Projectile: 0

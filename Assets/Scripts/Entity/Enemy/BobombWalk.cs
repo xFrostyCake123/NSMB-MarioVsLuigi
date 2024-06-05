@@ -10,6 +10,7 @@ public class BobombWalk : HoldableEntity {
     [SerializeField] private float walkSpeed = 0.6f, kickSpeed = 4.5f, detonationTime = 4f;
     [SerializeField] private int explosionTileSize = 2;
 
+    public Vector2 throwSpeed = new Vector2(12, 6);
     public bool lit, detonated, Projectile;
 
     private Vector3 previousFrameVelocity;
@@ -43,32 +44,37 @@ public class BobombWalk : HoldableEntity {
                    PlaySound(Enums.Sounds.Enemy_Bobomb_Fuse);
           }
         }
-        foreach (var player in GameManager.Instance.players) {
-            if (player.cobalting > 0f) {
-                body.velocity = Vector2.zero;
-                animator.enabled = false;
-                body.isKinematic = true;
-                return;
-            } else if (player.cobalting <= 0f) {
-                animator.enabled = true;
-                body.isKinematic = false;
-            }
-        }
 
         if (lit)
             animator.SetTrigger("lit");
 
+        if (holder != null && GameManager.Instance.raceLevel && !detonated)
+            animator.SetTrigger("lit");
 
         if (!photonView || photonView.IsMine)
             HandleCollision();
 
         sRenderer.flipX = left;
 
+        if (physics.onGround && GameManager.Instance.raceLevel)
+            lit = true;
+
         if (lit && !detonated) {
-            if ((detonateCount -= Time.fixedDeltaTime) < 0) {
-                if (photonView.IsMine)
-                    photonView.RPC("Detonate", RpcTarget.All);
-                return;
+            if (GameManager.Instance.raceLevel) {
+                if (physics.onGround) {
+                    detonateCount -= Time.fixedDeltaTime;
+                    if (detonateCount < 0) {
+                        if (photonView.IsMine)
+                            photonView.RPC("Detonate", RpcTarget.All);
+                        return;
+                    }
+                }
+            } else {
+                if ((detonateCount -= Time.fixedDeltaTime) < 0) {
+                    if (photonView.IsMine)
+                        photonView.RPC("Detonate", RpcTarget.All);
+                    return;
+                }
             }
             float redOverlayPercent = 5.39f/(detonateCount+2.695f)*10f % 1f;
             MaterialPropertyBlock block = new();
@@ -85,6 +91,10 @@ public class BobombWalk : HoldableEntity {
         Vector2 damageDirection = (player.body.position - body.position).normalized;
         bool attackedFromAbove = Vector2.Dot(damageDirection, Vector2.up) > 0.5f;
 
+        if (GameManager.Instance.raceLevel) {
+            photonView.RPC("Detonate", RpcTarget.All);
+            return;
+        }
         if (!attackedFromAbove && player.state == Enums.PowerupState.BlueShell && player.crouching && !player.inShell) {
             photonView.RPC("SetLeft", RpcTarget.All, damageDirection.x > 0);
         } else if (player.sliding || player.inShell || player.invincible > 0) {
@@ -172,14 +182,22 @@ public class BobombWalk : HoldableEntity {
             if (obj == gameObject)
                 continue;
 
+            if (GameManager.Instance.raceLevel && obj.GetComponent<BobombWalk>() is BobombWalk b) {
+                b.photonView.RPC("Detonate", RpcTarget.All);
+                continue;
+            }
             if (obj.GetComponent<KillableEntity>() is KillableEntity en) {
                 en.photonView.RPC("SpecialKill", RpcTarget.All, transform.position.x < obj.transform.position.x, false, 0);
                 continue;
             }
-
+            
             switch (hit.collider.tag) {
             case "Player": {
-                obj.GetPhotonView().RPC("Powerdown", RpcTarget.All, false);
+                if (GameManager.Instance.raceLevel) {
+                    obj.GetPhotonView().RPC("Knockback", RpcTarget.All, transform.position.x > obj.transform.position.x, 0, false, photonView.ViewID);
+                } else {
+                    obj.GetPhotonView().RPC("Powerdown", RpcTarget.All, false);
+                }
                 break;
             }
             }
@@ -231,8 +249,16 @@ public class BobombWalk : HoldableEntity {
         sRenderer.flipX = left;
         if (crouch) {
             body.velocity = new Vector2(2f * (facingLeft ? -1 : 1), body.velocity.y);
+            if (GameManager.Instance.raceLevel) {
+                detonationTime = 1.5f;
+            }
         } else {
-            body.velocity = new Vector2(kickSpeed * (facingLeft ? -1 : 1), body.velocity.y);
+            if (GameManager.Instance.raceLevel) {
+                body.velocity = new Vector2(throwSpeed.x * (facingLeft ? -1 : 1), throwSpeed.y);
+                detonationTime = 2.5f;
+            } else { 
+                body.velocity = new Vector2(kickSpeed * (facingLeft ? -1 : 1), body.velocity.y);
+            }
         }
     }
 

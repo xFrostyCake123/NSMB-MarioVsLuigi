@@ -69,6 +69,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     private static readonly float[] SPEED_STAGE_SPINNER_ACC = { 0.1318359375f, 0.06591796875f };
 
     private static readonly float[] SPEED_STAGE_MEGA_ACC = { 0.46875f, 0.0805664061f, 0.0805664061f, 0.0805664061f, 0.0805664061f };
+    private static readonly float[] SPEED_STAGE_BOOST_ACC = { 0.86875f, 0.0905664061f, 0.0905664061f, 0.0905664061f, 0.0905664061f };
     private static readonly float[] WALK_TURNAROUND_MEGA_ACC = { 0.0769042968f, 0.17578125f, 0.3515625f };
 
     private static readonly float[] SPEED_STAGE_DASH_ACC = { 0.65f, 0.1f, 0.09f, 0.09f, 0.09f };
@@ -1954,19 +1955,59 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 break;
             }
             case "MiniMushroom": {
-                shrunk = 7f;
+                photonView.RPC(nameof(Shrink), RpcTarget.All);
                 photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Powerup_MiniMushroom_Collect);
                 storedPowerup = null;
                 UpdateGameState();
                 break;
             }
-            case "Starman": {
+            case "MegaMushroom": {
+                photonView.RPC(nameof(SpawnBobomb), RpcTarget.All);
+                storedPowerup = null;
+                UpdateGameState();
+                break;
+            }
+            case "BlueShell": {
+                photonView.RPC(nameof(SpawnShell), RpcTarget.All);
+                photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Powerup_Iceball_Shoot);
+                storedPowerup = null;
+                UpdateGameState();
+                break;
+            }
+            case "Star": {
                 invincible = 10f;
                 storedPowerup = null;
                 UpdateGameState();
                 break;
             }
         }
+    }
+    [PunRPC]
+    public void Shrink() {
+        shrunk = 7f;
+        SpawnParticle("Prefabs/Particle/MiniSparkle", body.position);
+    }
+    [PunRPC]
+    public void SpawnShell() {
+        string projectile = "Prefabs/Enemy/BlueKoopa";
+        Enums.Sounds sound = Enums.Sounds.Powerup_Iceball_Shoot;
+        Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
+        PlaySound(sound);
+        GameObject koopa = PhotonNetwork.InstantiateRoomObject(projectile, pos, Quaternion.identity);
+        koopa.GetComponent<KoopaWalk>().shell = true;
+        koopa.GetComponent<KoopaWalk>().stationary = true;
+        holding = koopa.GetComponent<KoopaWalk>();
+        koopa.GetComponent<KoopaWalk>().holder = this;
+    }
+    [PunRPC]
+    public void SpawnBobomb() {
+        string projectile = "Prefabs/Enemy/Bobomb";
+        Enums.Sounds sound = Enums.Sounds.Powerup_Iceball_Shoot;
+        Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
+        PlaySound(sound);
+        GameObject bobomb = PhotonNetwork.InstantiateRoomObject(projectile, pos, Quaternion.identity);
+        holding = bobomb.GetComponent<BobombWalk>(); 
+        bobomb.GetComponent<BobombWalk>().holder = this;   
     }
     public void SpawnCoinItem() {
         if (coins < GameManager.Instance.coinRequirement)
@@ -2360,7 +2401,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool deathmatch);
         
-        if (deathmatch)
+        if (deathmatch && !fireball)
             photonView.RPC(nameof(Powerdown), RpcTarget.All, false);
 
         knockback = true;
@@ -2969,7 +3010,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             maxStage = WALK_STAGE;
 
         int stage = MovementStage;
-        float acc = state == Enums.PowerupState.MegaMushroom ? SPEED_STAGE_MEGA_ACC[stage] : SPEED_STAGE_ACC[stage];
+        float acc = state == Enums.PowerupState.MegaMushroom ? SPEED_STAGE_MEGA_ACC[stage] : boosting > 0 ? SPEED_STAGE_BOOST_ACC[stage] : SPEED_STAGE_ACC[stage];
         float sign = Mathf.Sign(body.velocity.x);
 
         if ((left ^ right) && (!crouching || (crouching && !onGround && state != Enums.PowerupState.BlueShell)) && !knockback && !sliding) {
