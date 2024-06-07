@@ -83,6 +83,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public int playerCount = 1;
     public List<PlayerController> players = new();
     public int redTeamStars, yellowTeamStars, greenTeamStars, blueTeamStars, purpleTeamStars;
+    public bool allSameTeam;
     public EnemySpawnpoint[] enemySpawnpoints;
 
     private GameObject[] coins;
@@ -473,18 +474,12 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         Utils.GetCustomProperty(Enums.NetRoomProperties.CoinRequirement, out coinRequirement);
         Utils.GetCustomProperty(Enums.NetRoomProperties.StartingPowerup, out int startPowerup);
         Utils.GetCustomProperty(Enums.NetRoomProperties.GameStartReserve, out int startReserve);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool team);
+        if (team)
+            allSameTeam = players.All(player => teamController.IsPlayerTeammate(players[0], player) && playerCount >= 2);
         if (!bypassStartPowerups) {
-            if (startPowerup == 0) {
-                startingPowerup = possibleStartingPowerups[Random.Range(0, possibleStartingPowerups.Count)];
-            } else if (startPowerup != 0) {
-                startingPowerup = possibleStartingPowerups[startPowerup - 1]; 
-            }
-
-            if (startReserve == 0) {
-                startingReserve = possibleStartingReserves[Random.Range(0, possibleStartingReserves.Count)];
-            } else if (startReserve != 0) {
-                startingReserve = possibleStartingReserves[startReserve - 1];  
-            }
+            startingPowerup = possibleStartingPowerups[startPowerup - 1]; 
+            startingReserve = possibleStartingReserves[startReserve - 1];     
         }
 
         if (raceLevel)
@@ -643,20 +638,10 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         bool green = winnerTeamIndex == 2;
         bool blue = winnerTeamIndex == 3;
         
-        string teamName = "Purple ";
-        if (red) {
-            teamName = "Red ";
-        } else if (yellow) {
-            teamName = "Yellow ";
-        } else if (green) {
-            teamName = "green ";
-        } else if (blue) {
-            teamName = "blue ";
-        } 
         if (winner != null && teamsOn)
         {
             winnerTeamIndex = (int)winner.CustomProperties[Enums.NetPlayerProperties.Team];
-            text.GetComponent<TMP_Text>().text = "The " + teamName + "Team" + "\n" + "Wins!";      
+            text.GetComponent<TMP_Text>().text = "The " + (red ? "Red " : yellow ? "Yellow " : green ? "Green " : blue ? "Blue " : "Purple ") + "Team" + "\n" + "Wins!";      
             text.GetComponent<TMP_Text>().colorGradientPreset = colorableTeamGradient;
             text.GetComponent<TMP_Text>().color = Utils.GetPlayerColor(winner);
     
@@ -757,11 +742,15 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             }
         }
 
-        redTeamStars = teamController.GetTeamStars(0);
-        yellowTeamStars = teamController.GetTeamStars(1);
-        greenTeamStars = teamController.GetTeamStars(2);
-        blueTeamStars = teamController.GetTeamStars(3);
-        purpleTeamStars = teamController.GetTeamStars(4);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool team);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.ShareStars, out int star);
+        if (team && (star == 1)) {
+            redTeamStars = teamController.GetTeamStars(0);
+            yellowTeamStars = teamController.GetTeamStars(1);
+            greenTeamStars = teamController.GetTeamStars(2);
+            blueTeamStars = teamController.GetTeamStars(3);
+            purpleTeamStars = teamController.GetTeamStars(4);
+        }
 
         if (started && musicEnabled) {
             bool allNull = true;
@@ -879,7 +868,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             //everyone's dead...? ok then, draw?
             PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, null, NetworkUtils.EventAll, SendOptions.SendReliable);
             return;
-        } else if ((alivePlayers.Count == 1 || (teamsMode && alivePlayers.Count != 0 && alivePlayers.All(player => teamController.IsPlayerTeammate(alivePlayers[0], player)))) && playerCount >= 2) {
+        } else if ((alivePlayers.Count == 1 || (teamsMode && !allSameTeam && alivePlayers.Count != 0 && alivePlayers.All(player => teamController.IsPlayerTeammate(alivePlayers[0], player)))) && playerCount >= 2) {
             //one player left alive (and not in a solo game). winner!
             PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, alivePlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
             return;

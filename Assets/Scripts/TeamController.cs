@@ -31,6 +31,9 @@ public class TeamController : MonoBehaviour
         // Calculate the total stars for each team
         CalculateTeamStars();
     }
+    public void Update() {
+        CalculateTeamStars();
+    }
     public void AddPlayerToTeam(PlayerController player) {
         if (player.team == 0) {
             redTeamMembers.Add(player);
@@ -50,7 +53,8 @@ public class TeamController : MonoBehaviour
         return thisPlayer.team.Equals(otherPlayer.team);
     }
     public void CalculateTeamStars() {
-        
+        if (!teamsMatch)
+            return;
         for (int i = 0; i <= 4; i++) {
         
             teamStars[i] = 0;

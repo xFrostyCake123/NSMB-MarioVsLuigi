@@ -207,6 +207,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         }
         LocalChatMessage(otherPlayer.GetUniqueNickname() + " left the room", Color.red);
         sfx.PlayOneShot(Enums.Sounds.UI_PlayerDisconnect.GetClip());
+        welcomePrompt.SetActive(false);
     }
     public void OnRoomPropertiesUpdate(Hashtable updatedProperties) {
         if (updatedProperties == null)

@@ -34845,6 +34845,7 @@ MonoBehaviour:
   previousFrameVelocity: {x: 0, y: 0}
   previousFramePosition: {x: 0, y: 0}
   onSpinner: {fileID: 0}
+  insideWater: {fileID: 0}
   pipeEntering: {fileID: 0}
   step: 0
   alreadyGroundpounded: 0

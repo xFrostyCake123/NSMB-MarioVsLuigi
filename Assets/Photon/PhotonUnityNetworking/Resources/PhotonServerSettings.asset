@@ -107,6 +107,7 @@ MonoBehaviour:
   - Shrink
   - SpawnBobomb
   - SpawnShell
+  - SetCameraBounds
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

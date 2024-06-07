@@ -72,6 +72,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Levels/Frosted/Cloudy Heights.unity
     guid: d0482da962f915c46909d813bbc6d6b8
   - enabled: 1
+    path: Assets/Scenes/Levels/Frosted/Sunset Evening.unity
+    guid: cc61231d59c8a3a4b8cafcc11998784c
+  - enabled: 1
     path: Assets/Scenes/Levels/RMX/Green Grounds.unity
     guid: d5747cf17acd94540a019cdabe66608e
   - enabled: 1
