@@ -478,8 +478,10 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         if (team)
             allSameTeam = players.All(player => teamController.IsPlayerTeammate(players[0], player) && playerCount >= 2);
         if (!bypassStartPowerups) {
-            startingPowerup = possibleStartingPowerups[startPowerup - 1]; 
-            startingReserve = possibleStartingReserves[startReserve - 1];     
+            if (startPowerup != 0) {
+                startingPowerup = possibleStartingPowerups[startPowerup - 1]; 
+                startingReserve = possibleStartingReserves[startReserve - 1]; 
+            }    
         }
 
         if (raceLevel)
@@ -632,7 +634,9 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         music.Stop();
         GameObject text = GameObject.FindWithTag("wintext");
         Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamsOn);
-        var winnerTeamIndex = -1;
+        int winnerTeamIndex = -1;
+        if (winner != null)
+            Utils.GetCustomProperty(Enums.NetPlayerProperties.Team, out winnerTeamIndex, winner.CustomProperties);
         bool red = winnerTeamIndex == 0;
         bool yellow = winnerTeamIndex == 1;
         bool green = winnerTeamIndex == 2;
@@ -640,7 +644,6 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         
         if (winner != null && teamsOn)
         {
-            winnerTeamIndex = (int)winner.CustomProperties[Enums.NetPlayerProperties.Team];
             text.GetComponent<TMP_Text>().text = "The " + (red ? "Red " : yellow ? "Yellow " : green ? "Green " : blue ? "Blue " : "Purple ") + "Team" + "\n" + "Wins!";      
             text.GetComponent<TMP_Text>().colorGradientPreset = colorableTeamGradient;
             text.GetComponent<TMP_Text>().color = Utils.GetPlayerColor(winner);
@@ -783,6 +786,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         bool starGame = starRequirement != -1;
         bool timeUp = endServerTime != -1 && endServerTime - Time.deltaTime - PhotonNetwork.ServerTimestamp < 0;
         int winningStars = -1;
+        int winningLives = -1;
         List<PlayerController> winningPlayers = new();
         List<PlayerController> alivePlayers = new();
         Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamsMode);
@@ -816,6 +820,8 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         if (teamsMode && sharing) {
             if (deathmatch)
                 return;
+            
+            if ((starGame && ((redTeamStars >= starRequirement) || (yellowTeamStars >= starRequirement) || (greenTeamStars >= starRequirement) || (blueTeamStars >= starRequirement) || (purpleTeamStars >= starRequirement))) || timeUp) {
 
             if (redTeamStars > winningStars) {
                 winningPlayers.Clear();
@@ -862,6 +868,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 foreach (PlayerController purple in teamController.purpleTeamMembers)
                     winningPlayers.Add(purple);
             }
+            }
         }
         //LIVES CHECKS
         if (alivePlayers.Count == 0) {
@@ -887,6 +894,21 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         }
         
         if (starGame && winningStars >= starRequirement) {
+            if (deathmatch) {
+                foreach (var player in players) {
+                    if (player == null || player.lives == 0)
+                        continue;
+
+    	            if (player.lives > winningLives) {
+                        winningPlayers.Clear();
+                        winningLives = player.lives;
+                        winningPlayers.Add(player);
+                    } else if (player.lives == winningLives) {
+                        winningPlayers.Add(player);
+                    }
+                    
+                }
+            }
             if (teamsMode && winningPlayers.Count >= 1)
                 PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, winningPlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
             else if (winningPlayers.Count == 1)

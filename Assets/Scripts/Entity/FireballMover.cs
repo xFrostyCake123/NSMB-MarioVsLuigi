@@ -131,9 +131,13 @@ public AudioSource audioSource;
             if (point.collider.gameObject.layer == Layers.LayerGround) {
                 Vector3Int tileLoc = Utils.WorldToTilemapPosition(p);
                 TileBase tile = GameManager.Instance.tilemap.GetTile(tileLoc);
-                if (tile is InteractableTile it && (tile is not CoinTile ct || tile is not PowerupTile pt || tile is not RouletteTile rt)) {
-                    bool ret = it.Interact(this, InteractableTile.InteractionDirection.Up, Utils.TilemapToWorldPosition(tileLoc));
-                    destroySelf |= !ret;
+                if (tile is InteractableTile it) {
+                    if (tile is CoinTile ct || tile is RouletteTile rt || tile is PowerupTile pt) {
+                        destroySelf = true;
+                    } else {
+                        bool ret = it.Interact(this, InteractableTile.InteractionDirection.Up, Utils.TilemapToWorldPosition(tileLoc));
+                        destroySelf |= !ret;
+                    }
                 } else if (tile) {
                     destroySelf = true;
                 }
@@ -230,6 +234,12 @@ public AudioSource audioSource;
             if (isIceball ^ otherball.isIceball) {
                 PhotonNetwork.Destroy(collider.gameObject);
                 PhotonNetwork.Destroy(gameObject);
+            }
+            if ((isTidalwave || isWaterball) && otherball.isIceball) {
+                PhotonNetwork.Destroy(collider.gameObject);
+            }
+            if (isStarball && (otherball.isTidalwave || otherball.isWaterball)) {
+                PhotonNetwork.Destroy(collider.gameObject);
             }
             break;
         }

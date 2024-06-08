@@ -398,7 +398,12 @@ namespace NSMB.Utils {
             // "losing" variable based on ln(x+1), x being the # of stars we're behind
             int ourStars = player.stars;
             int leaderStars = FirstPlaceStars;
-
+            GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teaming);
+            GetCustomProperty(Enums.NetRoomProperties.ShareStars, out int starshare);
+            if (teaming && starshare == 1) {
+                ourStars = gm.teamController.GetTeamStars(player.team);
+                leaderStars = gm.teamController.LeaderTeamStars();
+            }
             if (powerups == null)
                 powerups = Resources.LoadAll<Powerup>("Scriptables/Powerups");
 

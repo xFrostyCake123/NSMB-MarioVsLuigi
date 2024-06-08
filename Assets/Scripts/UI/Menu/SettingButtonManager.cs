@@ -39,7 +39,10 @@ public class SettingButtonManager : MonoBehaviour {
         Settings.scoreboardAlways = toggle.isOn;
         Settings.SaveSettingsToPreferences();
     }
-
+    public void OnSecondaryButtonToggle(Toggle toggle) {
+        Settings.useSecondAction = toggle.isOn;
+        Settings.SaveSettingsToPreferences();
+    }
     public void OnChatFilterToggle(Toggle toggle) {
         Settings.filter = toggle.isOn;
         Settings.SaveSettingsToPreferences();

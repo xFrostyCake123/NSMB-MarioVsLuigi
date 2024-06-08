@@ -406,6 +406,10 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         if (!surfWave)
             ridingWave = false;
+
+        if (state == Enums.PowerupState.SuperAcorn && jumpHeld && !groundpound && body.velocity.y < 0 && !usedSquirrelThisJump && (!wallSlideLeft || !wallSlideRight) && squirrelWallSlide <= 0 && (!usedSquirrelHang && (!wallSlideLeft || !wallSlideRight)) && photonView.IsMine && !GlobalController.Instance.settings.useSecondAction)   
+            photonView.RPC(nameof(SquirrelGlide), RpcTarget.All);
+
         if (Mathf.Abs(body.velocity.x) > 3 && state == Enums.PowerupState.SuperAcorn && gliding)
             body.velocity = new(body.velocity.x, body.velocity.y / 3.5f);
 
@@ -521,7 +525,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 bool dropStars = friendlyType == 2;
                 bool isTeammate = team == other.team && teamedUp;
 
-                if (teamedUp && friendlyType !> 0 && isTeammate) 
+                if (teamedUp && friendlyType == 0 && isTeammate) 
                     return;
 
                 if (other.invincible > 0) {
@@ -938,6 +942,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         if (running && (state == Enums.PowerupState.FireFlower || state == Enums.PowerupState.IceFlower || state == Enums.PowerupState.Bombro || state == Enums.PowerupState.StellarFlower || state == Enums.PowerupState.MagmaFlower || state == Enums.PowerupState.WaterFlower || state == Enums.PowerupState.TideFlower) && GlobalController.Instance.settings.fireballFromSprint)
             ActivatePowerupAction();
+
+        if (crouching && state == Enums.PowerupState.TideFlower && !GlobalController.Instance.settings.useSecondAction)
+            ActivateSecondaryPowerupAction();
     }
 
     public void OnPowerupAction(InputAction.CallbackContext context) {
@@ -1075,14 +1082,22 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             if (groundpound || (flying && drill) || squirrel || !powerupButtonHeld || usedSquirrelThisJump || crouching || sliding || wallJumpTimer > 0) 
                 return;
 
-            photonView.RPC(nameof(SquirrelGlide), RpcTarget.All);
+            if (!GlobalController.Instance.settings.useSecondAction)
+                photonView.RPC(nameof(SquirrelJump), RpcTarget.All);
+            else
+                photonView.RPC(nameof(SquirrelGlide), RpcTarget.All);
             break; 
         }
         case Enums.PowerupState.WaterFlower: {
             if (groundpound || (flying && drill) || crouching || triplejump || sliding || wallJumpTimer > 0) 
                 return;
             
-            WaterBall();
+            bool upInput = joystick.y > 0.5;
+            if (upInput && onShieldCooldown <= 0 && !GlobalController.Instance.settings.useSecondAction)
+                ActivateSecondaryPowerupAction();
+            else
+                WaterBall();
+
             break;
         }
         case Enums.PowerupState.CosmoShroom: {
@@ -2020,7 +2035,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         Enums.Sounds sound = Enums.Sounds.Powerup_Iceball_Shoot;
         Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
         PlaySound(sound);
-        GameObject bobomb = PhotonNetwork.InstantiateRoomObject(projectile, pos, Quaternion.identity);
+        GameObject bobomb = PhotonNetwork.InstantiateRoomObject(projectile, pos + new Vector2(0, 2), Quaternion.identity);
         holding = bobomb.GetComponent<BobombWalk>(); 
         bobomb.GetComponent<BobombWalk>().holder = this;   
     }
@@ -3581,7 +3596,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         if (propellerTimer > 0)
             body.velocity = new Vector2(body.velocity.x, propellerLaunchVelocity - (propellerTimer < .4f ? (1 - (propellerTimer / .4f)) * propellerLaunchVelocity : 0));
 
-        if ((powerupButtonHeld || secondButtonHeld) && wallJumpTimer <= 0 && (propeller || !usedPropellerThisJump)) {
+        if (powerupButtonHeld && wallJumpTimer <= 0 && (propeller || !usedPropellerThisJump)) {
             if (body.velocity.y < -0.1f && propeller && !drill && !wallSlideLeft && !wallSlideRight && propellerSpinTimer < propellerSpinTime / 4f) {
                 propellerSpinTimer = propellerSpinTime;
                 propeller = true;

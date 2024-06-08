@@ -34,6 +34,46 @@ public class TeamController : MonoBehaviour
     public void Update() {
         CalculateTeamStars();
     }
+    public int LeaderTeamStars() {
+        GameManager gm = GameManager.Instance;
+        int red = gm.redTeamStars;
+        int yellow = gm.yellowTeamStars;
+        int green = gm.greenTeamStars;
+        int blue = gm.blueTeamStars;
+        int purple = gm.purpleTeamStars;
+
+        int leadingTeam = -1;
+        int maxStars = -1;
+
+        // check red team
+        if (red > maxStars) {
+            maxStars = red;
+            leadingTeam = 0;
+        }
+        // check yellow team
+        if (yellow > maxStars) {
+            maxStars = yellow;
+            leadingTeam = 1;
+        }
+        // check green team
+        if (green > maxStars) {
+            maxStars = green;
+            leadingTeam = 2;
+        }
+        // check blue team
+        if (blue > maxStars) {
+            maxStars = blue;
+            leadingTeam = 3;
+        }
+        // check purple team
+        if (purple > maxStars) {
+            maxStars = purple;
+            leadingTeam = 4;
+        }
+
+        return maxStars;
+    }
+    
     public void AddPlayerToTeam(PlayerController player) {
         if (player.team == 0) {
             redTeamMembers.Add(player);
