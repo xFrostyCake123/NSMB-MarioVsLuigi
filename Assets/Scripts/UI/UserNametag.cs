@@ -67,7 +67,18 @@ public class UserNametag : MonoBehaviour {
 
         text.text += Utils.GetSymbolString($"Sx{parent.stars}");
 
-        if (rainbowName)
-            text.color = Utils.GetRainbowColor();
+        if (rainbowName) {
+            if (text.text.Contains("FrostyCake")) {
+                text.color = Utils.GetRainbowColor();
+            } else if (text.text.Contains("BluCor")) {
+                text.color = Utils.GetBlucorColor();
+            } else if (text.text.Contains("vic")) {
+                text.color = Utils.GetVicColor();
+            } else if (text.text.Contains("KingKittyTurnip")) {
+                text.color = Utils.GetTurnipColor();
+            } else if (text.text == "Foxyyy") {
+                text.color = Utils.GetFoxyyyColor();
+            } 
+        }
     }
 }

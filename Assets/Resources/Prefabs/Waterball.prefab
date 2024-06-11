@@ -62,6 +62,7 @@ MonoBehaviour:
   isStarball: 0
   isWaterball: 1
   isTidalwave: 0
+  isWaterBubble: 0
   isMagmaball: 0
   isBigMagmaball: 0
   goesUp: 0

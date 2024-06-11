@@ -32,7 +32,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     public float propellerLaunchVelocity = 6, propellerFallSpeed = 2, propellerSpinFallSpeed = 1.5f, glidingFallSpeed = 1.35f, squirrelJumpFallSpeed = 3, propellerSpinTime = 0.75f, propellerDrillBuffer, heightSmallModel = 0.42f, heightLargeModel = 0.82f;
     BoxCollider2D[] hitboxes;
     GameObject models;
-    public GameObject surfWave = null, waterBomb;
+    public GameObject surfWave = null, waterBomb, bobomb;
+    public float stellarSensitivity = 1f;
 
     public CameraController cameraController;
     public CameraArea currentCamArea;
@@ -382,7 +383,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             ridingWave = false;
 
         if (ridingWave && surfWave != null)  
-            transform.position = surfWave.transform.position;
+            transform.position = surfWave.transform.position + new Vector3(0f, 0.5f, 0f);
                 
         groundpoundLastFrame = groundpound;
         previousOnGround = onGround;
@@ -401,7 +402,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         if (holding && holding.dead)
             holding = null;
 
-        if (!powerupButtonHeld && photonView.IsMine)
+        if (!powerupButtonHeld && photonView.IsMine && GlobalController.Instance.settings.useSecondAction)
             gliding = false;
 
         if (!surfWave)
@@ -737,7 +738,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             FireballMover fireball = obj.GetComponentInParent<FireballMover>();
             bool dropStars = friendly == 2;
             bool isTeammate = team == fireball.player.team && inTeam;
-            if (fireball.photonView.IsMine || hitInvincibilityCounter > 0 || isTeammate && inTeam && friendly !> 0)
+            if (fireball.photonView.IsMine || hitInvincibilityCounter > 0 || (isTeammate && inTeam && friendly !> 0))
                 return;
 
             fireball.photonView.RPC(nameof(KillableEntity.Kill), RpcTarget.All);
@@ -924,6 +925,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         if (ridingWave && surfWave) {
             ridingWave = false; 
             bounce = true;
+            body.velocity = new Vector2(5 * (surfWave.GetComponent<FireballMover>().left ? -1 : 1), body.velocity.y);
         }
     }
 
@@ -986,17 +988,23 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 return;
 
             int count = 0;
+            int limit = state == Enums.PowerupState.StellarFlower ? 3 : 6;
             foreach (FireballMover existingFire in FindObjectsOfType<FireballMover>()) {
-                if (existingFire.photonView.IsMine && ++count >= 6)
+                if (existingFire.photonView.IsMine && ++count >= limit)
                     return;
             }
             if (state == Enums.PowerupState.StellarFlower) {
-                canShootProjectile = false;
-                if (fireballTimer <= 0) {
-                    fireballTimer = 1.3f;
+                if (count <= 1) {
+                    fireballTimer = 2f;
+                    canShootProjectile = count == 0;
+                } else if (fireballTimer <= 0) {
+                    fireballTimer = 2f;
+                    canShootProjectile = true;
+                } else if (canShootProjectile) {
+                    canShootProjectile = false;
                 } else {
                     return;
-                } 
+                }
             } else if (state == Enums.PowerupState.TideFlower) {
                 canShootProjectile = false;
                 if (fireballTimer <= 0) {
@@ -1005,9 +1013,14 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                     return;
                 } 
             } else if (state == Enums.PowerupState.MagmaFlower) {
-                canShootProjectile = false;
-                if (fireballTimer <= 0) {
-                    fireballTimer = 1.3f;
+                if (count <= 1) {
+                    fireballTimer = 2f;
+                    canShootProjectile = count == 0;
+                } else if (fireballTimer <= 0) {
+                    fireballTimer = 2f;
+                    canShootProjectile = true;
+                } else if (canShootProjectile) {
+                    canShootProjectile = false;
                 } else {
                     return;
                 } 
@@ -1275,7 +1288,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         bool loogi = Luigi;
         bool upInput = joystick.y > 0.5;
         string projectile = "WaterBubble";
-        Enums.Sounds sound = Enums.Sounds.Powerup_WaterShoot;
+        Enums.Sounds sound = Enums.Sounds.Powerup_WaterFlower_Shoot;
         if (wallSlideLeft || wallSlideRight || groundpound || triplejump || flying || drill || crouching || sliding || (upInput && onShieldCooldown <= 0))
             return;
 
@@ -1915,20 +1928,29 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 PhotonNetwork.Destroy(coin);
             }
         }
-
+        GameManager gm = GameManager.Instance;
         Instantiate(Resources.Load("Prefabs/Particle/CoinCollect"), position, Quaternion.identity);
-
+        
         PlaySound(Enums.Sounds.World_Coin_Collect);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teams);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.ShareCoins, out bool shareCoins);
         NumberParticle num = ((GameObject) Instantiate(Resources.Load("Prefabs/Particle/Number"), position, Quaternion.identity)).GetComponentInChildren<NumberParticle>();
-        num.text.text = Utils.GetSymbolString((coins + 1).ToString(), Utils.numberSymbols);
+        num.text.text = Utils.GetSymbolString((((teams && shareCoins) ? GameManager.Instance.teamController.GetTeamCoins(team) : coins) + 1).ToString(), Utils.numberSymbols);
         num.ApplyColor(AnimationController.GlowColor);
 
+        gm.teamController.CalculateTeamCoins();
         coins = newCount;
-        if (coins >= GameManager.Instance.coinRequirement) {
-            SpawnCoinItem();
-            coins = 0;
+        if (teams && shareCoins) {
+            if (gm.teamController.GetTeamCoins(team) >= (gm.teamController.TeamCoinRequirement(team) - 1)) {
+                gm.teamController.GrantTeamPowerup(team);
+            }
+        } else {
+            if (coins >= GameManager.Instance.coinRequirement) {
+                SpawnCoinItem();
+                coins = 0;
+            }
         }
-
+        gm.teamController.CalculateTeamCoins();
         UpdateGameState();
     }
 
@@ -2035,7 +2057,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         Enums.Sounds sound = Enums.Sounds.Powerup_Iceball_Shoot;
         Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
         PlaySound(sound);
-        GameObject bobomb = PhotonNetwork.InstantiateRoomObject(projectile, pos + new Vector2(0, 2), Quaternion.identity);
+        bobomb = PhotonNetwork.InstantiateRoomObject(projectile, pos + new Vector2(0, 2), Quaternion.identity);
         holding = bobomb.GetComponent<BobombWalk>(); 
         bobomb.GetComponent<BobombWalk>().holder = this;   
     }
@@ -2067,7 +2089,13 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         coins = 0;
     }
-
+    public void SpawnTeamItem() {
+        string prefab = Utils.GetRandomItem(this).prefab;
+        PhotonNetwork.InstantiateRoomObject("Prefabs/Powerup/" + prefab, body.position + Vector2.up * 5f, Quaternion.identity, 0, new object[] { photonView.ViewID });
+        photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Player_Sound_PowerupReserveUse);
+        coins = 0;
+        UpdateGameState();
+    }
     private void SpawnStars(int amount, bool deathplane) {
         if (!PhotonNetwork.IsMasterClient) {
             stars = Mathf.Max(0, stars - amount);
@@ -2181,12 +2209,11 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         Utils.GetCustomProperty(Enums.NetRoomProperties.GameStartReserve, out int startReserve);
         GameManager gm = GameManager.Instance;
         if (storedPowerup == null && !gm.bypassStartPowerups) {
-            if (photonView.IsMine) {
-                if (startReserve == 0)
-                    storedPowerup = gm.possibleStartingReserves[Random.Range(0, gm.possibleStartingReserves.Count)];
-                else
-                    storedPowerup = gm.startingReserve;
-            }
+            if (startReserve == 0)
+                storedPowerup = gm.possibleStartingReserves[Random.Range(0, gm.possibleStartingReserves.Count)];
+            else
+                storedPowerup = gm.startingReserve;
+            
         }
         previousState = state = Enums.PowerupState.Small;
         AnimationController.DisableAllModels();

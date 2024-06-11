@@ -39,6 +39,7 @@ namespace NSMB.Utils {
             [Enums.NetRoomProperties.TeamsMatch] = false,
             [Enums.NetRoomProperties.FriendlyFire] = 0,
             [Enums.NetRoomProperties.ShareStars] = 1,
+            [Enums.NetRoomProperties.ShareCoins] = false,
             [Enums.NetRoomProperties.MirrorMode] = false,
             [Enums.NetRoomProperties.ProgressiveToRoulette] = false,
             [Enums.NetRoomProperties.DropReserve] = false,

@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 public class FireballMover : MonoBehaviourPun {
 public AudioSource audioSource;
 
-    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isTidalwave, isMagmaball, isBigMagmaball, goesUp;
+    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isTidalwave, isWaterBubble, isMagmaball, isBigMagmaball, goesUp;
     public float terVelocityTreshold = -6.25f;
     private float analogDeadzone = 0.35f;
     public bool accelerates, deccelerates, fastAccelerates;
@@ -31,7 +31,7 @@ public AudioSource audioSource;
     public void Start() {
         body = GetComponent<Rigidbody2D>();
         physics = GetComponent<PhysicsEntity>();
-
+        worldHitbox = GetComponent<BoxCollider2D>();
         object[] data = photonView.InstantiationData;
         left = (bool) data[0];
         if (data.Length > 1 && isIceball)
@@ -174,7 +174,12 @@ public AudioSource audioSource;
 
     public void OnDestroy() {
         if (!GameManager.Instance.gameover)
-            Instantiate(Resources.Load("Prefabs/Particle/" + (isIceball ? "IceballWall" : isStarball ? "Starballwall" : isWaterball ? "Waterballwall" : isTidalwave ? "Waterballwall" : "FireballWall")), transform.position, Quaternion.identity);
+            Instantiate(Resources.Load("Prefabs/Particle/" + (isIceball ? "IceballWall" : isStarball ? "Starballwall" : isWaterball ? "Waterballwall" : isTidalwave ? "Waterballwall" : isWaterBubble ? "WaterBubblewall" : "FireballWall")), transform.position, Quaternion.identity);
+        
+        if (player.ridingWave && player.surfWave != null) {
+            player.bounce = true;
+            player.body.velocity = new Vector2(5 * (left ? -1 : 1), body.velocity.y);
+        }
             
     }
 
@@ -206,7 +211,8 @@ public AudioSource audioSource;
                 PhotonNetwork.Destroy(gameObject);
             } else {
                 en.photonView.RPC("SpecialKill", RpcTarget.All, !left, false, 0);
-                PhotonNetwork.Destroy(gameObject);
+                if (!isTidalwave)
+                    PhotonNetwork.Destroy(gameObject);
             }
             
             break;
@@ -224,7 +230,8 @@ public AudioSource audioSource;
                 PhotonNetwork.Destroy(gameObject);
             } else {
                 fc.gameObject.GetComponent<FrozenCube>().photonView.RPC("Kill", RpcTarget.All);
-                PhotonNetwork.Destroy(gameObject);
+                if (!isTidalwave)
+                    PhotonNetwork.Destroy(gameObject);
             }
             
             break;
@@ -267,7 +274,8 @@ public AudioSource audioSource;
                 } else {
                     bobomb.photonView.RPC("Kick", RpcTarget.All, body.position.x < bobomb.body.position.x, 0f, false);
                 }
-                PhotonNetwork.Destroy(gameObject);
+                if (!isTidalwave)
+                    PhotonNetwork.Destroy(gameObject);
             } else if (isStarball) {
                 bobomb.photonView.RPC("Detonate", RpcTarget.All);
                 PhotonNetwork.Destroy(gameObject); 
@@ -282,18 +290,46 @@ public AudioSource audioSource;
             KillableEntity killa = collider.gameObject.GetComponentInParent<KillableEntity>();
             if (killa.dead)
                 return;
-            if (isStarball)
-                photonView.RPC(nameof(StarExplosion), RpcTarget.All);
+
             AnimatorStateInfo asi = killa.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
             if (asi.IsName("end") && asi.normalizedTime > 0.5f)
                 return;
+            if (isStarball)
+                photonView.RPC(nameof(StarExplosion), RpcTarget.All);
             if (!isIceball) {
                 killa.photonView.RPC("Kill", RpcTarget.All);
-                PhotonNetwork.Destroy(gameObject);
+                if (!isTidalwave)
+                    PhotonNetwork.Destroy(gameObject);
             } else {
                 PhotonNetwork.Instantiate("Prefabs/FrozenCube", killa.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity, 0, new object[] { killa.photonView.ViewID });
             }
             
+            break;
+        }
+        case "Water": {
+            WaterSplash water = collider.gameObject.GetComponentInParent<WaterSplash>();
+            water.ManualSplash(worldHitbox);
+            
+            if (isTidalwave) {
+                float bounce = 2f;
+                float boost = bounce * Mathf.Abs(Mathf.Sin(physics.floorAngle * Mathf.Deg2Rad)) * 1.25f;
+                if (Mathf.Sign(physics.floorAngle) != Mathf.Sign(body.velocity.x))
+                boost = 0;
+
+                body.velocity = new Vector2(body.velocity.x, bounce + boost);
+            }
+            break;
+        }
+        case "coin": {
+            if (player != null && player.ridingWave && isTidalwave)
+                player.photonView.RPC(nameof(PlayerController.AttemptCollectCoin), RpcTarget.AllViaServer, collider.gameObject.GetPhotonView().ViewID, new Vector2(collider.transform.position.x, collider.transform.position.y));
+            break;
+        }
+        case "loosecoin": {
+            if (player != null && player.ridingWave && isTidalwave) {
+                Transform parent = collider.transform.parent;
+                player.photonView.RPC(nameof(PlayerController.AttemptCollectCoin), RpcTarget.AllViaServer, parent.gameObject.GetPhotonView().ViewID, (Vector2) parent.position);
+            }
             break;
         }
         }

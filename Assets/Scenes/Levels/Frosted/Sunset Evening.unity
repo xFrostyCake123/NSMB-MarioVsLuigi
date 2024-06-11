@@ -3270,6 +3270,7 @@ GameObject:
   m_Component:
   - component: {fileID: 633945152}
   - component: {fileID: 633945153}
+  - component: {fileID: 633945154}
   m_Layer: 1
   m_Name: desert-bg2_2
   m_TagString: Untagged
@@ -3344,6 +3345,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &633945154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633945151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8613f23c290a968479a4aa41c11a4e0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: -0.15
+  noLimit: 0
+  moveVertically: 0
+  verticalSpeed: 0
+  movesFaster: 0
+  depthSpeed: 0
 --- !u!1 &651702173
 GameObject:
   m_ObjectHideFlags: 0
@@ -4613,6 +4632,64 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1526512319}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1608841234
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1608841235}
+  - component: {fileID: 1608841236}
+  m_Layer: 10
+  m_Name: Hitbox
+  m_TagString: Water
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1608841235
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1608841234}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1662061297}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1608841236
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1608841234}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 1.1082709}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 0.16, y: 0.16}
+    newSize: {x: 64, y: 2}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 1
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 64, y: 0.28345835}
+  m_EdgeRadius: 0
 --- !u!1 &1638559526
 GameObject:
   m_ObjectHideFlags: 0
@@ -4658,7 +4735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8613f23c290a968479a4aa41c11a4e0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
+  speed: -0.25
   noLimit: 0
   moveVertically: 0
   verticalSpeed: -0.25
@@ -4758,12 +4835,12 @@ PrefabInstance:
     - target: {fileID: 2500780753419200967, guid: 2dd296828f2080541ab2b41eeda650a7,
         type: 3}
       propertyPath: splashParticle
-      value: Prefabs/Particle/SunsetWaterSplash
+      value: Prefabs/Particle/WaterEnterSplash
       objectReference: {fileID: 0}
     - target: {fileID: 2500780753419200967, guid: 2dd296828f2080541ab2b41eeda650a7,
         type: 3}
       propertyPath: exitSplashParticle
-      value: Prefabs/Particle/SunsetWaterSplash
+      value: Prefabs/Particle/WaterExitSplash
       objectReference: {fileID: 0}
     - target: {fileID: 3106545712320729601, guid: 2dd296828f2080541ab2b41eeda650a7,
         type: 3}
@@ -4774,6 +4851,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.g
       value: 0.9343433
+      objectReference: {fileID: 0}
+    - target: {fileID: 3106545712320729601, guid: 2dd296828f2080541ab2b41eeda650a7,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3106545712320729601, guid: 2dd296828f2080541ab2b41eeda650a7,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3106545712320729601, guid: 2dd296828f2080541ab2b41eeda650a7,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: -755315459
       objectReference: {fileID: 0}
     - target: {fileID: 3106545712320729601, guid: 2dd296828f2080541ab2b41eeda650a7,
         type: 3}
@@ -4793,7 +4885,7 @@ PrefabInstance:
     - target: {fileID: 6004104070224972751, guid: 2dd296828f2080541ab2b41eeda650a7,
         type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: Water
       objectReference: {fileID: 0}
     - target: {fileID: 6004104070224972753, guid: 2dd296828f2080541ab2b41eeda650a7,
         type: 3}
@@ -4813,7 +4905,7 @@ PrefabInstance:
     - target: {fileID: 6004104070224972753, guid: 2dd296828f2080541ab2b41eeda650a7,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 6004104070224972753, guid: 2dd296828f2080541ab2b41eeda650a7,
         type: 3}
@@ -4851,8 +4943,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6004104070224972753, guid: 2dd296828f2080541ab2b41eeda650a7,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1608841235}
   m_SourcePrefab: {fileID: 100100000, guid: 2dd296828f2080541ab2b41eeda650a7, type: 3}
+--- !u!4 &1662061297 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6004104070224972753, guid: 2dd296828f2080541ab2b41eeda650a7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1662061296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1767007670
 PrefabInstance:
   m_ObjectHideFlags: 0

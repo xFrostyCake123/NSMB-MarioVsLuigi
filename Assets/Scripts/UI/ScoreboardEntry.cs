@@ -33,8 +33,19 @@ public class ScoreboardEntry : MonoBehaviour {
     public void Update() {
         CheckForTextUpdate();
 
-        if (rainbowEnabled)
-            nameText.color = Utils.GetRainbowColor();
+        if (rainbowEnabled) {
+            if (nameText.text.Contains("FrostyCake")) {
+                nameText.color = Utils.GetRainbowColor();
+            } else if (nameText.text.Contains("BluCor")) {
+                nameText.color = Utils.GetBlucorColor();
+            } else if (nameText.text.Contains("vic")) {
+                nameText.color = Utils.GetVicColor();
+            } else if (nameText.text.Contains("KingKittyTurnip")) {
+                nameText.color = Utils.GetTurnipColor();
+            } else if (nameText.text.Contains("Foxyyy")) {
+                nameText.color = Utils.GetFoxyyyColor();
+            } 
+        }
     }
 
     public void CheckForTextUpdate() {
@@ -57,7 +68,9 @@ public class ScoreboardEntry : MonoBehaviour {
         string txt = "";
         if (currentLives >= 0)
             txt += target.character.uistring + Utils.GetSymbolString(currentLives.ToString());
-        txt += Utils.GetSymbolString($"S{currentStars}");
+        Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool deathmatch);
+        if (!deathmatch)
+            txt += Utils.GetSymbolString($"S{currentStars}");
 
         valuesText.text = txt;
     }

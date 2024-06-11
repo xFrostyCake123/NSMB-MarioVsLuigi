@@ -20,8 +20,7 @@ GameObject:
   - component: {fileID: 2269455486527583307}
   - component: {fileID: 1493637187516899100}
   - component: {fileID: 7546659253023383375}
-  - component: {fileID: 5587913275959810658}
-  - component: {fileID: 4154152758360362675}
+  - component: {fileID: 6473036555567248896}
   m_Layer: 9
   m_Name: TidalWave
   m_TagString: Fireball
@@ -37,8 +36,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1011982274984717421}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.2919, y: 1.286, z: 0}
-  m_LocalScale: {x: 1.71716, y: 2.017663, z: 1.1317801}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.9, y: 1.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2113715658840768421}
@@ -60,20 +59,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 0}
   luigiFireball: 0
-  left: 1
+  left: 0
   isIceball: 0
   isStarball: 0
   isWaterball: 0
   isTidalwave: 1
+  isWaterBubble: 0
   isMagmaball: 0
   isBigMagmaball: 0
   goesUp: 0
   terVelocityTreshold: -6.25
   accelerates: 1
   deccelerates: 0
-  fastAccelerates: 1
-  accelOrDeccelTreshold: 8
-  accelMultiplier: 5
+  fastAccelerates: 0
+  accelOrDeccelTreshold: 8.5
+  accelMultiplier: 6
   boomerangs: 0
   controllableBoomerang: 0
   arched: 0
@@ -85,7 +85,7 @@ MonoBehaviour:
   inverseFlipsAround: 1
   player: {fileID: 0}
   spriteRenderer: {fileID: 0}
-  worldHitbox: {fileID: 0}
+  worldHitbox: {fileID: -1769135492019179076}
   speed: 4
   bounceHeight: 0
   terminalVelocity: 6.25
@@ -154,7 +154,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 0.27945364
+  m_Mass: 0.26192915
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0.4
@@ -176,10 +176,10 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.04127013, y: -0.13662569}
+  m_Offset: {x: 0.015718162, y: 0.1068655}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0}
     oldSize: {x: 0.65, y: 0.68}
     newSize: {x: 0.11, y: 0.11}
     adaptiveTilingThreshold: 0.5
@@ -187,7 +187,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.31757402, y: 0.25398347}
+  m_Size: {x: 0.46583652, y: 0.15575539}
   m_EdgeRadius: 0
 --- !u!95 &1011982274984717418
 Animator:
@@ -306,7 +306,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interpolate: 1
   body: {fileID: 1186833380152900418}
---- !u!82 &5587913275959810658
+--- !u!82 &6473036555567248896
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -403,22 +403,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4154152758360362675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1011982274984717421}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e996f15526c6efc41a2844bb5666b6ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSources:
-  - {fileID: 5587913275959810658}
-  soundOrigin: {fileID: 1011982274984717416}
-  soundRange: 6
 --- !u!1 &4295026986443583635
 GameObject:
   m_ObjectHideFlags: 0
@@ -464,7 +448,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.007346131, y: -0.053501308}
+  m_Offset: {x: 0.013360083, y: 0.35427907}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -475,7 +459,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.3367886, y: 0.4201988}
+  m_Size: {x: 0.5519767, y: 0.650328}
   m_EdgeRadius: 0
 --- !u!1 &8143467996169431833
 GameObject:
@@ -503,8 +487,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8143467996169431833}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.106, y: -0.095, z: 0}
-  m_LocalScale: {x: 0.14773001, y: 0.14773001, z: 1.4773}
+  m_LocalPosition: {x: 0, y: 0.3333467, z: 0}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1011982274984717416}
@@ -700,7 +684,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0.6650944, g: 0.82316697, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -1965,6 +1949,7 @@ ParticleSystem:
     - sprite: {fileID: -1921135462, guid: aacb292e0076a384a9f9258b98e3d034, type: 3}
     - sprite: {fileID: 566541151, guid: aacb292e0076a384a9f9258b98e3d034, type: 3}
     - sprite: {fileID: 1883254195, guid: aacb292e0076a384a9f9258b98e3d034, type: 3}
+    - sprite: {fileID: 1271595934, guid: aacb292e0076a384a9f9258b98e3d034, type: 3}
     flipU: 0
     flipV: 0
   VelocityModule:

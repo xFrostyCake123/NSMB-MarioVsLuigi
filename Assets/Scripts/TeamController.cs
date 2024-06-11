@@ -5,12 +5,13 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TeamController : MonoBehaviour
+public class TeamController : MonoBehaviourPun
 {
     public List<PlayerController> redTeamMembers, yellowTeamMembers, greenTeamMembers, blueTeamMembers, purpleTeamMembers;
-    public bool teamsMatch, shareStars;
+    public bool teamsMatch, shareStars, shareCoins;
 
     private Dictionary<int, int> teamStars = new();
+    private Dictionary<int, int> teamCoins = new();
 
     // list of all players in the game
     public List<PlayerController> players = new();
@@ -19,20 +20,27 @@ public class TeamController : MonoBehaviour
     {
         Utils.GetCustomProperty(Enums.NetRoomProperties.ShareStars, out int sharingStars);
         Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out teamsMatch);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.ShareCoins, out shareCoins);
 
         shareStars = sharingStars == 1;
         players = GameManager.Instance.players;
-        // initialize dictionary with team numbers
+        // initialize stars dictionary with team numbers
         for (int i = 0; i <= 4; i++) {
         
             teamStars[i] = 0;
         }
-
-        // Calculate the total stars for each team
+        // initialize coins dictionary with team numbers
+        for (int i = 0; i <= 4; i++) {
+        
+            teamCoins[i] = 0;
+        }
+        // Calculate the total stars and coins for each team
+        CalculateTeamStars();
         CalculateTeamStars();
     }
     public void Update() {
         CalculateTeamStars();
+        CalculateTeamCoins();
     }
     public int LeaderTeamStars() {
         GameManager gm = GameManager.Instance;
@@ -87,6 +95,41 @@ public class TeamController : MonoBehaviour
             purpleTeamMembers.Add(player);
         }
     }
+    public void GrantTeamPowerup(int team) {
+        if (!teamsMatch)
+            return;
+            
+        if (team == 0) {
+            foreach (PlayerController red in redTeamMembers) {
+                red.SpawnTeamItem();
+                red.coins = 0;
+            }
+        }
+        if (team == 1) {
+            foreach (PlayerController yellow in yellowTeamMembers) {
+                yellow.SpawnTeamItem();
+                yellow.coins = 0;
+            }
+        }
+        if (team == 2) {
+            foreach (PlayerController green in greenTeamMembers) {
+                green.SpawnTeamItem();
+                green.coins = 0;
+            }
+        }
+        if (team == 3) {
+            foreach (PlayerController blue in blueTeamMembers) {
+                blue.SpawnTeamItem();
+                blue.coins = 0;
+            }
+        }
+        if (team == 4) {
+            foreach (PlayerController purple in purpleTeamMembers) {
+                purple.SpawnTeamItem();
+                purple.coins = 0;
+            }
+        }
+    }
     public bool IsPlayerTeammate(PlayerController thisPlayer, PlayerController otherPlayer) {
         if (!teamsMatch) 
             return false;
@@ -110,11 +153,57 @@ public class TeamController : MonoBehaviour
         }
 
     }
+    public int TeamCoinRequirement(int team) {
+        if (team == 0) {
+            return GameManager.Instance.coinRequirement * redTeamMembers.Count;
+        }
+        if (team == 1) {
+            return GameManager.Instance.coinRequirement * yellowTeamMembers.Count;
+        }
+        if (team == 2) {
+            return GameManager.Instance.coinRequirement * greenTeamMembers.Count;
+        }
+        if (team == 3) {
+            return GameManager.Instance.coinRequirement * blueTeamMembers.Count;
+        }
+        if (team == 4) {
+            return GameManager.Instance.coinRequirement * purpleTeamMembers.Count;
+        }
+
+        return 0;
+    }
+
+    public void CalculateTeamCoins() {
+        if (!teamsMatch)
+            return;
+        for (int i = 0; i <= 4; i++) {
+        
+            teamCoins[i] = 0;
+        } 
+
+        // Iterate through each player and add their stars to the respective team
+        foreach (PlayerController teamPlayer in players)
+        {
+            if (teamCoins.ContainsKey(teamPlayer.team))
+            {
+                teamCoins[teamPlayer.team] += teamPlayer.coins;
+            }
+        }
+
+    }
     public int GetTeamStars(int team)
     {
         if (teamStars.ContainsKey(team))
         {
             return teamStars[team];
+        }
+        return 0;
+    }
+    public int GetTeamCoins(int team)
+    {
+        if (teamCoins.ContainsKey(team))
+        {
+            return teamCoins[team];
         }
         return 0;
     }

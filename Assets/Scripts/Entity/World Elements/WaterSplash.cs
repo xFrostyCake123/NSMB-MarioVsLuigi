@@ -104,8 +104,22 @@ public class WaterSplash : MonoBehaviour {
     }
     public void OnTriggerEnter2D(Collider2D collider) {
         
-	if (!doesntSpawnParticle)
-	    Instantiate(Resources.Load(splashParticle), collider.transform.position, Quaternion.identity);
+	    if (!doesntSpawnParticle)
+	        Instantiate(Resources.Load(splashParticle), collider.transform.position, Quaternion.identity);
+
+        Rigidbody2D body = collider.attachedRigidbody;
+        float power = body ? body.velocity.y : -1;
+        float tile = (transform.InverseTransformPoint(collider.transform.position).x / widthTiles + 0.25f) * 2f;
+        int px = (int) (tile * totalPoints);
+        for (int i = -splashWidth; i <= splashWidth; i++) {
+            int pointsX = (px + totalPoints + i) % totalPoints;
+            pointVelocities[pointsX] = -splashVelocity * power;
+        }
+    }
+    public void ManualSplash(BoxCollider2D collider) {
+        
+	    if (!doesntSpawnParticle)
+	        Instantiate(Resources.Load(splashParticle), collider.transform.position, Quaternion.identity);
 
         Rigidbody2D body = collider.attachedRigidbody;
         float power = body ? body.velocity.y : -1;

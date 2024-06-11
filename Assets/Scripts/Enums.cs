@@ -71,7 +71,7 @@ public static class Enums {
     //Sound effects
     public enum Sounds : byte {
 
-        //CURRENT MAX: 113
+        //CURRENT MAX: 115
 
         //Enemy
         [SoundData("enemy/freeze")]                             Enemy_Generic_Freeze = 0,
@@ -158,6 +158,8 @@ public static class Enums {
         [SoundData("powerup/SpringBounce")]                     Powerup_SpringBounce = 106,
         [SoundData("powerup/Water_Flower_Shoot")]               Powerup_WaterFlowerShoot = 107,
         [SoundData("powerup/MagmaGroundpound")]                 Powerup_MagmaGroundpound = 108,
+        [SoundData("powerup/Water_Flower_Shoot")]               Powerup_WaterFlower_Shoot = 114,
+        [SoundData("powerup/Water_Flower_Destroy")]             Powerup_WaterFlower_Break = 115,
 
         //UI Sounds / Songs / Jingles
         [SoundData("ui/hurry_up")]                              UI_HurryUp = 60,
@@ -260,6 +262,7 @@ public static class Enums {
         public static string TeamCollision { get; } = "TeC";
         public static string FriendlyFire { get; } = "Fr";
         public static string ShareStars { get; } = "Sh";
+        public static string ShareCoins { get; } = "Sc";
         public static string RandomMap { get; } = "RandM";
         public static string WholeRandomizer { get; } = "Rand";
         public static string GameStarted { get; } = "G";

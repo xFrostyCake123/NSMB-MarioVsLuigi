@@ -673,11 +673,12 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             text.GetComponent<TMP_Text>().colorGradientPreset = drawGameGradient;
         }
 
+        Utils.GetCustomProperty(Enums.NetPlayerProperties.Team, out int localTeam, PhotonNetwork.LocalPlayer.CustomProperties);
         if (draw)
             music.PlayOneShot(Enums.Sounds.UI_Match_Draw.GetClip());
         else if (win && !teamsOn)
             music.PlayOneShot(Enums.Sounds.UI_Match_Win.GetClip());
-        else if (teamsOn && winnerTeamIndex == (int)PhotonNetwork.LocalPlayer.CustomProperties[Enums.NetPlayerProperties.Team])
+        else if (teamsOn && winnerTeamIndex == localTeam)
             music.PlayOneShot(Enums.Sounds.UI_Match_Team_Win.GetClip());
         else
             music.PlayOneShot(Enums.Sounds.UI_Match_Lose.GetClip());
@@ -880,6 +881,21 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, alivePlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
             return;
         }
+        if (deathmatch) {
+            foreach (var player in players) {
+                if (player == null || player.lives == 0)
+                    continue;
+
+    	        if (player.lives > winningLives) {
+                    winningPlayers.Clear();
+                    winningLives = player.lives;
+                    winningPlayers.Add(player);
+                } else if (player.lives == winningLives) {
+                    winningPlayers.Add(player);
+                }
+                    
+            }
+        }
         //TIMED CHECKS
         if (timeUp) {
             Utils.GetCustomProperty(Enums.NetRoomProperties.DrawTime, out bool draw);
@@ -892,23 +908,8 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
 
             return;
         }
-        
+    
         if (starGame && winningStars >= starRequirement) {
-            if (deathmatch) {
-                foreach (var player in players) {
-                    if (player == null || player.lives == 0)
-                        continue;
-
-    	            if (player.lives > winningLives) {
-                        winningPlayers.Clear();
-                        winningLives = player.lives;
-                        winningPlayers.Add(player);
-                    } else if (player.lives == winningLives) {
-                        winningPlayers.Add(player);
-                    }
-                    
-                }
-            }
             if (teamsMode && winningPlayers.Count >= 1)
                 PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, winningPlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
             else if (winningPlayers.Count == 1)

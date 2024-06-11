@@ -565,6 +565,13 @@ namespace NSMB.Utils {
             ['8'] = 46,
             ['9'] = 47,
         };
+        public static readonly Dictionary<char, byte> teamCoinSymbols = new() {
+            ['0'] = 52,
+            ['1'] = 53,
+            ['2'] = 54,
+            ['3'] = 55,
+            ['4'] = 56,
+        };
         public static string GetSymbolString(string str, Dictionary<char, byte> dict = null) {
             if (dict == null)
                 dict = uiSymbols;

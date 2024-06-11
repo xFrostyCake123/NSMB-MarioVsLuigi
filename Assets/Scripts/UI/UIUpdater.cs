@@ -80,8 +80,9 @@ public class UIUpdater : MonoBehaviour {
             starsParent.SetActive(false);
 
         Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamsGame);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool dm);
         Utils.GetCustomProperty(Enums.NetRoomProperties.ShareStars, out int starSharing);
-        if (!teamsGame || starSharing != 1) 
+        if (!teamsGame || starSharing != 1 || dm) 
             teamsHeader.SetActive(false);
 
         if (GameManager.Instance.teamController.redTeamMembers.Count == 0)
@@ -137,13 +138,22 @@ public class UIUpdater : MonoBehaviour {
         if (!player || GameManager.Instance.gameover)
             return;
 
+        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teams);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.ShareCoins, out bool shareCoins);
+
+        
+        GameManager gm = GameManager.Instance;
+        TeamController tm = gm.teamController;
         if (player.stars != stars) {
             stars = player.stars;
             uiStars.text = Utils.GetSymbolString("Sx" + stars + "/" + GameManager.Instance.starRequirement);
         }
-        if (player.coins != coins) {
+        if (player.coins != coins && !shareCoins) {
             coins = player.coins;
             uiCoins.text = Utils.GetSymbolString("Cx" + coins + "/" + GameManager.Instance.coinRequirement);
+        } else if (teams && shareCoins) {
+            coins = tm.GetTeamCoins(player.team);
+            uiCoins.text = Utils.GetSymbolString("" + player.team, Utils.teamCoinSymbols) + Utils.GetSymbolString("x" + coins + "/" + tm.TeamCoinRequirement(player.team));
         }
 
         if (player.lives >= 0) {
