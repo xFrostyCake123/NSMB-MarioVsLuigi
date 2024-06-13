@@ -20,6 +20,10 @@ public class SettingButtonManager : MonoBehaviour {
         Settings.VolumeMaster = slider.value;
         Settings.SaveSettingsToPreferences();
     }
+    public void SetStellarSensitivity(Slider slider) {
+        Settings.StellarSensitivity = slider.value;
+        Settings.SaveSettingsToPreferences();
+    }
     public void OnNdsResolutionToggle(Toggle toggle) {
         MainMenuManager.Instance.aspectToggle.interactable = Settings.ndsResolution = toggle.isOn;
         Settings.SaveSettingsToPreferences();

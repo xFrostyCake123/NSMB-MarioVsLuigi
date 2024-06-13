@@ -87,8 +87,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Levels/RMX/Heat-Treated Volcano.unity
     guid: e7afe0400ee32df418717efadad881fd
   - enabled: 1
-    path: Assets/Scenes/Levels/Frosted/Stellar Battle.unity
-    guid: 9c4d0ee6ccd7d6f41bee9dfa4cb13469
+    path: Assets/Scenes/Levels/Frosted/KKTStellaSpleef.unity
+    guid: e227697ca64b5f94c9991f5f5abe536a
   - enabled: 1
     path: Assets/Scenes/Levels/10P/Mushroom Valley.unity
     guid: e87c0eaaedd30bb4688094ba4aff810b
@@ -102,20 +102,20 @@ EditorBuildSettings:
     path: Assets/Scenes/Levels/10P/Magma Battle.unity
     guid: cba6f299dda328c4694b6264d45300b7
   - enabled: 1
-    path: Assets/Scenes/Levels/Frosted/Dusky Beach.unity
-    guid: 67dc4b32bb8c38343be21542557a38fe
-  - enabled: 1
     path: Assets/Scenes/Levels/Frosted/CustomFinalCastle.unity
     guid: 452252a36f44cd940a2fc05d0e35cccc
+  - enabled: 1
+    path: Assets/Scenes/Levels/Frosted/Breezy Beach.unity
+    guid: 62f249dc919b1d44584c1a31911b20cd
   - enabled: 1
     path: Assets/Scenes/Levels/ChrisLevel.unity
     guid: 726270b3f73301e4d86c79f4ef9e818c
   - enabled: 1
-    path: Assets/Scenes/Levels/Frosted/Winter Beach.unity
-    guid: 62f249dc919b1d44584c1a31911b20cd
+    path: Assets/Scenes/Levels/Frosted/Dusky Beach.unity
+    guid: 67dc4b32bb8c38343be21542557a38fe
   - enabled: 1
-    path: Assets/Scenes/Levels/Frosted/KKTStellaSpleef.unity
-    guid: e227697ca64b5f94c9991f5f5abe536a
+    path: Assets/Scenes/Levels/Frosted/Stellar Battle.unity
+    guid: 9c4d0ee6ccd7d6f41bee9dfa4cb13469
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 49335f30d253220488d2d332ade6e901,
       type: 2}

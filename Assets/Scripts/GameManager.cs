@@ -40,8 +40,9 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public bool loopingLevel = true, verticalLoopingLevel = false, raceLevel = false, sppLevel = false;
     public bool inSwitchEvent;
     public TMP_ColorGradient matchCancelGradient, drawGameGradient, colorableTeamGradient;
-    public Slider masterSlider, musicSlider, sfxSlider;
+    public Slider masterSlider, musicSlider, sfxSlider, stellarSlider;
     public Toggle ndsResolutionToggle, aspectToggle;
+    public TMP_Text stellarText;
     public Vector3 spawnpoint;
     public Vector3 checkpoint;
     public bool bypassStartPowerups;
@@ -746,6 +747,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             }
         }
 
+        stellarText.text = "x" + (stellarSlider.value * 2f).ToString("F2");
         Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool team);
         Utils.GetCustomProperty(Enums.NetRoomProperties.ShareStars, out int star);
         if (team && (star == 1)) {
@@ -1017,6 +1019,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         masterSlider.value = Settings.Instance.VolumeMaster;
         musicSlider.value = Settings.Instance.VolumeMusic;
         sfxSlider.value = Settings.Instance.VolumeSFX;
+        stellarSlider.value = Settings.Instance.StellarSensitivity;
         ndsResolutionToggle.isOn = Settings.Instance.ndsResolution;
         aspectToggle.isOn = Settings.Instance.fourByThreeRatio;
         EventSystem.current.SetSelectedGameObject(optionsButton);
@@ -1031,6 +1034,10 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     }
     public void ChangeSFXVolume() {
         Settings.Instance.VolumeSFX = sfxSlider.value;
+        Settings.Instance.SaveSettingsToPreferences();
+    }
+    public void ChangeStellarSensitivity() {
+        Settings.Instance.StellarSensitivity = stellarSlider.value;
         Settings.Instance.SaveSettingsToPreferences();
     }
     public void ChangeDSResolution() {

@@ -7,7 +7,7 @@ using Photon.Pun;
 public class Settings : Singleton<Settings> {
     public AudioMixer mixer;
 
-    private float _volumeMaster, _volumeMusic, _volumeSFX;
+    private float _volumeMaster, _volumeMusic, _volumeSFX, _stellarSensitivity;
     public float VolumeMaster {
         get => _volumeMaster;
         set {
@@ -27,6 +27,12 @@ public class Settings : Singleton<Settings> {
         set {
             _volumeMusic = Mathf.Clamp01(value);
             ApplyVolumeSettings();
+        }
+    }
+    public float StellarSensitivity {
+        get => _stellarSensitivity;
+        set {
+            _stellarSensitivity = Mathf.Clamp01(value);
         }
     }
 
@@ -52,6 +58,7 @@ public class Settings : Singleton<Settings> {
         VolumeSFX = PlayerPrefs.GetFloat("volumeSFX", 0.5f);
         VolumeMusic = PlayerPrefs.GetFloat("volumeMusic", 0.25f);
         VolumeMaster = PlayerPrefs.GetFloat("volumeMaster", 1);
+        StellarSensitivity = PlayerPrefs.GetFloat("stellarSensitivity", 0.5f);
         ndsResolution = PlayerPrefs.GetInt("NDSResolution", 0) == 1;
         fireballFromSprint = PlayerPrefs.GetInt("FireballFromSprint", 1) == 1;
         useSecondAction = PlayerPrefs.GetInt("UseSecondaryPowerupAction", 0) == 1;
@@ -67,6 +74,7 @@ public class Settings : Singleton<Settings> {
         PlayerPrefs.SetFloat("volumeSFX", VolumeSFX);
         PlayerPrefs.SetFloat("volumeMusic", VolumeMusic);
         PlayerPrefs.SetFloat("volumeMaster", VolumeMaster);
+        PlayerPrefs.SetFloat("stellarSensitivity", StellarSensitivity);
         PlayerPrefs.SetInt("NDSResolution", ndsResolution ? 1 : 0);
         PlayerPrefs.SetInt("FireballFromSprint", fireballFromSprint ? 1 : 0);
         PlayerPrefs.SetInt("UseSecondaryPowerupAction", useSecondAction ? 1 : 0);

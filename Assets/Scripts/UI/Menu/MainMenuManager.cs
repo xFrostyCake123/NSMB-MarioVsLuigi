@@ -34,10 +34,10 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public Toggle randomMapToggle, ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, nsmbPowerups, tenPlayersPowerups, timedPowerups, wiiPowerups, oneUpMushToggle, cobaltToggle, acornToggle, tideToggle, magmaToggle, blueShellToggle, fireToggle, miniToggle, starmanToggle, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, reserveDropToggle, mapCoinsToggle, teamToggle, shareCoinsToggle, mirrorModeToggle, fireballToggle, secondButtonToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
     public GameObject playersContent, playersPrefab, chatContent, chatPrefab;
     public TMP_InputField nicknameField, starsText, coinsText, livesField, timeField, lobbyJoinField, chatTextField;
-    public Slider musicSlider, sfxSlider, masterSlider, lobbyPlayersSlider, changePlayersSlider;
+    public Slider musicSlider, sfxSlider, masterSlider, lobbyPlayersSlider, changePlayersSlider, stellarSensitivitySlider;
     public GameObject mainMenuSelected, optionsSelected, lobbySelected, currentLobbySelected, createLobbySelected, creditsSelected, controlsSelected, privateSelected, reconnectSelected, updateBoxSelected, bonusSelected, powerupsSelected, frostypediaSelected, togglesMenuSelected, powerupGuideSelected;
     public GameObject errorBox, errorButton, rebindPrompt, reconnectBox;
-    public TMP_Text errorText, rebindCountdown, rebindText, reconnectText, updateText;
+    public TMP_Text errorText, rebindCountdown, rebindText, reconnectText, updateText, stellarSensitivityText;
     public TMP_Dropdown region;
     public RebindManager rebindManager;
     public static string lastRegion;
@@ -553,6 +553,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         musicSlider.value = Settings.Instance.VolumeMusic;
         sfxSlider.value = Settings.Instance.VolumeSFX;
         masterSlider.value = Settings.Instance.VolumeMaster;
+        stellarSensitivitySlider.value = Settings.Instance.StellarSensitivity;
 
         aspectToggle.interactable = ndsResolutionToggle.isOn = Settings.Instance.ndsResolution;
         aspectToggle.isOn = Settings.Instance.fourByThreeRatio;
@@ -574,6 +575,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         createRoomBtn.interactable = connected && validName;
         region.interactable = connected;
 
+        stellarSensitivityText.text = "x" + (stellarSensitivitySlider.value * 2f).ToString("F2");
         if (pingsReceived) {
 
             allRegions.Clear();

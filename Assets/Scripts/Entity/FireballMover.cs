@@ -96,7 +96,7 @@ public AudioSource audioSource;
                 } else if (player.joystick.y < -analogDeadzone) {
                     boomerangArchVelocity -= Time.fixedDeltaTime * archMultiplier;  
                 }  
-                body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(boomerangArchVelocity, body.velocity.y));       
+                body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(boomerangArchVelocity * player.stellarSensitivity, body.velocity.y));       
             }
 
         }

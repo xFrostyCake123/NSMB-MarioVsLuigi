@@ -384,7 +384,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         if (ridingWave && surfWave != null)  
             transform.position = surfWave.transform.position + new Vector3(0f, 0.5f, 0f);
-                
+
+        stellarSensitivity = GlobalController.Instance.settings.StellarSensitivity * 2f;        
         groundpoundLastFrame = groundpound;
         previousOnGround = onGround;
         if (!dead) {
@@ -738,7 +739,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             FireballMover fireball = obj.GetComponentInParent<FireballMover>();
             bool dropStars = friendly == 2;
             bool isTeammate = team == fireball.player.team && inTeam;
-            if (fireball.photonView.IsMine || hitInvincibilityCounter > 0 || (isTeammate && inTeam && friendly !> 0))
+            if (fireball.photonView.IsMine || hitInvincibilityCounter > 0 || (isTeammate && inTeam && friendly == 0))
                 return;
 
             fireball.photonView.RPC(nameof(KillableEntity.Kill), RpcTarget.All);
@@ -753,7 +754,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 return;
             }
             if (doesDamage && fireball.isStarball) {
-                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, (isTeammate && !dropStars) ? 0 : 1, false, fireball.photonView.ViewID);
+                photonView.RPC(nameof(Knockback), RpcTarget.All, fireball.left, (isTeammate && !dropStars) ? 0 : 1, true, fireball.photonView.ViewID);
                 photonView.RPC(nameof(Powerdown), RpcTarget.All, false);
                 return;
             }
@@ -1254,6 +1255,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             case "Player": {
                 PlayerController possibleOwner = obj.GetComponent<PlayerController>();
 
+                Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teaming);
+                Utils.GetCustomProperty(Enums.NetRoomProperties.FriendlyFire, out int friendly);
+                bool teammate = team == possibleOwner.team && friendly == 0 && teaming;
+                if (possibleOwner.hitInvincibilityCounter > 0 || possibleOwner.state == Enums.PowerupState.MegaMushroom || possibleOwner.invincible > 0 || teammate)
+                    return;
+                    
                 obj.GetPhotonView().RPC("Knockback", RpcTarget.All, obj.transform.position.x < body.position.x, 0, true, photonView.ViewID);
                 break;
             }
