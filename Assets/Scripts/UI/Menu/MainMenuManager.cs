@@ -51,7 +51,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public ScrollRect settingsScroll;
 
     public Selectable[] roomSettings;
-
+    public List<Toggle> powerupToggles;
     public List<string> maps, debugMaps;
     public List<string> MapNotes, MapNoteColor, MapSetColor;
     public List<string> startPowerups, startReserves;
@@ -169,13 +169,13 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
             PhotonNetwork.CurrentRoom.SetCustomProperties(new() {
                 [Enums.NetRoomProperties.HostName] = newMaster.GetUniqueNickname()
             });
-            LocalChatMessage("You are the room's host! You can click on player names to control your room, or use chat commands. Do /help for more help.", Color.blue);
+            LocalChatMessage("You are the room's host! You can click on player names to control your room, or use chat commands. Do /help for more help.", Color.gray);
         }
         UpdateSettingEnableStates();
     }
     public void OnJoinedRoom() {
         Debug.Log($"[PHOTON] Joined Room ({PhotonNetwork.CurrentRoom.Name})");
-        LocalChatMessage(PhotonNetwork.LocalPlayer.GetUniqueNickname() + " joined the room", Color.green);
+        LocalChatMessage(PhotonNetwork.LocalPlayer.GetUniqueNickname() + " joined the room", new Color(0.25f, 0.5f, 1f, 1f));
         EnterRoom();
     }
     IEnumerator KickPlayer(Player player) {
@@ -196,7 +196,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
 
             return;
         }
-        LocalChatMessage(newPlayer.GetUniqueNickname() + " joined the room", Color.green);
+        LocalChatMessage(newPlayer.GetUniqueNickname() + " joined the room", new Color(0.25f, 0.5f, 1f, 1f));
         sfx.PlayOneShot(Enums.Sounds.UI_PlayerConnect.GetClip());
     }
     public void OnPlayerLeftRoom(Player otherPlayer) {
@@ -627,7 +627,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         characterDropdown.SetValueWithoutNotify(Utils.GetCharacterIndex());
 
         if (PhotonNetwork.IsMasterClient)
-            LocalChatMessage("You are the room's host! You can click on player names to control your room, or use chat commands. Do /help for more help.", Color.blue);
+            LocalChatMessage("You are the room's host! You can click on player names to control your room, or use chat commands. Do /help for more help.", Color.gray);
 
         Utils.GetCustomProperty(Enums.NetPlayerProperties.PlayerColor, out int value, PhotonNetwork.LocalPlayer.CustomProperties);
         SetPlayerColor(value);
@@ -999,7 +999,15 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
     }
-     public void SetFrostyPowerups(Toggle toggle) {
+    public void SetAllPowerupsOn() {
+        foreach (Toggle toggle in powerupToggles) 
+            toggle.isOn = true;
+    }
+    public void SetAllPowerupsOff() {
+        foreach (Toggle toggle in powerupToggles) 
+            toggle.isOn = false;
+    }
+    public void SetFrostyPowerups(Toggle toggle) {
         Hashtable properties = new() {
             [Enums.NetRoomProperties.FrostyPowerups] = toggle.isOn
         };
@@ -1062,7 +1070,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     }
     public void ChangeStartingReserve(int index) {
         startingReserveDropdown.SetValueWithoutNotify(index);
-        LocalChatMessage("Game start reserve set to: " + startingReserveDropdown.options[index].text, Color.blue);
+        LocalChatMessage("Starting reserve set to: " + startingReserveDropdown.options[index].text, Color.blue);
     }
     public void SetStartingReserve() {
         if (!PhotonNetwork.IsMasterClient)
@@ -1231,6 +1239,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
             s.interactable = PhotonNetwork.IsMasterClient;
 
         livesField.interactable = PhotonNetwork.IsMasterClient && livesEnabled.isOn;
+        oneUpMushToggle.interactable = PhotonNetwork.IsMasterClient && livesEnabled.isOn;
         timeField.interactable = PhotonNetwork.IsMasterClient && timeEnabled.isOn;
         drawTimeupToggle.interactable = PhotonNetwork.IsMasterClient && timeEnabled.isOn;
         teamDropdown.interactable = teamToggle.isOn;
@@ -1570,7 +1579,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         textComp.color = color;
     }
     public void OpenLinks() {
-        Application.OpenURL("https://github.com/ipodtouch0218/NSMB-MarioVsLuigi/blob/master/LINKS.md");
+        Application.OpenURL("https://xfrostycake123.itch.io/nsmbvs-frosted");
     }
     public void Quit() {
         if (quit)
@@ -1643,7 +1652,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     }
 
     public void OpenDownloadsPage() {
-        Application.OpenURL("https://github.com/ipodtouch0218/NSMB-MarioVsLuigi/releases/latest");
+        Application.OpenURL("https://xfrostycake123.itch.io/nsmbvs-frosted");
         OpenMainMenu();
     }
 

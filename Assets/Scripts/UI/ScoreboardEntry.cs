@@ -44,6 +44,8 @@ public class ScoreboardEntry : MonoBehaviour {
                 nameText.color = Utils.GetTurnipColor();
             } else if (nameText.text.Contains("Foxyyy")) {
                 nameText.color = Utils.GetFoxyyyColor();
+            } else if (nameText.text.Contains("zomblebobble")) {
+                nameText.color = Utils.GetZombleColor();
             } 
         }
     }

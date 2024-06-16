@@ -34741,6 +34741,7 @@ MonoBehaviour:
   waterBomb: {fileID: 0}
   bobomb: {fileID: 0}
   stellarSensitivity: 1
+  bombDelay: 0
   cameraController: {fileID: 0}
   currentCamArea: {fileID: 0}
   fadeOut: {fileID: 0}

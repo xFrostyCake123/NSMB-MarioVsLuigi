@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public bool inSwitchEvent;
     public TMP_ColorGradient matchCancelGradient, drawGameGradient, colorableTeamGradient;
     public Slider masterSlider, musicSlider, sfxSlider, stellarSlider;
-    public Toggle ndsResolutionToggle, aspectToggle;
+    public Toggle ndsResolutionToggle, aspectToggle, secondActionToggle;
     public TMP_Text stellarText;
     public Vector3 spawnpoint;
     public Vector3 checkpoint;
@@ -802,10 +802,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
 
             alivePlayers.Add(player);
 
-            if ((starGame && player.stars >= starRequirement) || timeUp) {
-                if (deathmatch) // deathmatch makes stars not give you the win
-                    return;
-                
+            if ((starGame && player.stars >= starRequirement && !deathmatch) || timeUp) {
                 
                 //we're in a state where this player would win.
                 //check if someone has more stars
@@ -820,9 +817,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 
             }
         }
-        if (teamsMode && sharing) {
-            if (deathmatch)
-                return;
+        if (teamsMode && sharing && !deathmatch) {
             
             if ((starGame && ((redTeamStars >= starRequirement) || (yellowTeamStars >= starRequirement) || (greenTeamStars >= starRequirement) || (blueTeamStars >= starRequirement) || (purpleTeamStars >= starRequirement))) || timeUp) {
 
@@ -1021,6 +1016,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         sfxSlider.value = Settings.Instance.VolumeSFX;
         stellarSlider.value = Settings.Instance.StellarSensitivity;
         ndsResolutionToggle.isOn = Settings.Instance.ndsResolution;
+        secondActionToggle.isOn = Settings.Instance.useSecondAction;
         aspectToggle.isOn = Settings.Instance.fourByThreeRatio;
         EventSystem.current.SetSelectedGameObject(optionsButton);
     }
@@ -1046,6 +1042,10 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     }
     public void ChangeDSAspect() {
         Settings.Instance.fourByThreeRatio = aspectToggle.isOn;
+        Settings.Instance.SaveSettingsToPreferences();  
+    }
+    public void ChangeSecondAction() {
+        Settings.Instance.useSecondAction = secondActionToggle.isOn;
         Settings.Instance.SaveSettingsToPreferences();  
     }
     public void AttemptQuit() {

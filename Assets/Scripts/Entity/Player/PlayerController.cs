@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     GameObject models;
     public GameObject surfWave = null, waterBomb, bobomb;
     public float stellarSensitivity = 1f;
-
+    public float bombDelay;
     public CameraController cameraController;
     public CameraArea currentCamArea;
     public FadeOutManager fadeOut;
@@ -381,11 +381,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
 
         if (!surfWave)
             ridingWave = false;
-
-        if (ridingWave && surfWave != null)  
-            transform.position = surfWave.transform.position + new Vector3(0f, 0.5f, 0f);
-
-        stellarSensitivity = GlobalController.Instance.settings.StellarSensitivity * 2f;        
+      
         groundpoundLastFrame = groundpound;
         previousOnGround = onGround;
         if (!dead) {
@@ -406,6 +402,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         if (!powerupButtonHeld && photonView.IsMine && GlobalController.Instance.settings.useSecondAction)
             gliding = false;
 
+        if (!jumpHeld && photonView.IsMine && !GlobalController.Instance.settings.useSecondAction)
+            gliding = false;
+            
         if (!surfWave)
             ridingWave = false;
 
@@ -423,6 +422,10 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         previousFrameVelocity = body.velocity;
         previousFramePosition = body.position;
 
+    }
+    public void LateUpdate() {
+        if (ridingWave && surfWave != null)  
+            transform.position = surfWave.transform.position + new Vector3(0f, 0.5f, 0f);
     }
     #endregion
 
@@ -1315,12 +1318,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             }
         Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teaming);
         Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
-            if (Utils.IsTileSolidAtWorldLocation(pos)) {
-                photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{projectile}Wall", pos);
-            } else {
-            PhotonNetwork.Instantiate($"Prefabs/{projectile}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
-            }
-            photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
+        PhotonNetwork.Instantiate($"Prefabs/{projectile}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
+        photonView.RPC(nameof(PlaySound), RpcTarget.All, sound);
 
         animator.SetTrigger("fireball");
         wallJumpTimer = 0;  
@@ -1410,7 +1409,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     public void WaterBomb() {
         bool bombDeployed = waterBomb != null;
         string bomb = "Waterball";
-        string explosion = "WaterSpout";
         Enums.Sounds shootSound = Enums.Sounds.Powerup_WaterShoot;
         Enums.Sounds explodeSound = Enums.Sounds.Powerup_BubbleShieldReady;
         
@@ -1433,21 +1431,25 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 }
             }
             Vector2 pos = body.position + new Vector2(facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround") ? 0.5f : -0.5f, 0.3f);
-                if (Utils.IsTileSolidAtWorldLocation(pos)) {
-                    photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{bomb}Wall", pos);
-                } else {
-                waterBomb = PhotonNetwork.Instantiate($"Prefabs/{bomb}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
-                }
-                photonView.RPC(nameof(PlaySound), RpcTarget.All, shootSound);
+            if (Utils.IsTileSolidAtWorldLocation(pos) && !bombDeployed) {
+                photonView.RPC(nameof(SpawnParticle), RpcTarget.All, $"Prefabs/Particle/{bomb}Wall", pos);
+            } else {
+                PhotonNetwork.Instantiate($"Prefabs/{bomb}", pos, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
+            }
+            photonView.RPC(nameof(PlaySound), RpcTarget.All, shootSound);
 
             animator.SetTrigger("fireball");
             wallJumpTimer = 0;
-        } else if (bombDeployed) {
-            PhotonNetwork.Instantiate($"Prefabs/{explosion}", waterBomb.transform.position, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"), body.velocity.x });
-            photonView.RPC(nameof(PlaySound), RpcTarget.All, explodeSound);
-            PhotonNetwork.Destroy(waterBomb);
-            animator.SetTrigger("fireball");
-            wallJumpTimer = 0;
+        } else {
+            // Detonate the bomb
+            FireballMover bmb = waterBomb.GetComponent<FireballMover>();
+            if (bmb != null && bmb.isWaterball && !bmb.isBigWaterball && bombDelay <= 0) {
+                bmb.photonView.RPC(nameof(bmb.BecomeWaterExplosion), RpcTarget.All);
+                photonView.RPC(nameof(PlaySound), RpcTarget.All, explodeSound);
+                animator.SetTrigger("fireball");
+                wallJumpTimer = 0;
+                bombDelay = 0.075f;
+            }
         }
     }
     
@@ -1477,12 +1479,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     public void MagmaGroundpound() {
         string projectile = "SmallMagmaball";
         string projectile2 = "SmallMagmaball2";
-        bool loogi = Luigi;
-        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teamed);
-        if (loogi && teamed) {
-            projectile = "LuigiSmallMagmaball";
-            projectile2 = "LuigiSmallMagmaball2";
-        }
         photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Powerup_MagmaGroundpound);
         photonView.RPC(nameof(SpawnParticle), RpcTarget.All, "Prefabs/Particle/MagmaGroundpoundDust", body.position);
         PhotonNetwork.Instantiate($"Prefabs/{projectile}", transform.position, Quaternion.identity, 0, new object[] { !facingRight ^ animator.GetCurrentAnimatorStateInfo(0).IsName("turnaround"),});
@@ -2755,7 +2751,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             pipeEntering = pipe;
             pipeDirection = Vector2.down;
 
-            body.velocity = Vector2.down;
+            body.velocity = Vector2.down * 2f;
             transform.position = body.position = new Vector2(obj.transform.position.x, transform.position.y);
 
             photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Player_Sound_Powerdown);
@@ -2795,7 +2791,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             pipeEntering = pipe;
             pipeDirection = Vector2.up;
 
-            body.velocity = Vector2.up;
+            body.velocity = Vector2.up * 2f;
             transform.position = body.position = new Vector2(obj.transform.position.x, transform.position.y);
 
             photonView.RPC(nameof(PlaySound), RpcTarget.All, Enums.Sounds.Player_Sound_Powerdown);
@@ -3345,6 +3341,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         Utils.TickTimer(ref cantGrabStar, 0, delta);
         Utils.TickTimer(ref cantDoKnockback, 0, delta);
         Utils.TickTimer(ref tideWaveCooldown, 0, delta);
+        Utils.TickTimer(ref bombDelay, 0, delta);
         Utils.TickTimer(ref pipeTimer, 0, delta);
         Utils.TickTimer(ref wallSlideTimer, 0, delta);
         Utils.TickTimer(ref wallJumpTimer, 0, delta);

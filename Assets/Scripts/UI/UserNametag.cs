@@ -78,6 +78,8 @@ public class UserNametag : MonoBehaviour {
                 text.color = Utils.GetTurnipColor();
             } else if (text.text == "Foxyyy") {
                 text.color = Utils.GetFoxyyyColor();
+            } else if (text.text == "zomblebobble") {
+                text.color = Utils.GetZombleColor();
             } 
         }
     }

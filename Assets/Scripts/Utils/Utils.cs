@@ -13,7 +13,9 @@ namespace NSMB.Utils {
         public static int FirstPlaceStars {
             get => GameManager.Instance.players.Where(pl => pl.lives != 0).Max(pc => pc.stars);
         }
-
+        public static int FirstPlaceLives {
+            get => GameManager.Instance.players.Where(pl => pl.lives != 0).Max(pc => pc.lives);
+        }
         public static bool BitTest(long bit, int index) {
             return (bit & (1 << index)) != 0;
         }
@@ -394,13 +396,13 @@ namespace NSMB.Utils {
         // MAX(0,$B15+(IF(stars behind >0,LOG(B$1+1, 2.71828),0)*$C15*(1-(($M$15-$M$14))/$M$15)))
         public static Powerup GetRandomItem(PlayerController player) {
             GameManager gm = GameManager.Instance;
-
+            GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool dtm);
             // "losing" variable based on ln(x+1), x being the # of stars we're behind
-            int ourStars = player.stars;
-            int leaderStars = FirstPlaceStars;
+            int ourStars = dtm ? player.lives : player.stars;
+            int leaderStars = dtm ? FirstPlaceLives : FirstPlaceStars;
             GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teaming);
             GetCustomProperty(Enums.NetRoomProperties.ShareStars, out int starshare);
-            if (teaming && starshare == 1) {
+            if (teaming && starshare == 1 && !dtm) {
                 ourStars = gm.teamController.GetTeamStars(player.team);
                 leaderStars = gm.teamController.LeaderTeamStars();
             }
@@ -655,6 +657,11 @@ namespace NSMB.Utils {
             double time = PhotonNetwork.Time * 0.1;
             time %= 1;
             return GlobalController.Instance.foxyyyGradient.Evaluate((float) time);
+        }
+        public static Color GetZombleColor() {
+            double time = PhotonNetwork.Time * 0.1;
+            time %= 1;
+            return GlobalController.Instance.zombleGradient.Evaluate((float) time);
         }
     }
     

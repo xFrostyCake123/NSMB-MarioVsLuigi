@@ -90,6 +90,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Levels/Frosted/KKTStellaSpleef.unity
     guid: e227697ca64b5f94c9991f5f5abe536a
   - enabled: 1
+    path: Assets/Scenes/Levels/Frosted/Sky Spleef.unity
+    guid: d8538a971fa3c534c99342ad2efb4b71
+  - enabled: 1
+    path: Assets/Scenes/Levels/Frosted/Volcano Spleef.unity
+    guid: cfd6d3eaca3cefd42b80c8ec07df9680
+  - enabled: 1
     path: Assets/Scenes/Levels/10P/Mushroom Valley.unity
     guid: e87c0eaaedd30bb4688094ba4aff810b
   - enabled: 1

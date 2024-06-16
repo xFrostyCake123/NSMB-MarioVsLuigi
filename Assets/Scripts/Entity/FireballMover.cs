@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 public class FireballMover : MonoBehaviourPun {
 public AudioSource audioSource;
 
-    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isTidalwave, isWaterBubble, isMagmaball, isBigMagmaball, goesUp;
+    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isBigWaterball, isTidalwave, isWaterBubble, isMagmaball, isBigMagmaball, goesUp;
     public float terVelocityTreshold = -6.25f;
     private float analogDeadzone = 0.35f;
     public bool accelerates, deccelerates, fastAccelerates;
@@ -60,6 +60,8 @@ public AudioSource audioSource;
                 }
             }
         }
+        if (player != null && isWaterball && !isBigWaterball)
+            player.waterBomb = gameObject;
     }
 
        public void FixedUpdate() {
@@ -96,7 +98,7 @@ public AudioSource audioSource;
                 } else if (player.joystick.y < -analogDeadzone) {
                     boomerangArchVelocity -= Time.fixedDeltaTime * archMultiplier;  
                 }  
-                body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(boomerangArchVelocity * player.stellarSensitivity, body.velocity.y));       
+                body.velocity = new Vector2(speed * (left ? -1 : 1), Mathf.Max(boomerangArchVelocity, body.velocity.y));       
             }
 
         }
@@ -358,7 +360,7 @@ public AudioSource audioSource;
             switch (hit.collider.tag) {
             case "Player": {
                 PlayerController possibleOwner = obj.GetComponent<PlayerController>();
-                if (player = possibleOwner)
+                if (player == possibleOwner)
                     return;
 
                 obj.GetPhotonView().RPC("Knockback", RpcTarget.All, left, 1, true);
@@ -367,4 +369,27 @@ public AudioSource audioSource;
             }
         }
     }
+    [PunRPC]
+    public void BecomeWaterExplosion() {
+        if (isWaterball && !isBigWaterball) {
+            GameObject waterExplosion = (GameObject) Resources.Load("Prefabs/Particle/Waterballwall");
+            Instantiate(waterExplosion, transform.position, Quaternion.identity);
+            Animator anim = GetComponent<Animator>();
+            AudioSource audio = GetComponent<AudioSource>();
+            audio.enabled = true;
+            ParticleSystem particle = GetComponentInChildren<ParticleSystem>();
+            particle.transform.localScale = new (0.2f, 0.2f, 1);
+            transform.localScale = new (4.5f, 4.5f, 1);
+            anim.SetTrigger("grow");
+            breakOnImpact = false;
+            speed = 0;
+            despawnTimer = 2.5f;
+            bounceHeight = 15f;
+            accelerates = false;
+            isBigWaterball = true;
+            body.gravityScale = 4.4f;
+            body.velocity = Vector2.zero;
+        }
+    }
+
 }

@@ -141,19 +141,21 @@ public class UIUpdater : MonoBehaviour {
         Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teams);
         Utils.GetCustomProperty(Enums.NetRoomProperties.ShareCoins, out bool shareCoins);
 
-        
+        bool coinSharing = teams && shareCoins;
         GameManager gm = GameManager.Instance;
         TeamController tm = gm.teamController;
         if (player.stars != stars) {
             stars = player.stars;
             uiStars.text = Utils.GetSymbolString("Sx" + stars + "/" + GameManager.Instance.starRequirement);
         }
-        if (player.coins != coins && !shareCoins) {
-            coins = player.coins;
-            uiCoins.text = Utils.GetSymbolString("Cx" + coins + "/" + GameManager.Instance.coinRequirement);
-        } else if (teams && shareCoins) {
+        if (coinSharing) {
             coins = tm.GetTeamCoins(player.team);
             uiCoins.text = Utils.GetSymbolString("" + player.team, Utils.teamCoinSymbols) + Utils.GetSymbolString("x" + coins + "/" + tm.TeamCoinRequirement(player.team));
+        } else {
+            if (player.coins != coins) {
+                coins = player.coins;
+                uiCoins.text = Utils.GetSymbolString("Cx" + coins + "/" + GameManager.Instance.coinRequirement);
+            }
         }
 
         if (player.lives >= 0) {

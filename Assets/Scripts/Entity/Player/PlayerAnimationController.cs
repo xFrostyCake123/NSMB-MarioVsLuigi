@@ -380,7 +380,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
             controller.fadeOut.FadeOutAndIn(pe.fadeFloat1, pe.fadeFloat2);
 
         body.isKinematic = true;
-        body.velocity = controller.pipeDirection;
+        body.velocity = controller.pipeDirection * 2f;
 
         if (pipeTimer < pipeDuration / 2f && pipeTimer + Time.fixedDeltaTime * 2f >= pipeDuration / 2f) {
             //tp to other pipe
