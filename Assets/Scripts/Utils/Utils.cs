@@ -573,6 +573,11 @@ namespace NSMB.Utils {
             ['2'] = 54,
             ['3'] = 55,
             ['4'] = 56,
+            ['5'] = 57,
+            ['6'] = 58,
+            ['7'] = 59,
+            ['8'] = 60,
+            ['9'] = 61,
         };
         public static string GetSymbolString(string str, Dictionary<char, byte> dict = null) {
             if (dict == null)

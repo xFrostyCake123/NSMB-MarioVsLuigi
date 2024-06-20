@@ -110,6 +110,7 @@ MonoBehaviour:
   - SetCameraBounds
   - DetonateWaterBomb
   - BecomeWaterExplosion
+  - BloomingSpringLaunch
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

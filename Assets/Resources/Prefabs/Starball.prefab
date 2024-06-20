@@ -69,6 +69,7 @@ MonoBehaviour:
   isWaterBubble: 0
   isMagmaball: 0
   isBigMagmaball: 0
+  isFlowerSpring: 0
   goesUp: 0
   terVelocityTreshold: -6.25
   accelerates: 0
@@ -83,6 +84,7 @@ MonoBehaviour:
   boomerangMultiplier: 4
   boomerangArchVelocity: 0
   archMultiplier: 5
+  bloomingStart: 1
   flipsAround: 1
   inverseFlipsAround: 0
   player: {fileID: 0}
@@ -92,6 +94,7 @@ MonoBehaviour:
   bounceHeight: 0
   terminalVelocity: 0
   despawnTimer: 6
+  body: {fileID: 0}
 --- !u!212 &1011982274984717419
 SpriteRenderer:
   m_ObjectHideFlags: 0

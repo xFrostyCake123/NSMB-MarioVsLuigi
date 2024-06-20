@@ -140,13 +140,20 @@ public class UIUpdater : MonoBehaviour {
 
         Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teams);
         Utils.GetCustomProperty(Enums.NetRoomProperties.ShareCoins, out bool shareCoins);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.ShareStars, out int shareStars);
 
         bool coinSharing = teams && shareCoins;
+        bool starSharing = teams && shareStars == 1;
         GameManager gm = GameManager.Instance;
         TeamController tm = gm.teamController;
-        if (player.stars != stars) {
-            stars = player.stars;
-            uiStars.text = Utils.GetSymbolString("Sx" + stars + "/" + GameManager.Instance.starRequirement);
+        if (starSharing) {
+            stars = tm.GetTeamStars(player.team);
+            uiStars.text = Utils.GetSymbolString("" + (player.team + 5), Utils.teamCoinSymbols) + Utils.GetSymbolString("x" + stars + "/" + GameManager.Instance.starRequirement); 
+        } else {
+            if (player.stars != stars) {
+                stars = player.stars;
+                uiStars.text = Utils.GetSymbolString("Sx" + stars + "/" + GameManager.Instance.starRequirement);
+            }
         }
         if (coinSharing) {
             coins = tm.GetTeamCoins(player.team);

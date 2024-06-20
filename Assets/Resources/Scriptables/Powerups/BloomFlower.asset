@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea796f302b1a91d478efc94e21899d8d, type: 3}
+  m_Name: BloomFlower
+  m_EditorClassIdentifier: 
+  state: 19
+  prefab: BloomFlower
+  soundEffect: 16
+  spawnChance: 0.5
+  losingSpawnBonus: 1
+  big: 0
+  vertical: 0
+  custom: 0
+  lives: 0
+  frosty: 1
+  temporary: 0
+  nsmb: 0
+  wii: 0
+  ten: 0
+  tide: 0
+  magma: 0
+  acorn: 0
+  fire: 0
+  star: 0
+  mini: 0
+  mega: 0
+  cobalt: 0
+  blue: 0
+  oneup: 0
+  reserveSprite: {fileID: 21300000, guid: 7c541f406ba76a14494acdab9db0d5a6, type: 3}

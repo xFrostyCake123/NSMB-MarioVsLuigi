@@ -13,6 +13,7 @@ public static class PhotonExtensions {
         ["d7be7eb61c96debad675cbcda205989ee01af26fd7fa91b722433ce865674e98"] = "KingKittyTurnip",
         ["3697084da76ae50c3a3d023d574beef5656b6ed940f088a3548fc2d3eb17a234"] = "Foxyyy",
         ["050415559706daa17f34930e583a723d3e9e5d1fe9132e2f450582854dd5b471"] = "zomblebobble",
+        ["7faa2bbc006e95bfb0000451c2052764c1120019c12c5b129427a46fc2ca3b47"] = "vic",
     };
 
     public static bool IsMineOrLocal(this PhotonView view) {

@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 public class FireballMover : MonoBehaviourPun {
 public AudioSource audioSource;
 
-    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isBigWaterball, isTidalwave, isWaterBubble, isMagmaball, isBigMagmaball, goesUp;
+    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isBigWaterball, isTidalwave, isWaterBubble, isMagmaball, isBigMagmaball, isFlowerSpring, goesUp;
     public float terVelocityTreshold = -6.25f;
     private float analogDeadzone = 0.35f;
     public bool accelerates, deccelerates, fastAccelerates;
@@ -16,7 +16,7 @@ public AudioSource audioSource;
     public float accelMultiplier;
     public bool boomerangs, controllableBoomerang;
     public bool arched;
-    public float boomerangTreshold = 1.25f, boomerangMultiplier = 3f, boomerangArchVelocity = 2f, archMultiplier = 5f;
+    public float boomerangTreshold = 1.25f, boomerangMultiplier = 3f, boomerangArchVelocity = 2f, archMultiplier = 5f, bloomingStart = 1f;
     public bool flipsAround, inverseFlipsAround;
     public PlayerController player;
     public SpriteRenderer spriteRenderer;
@@ -24,7 +24,7 @@ public AudioSource audioSource;
 
     [SerializeField] private float speed = 3f, bounceHeight = 4.5f, terminalVelocity = 6.25f, despawnTimer = 0f;
 
-    private Rigidbody2D body;
+    public Rigidbody2D body;
     private PhysicsEntity physics;
     private bool breakOnImpact;
     
@@ -62,6 +62,11 @@ public AudioSource audioSource;
         }
         if (player != null && isWaterball && !isBigWaterball)
             player.waterBomb = gameObject;
+
+        if (isFlowerSpring) {
+            Animator flowerAnim = GetComponent<Animator>();
+            flowerAnim.SetTrigger("boing");
+        }
     }
 
        public void FixedUpdate() {
@@ -71,15 +76,7 @@ public AudioSource audioSource;
             body.isKinematic = true;
             return;
         }
-        foreach (var player in GameManager.Instance.players) {
-            if (player.cobalting > 0f) {
-                body.velocity = Vector2.zero;
-                body.isKinematic = true;
-                return;
-            } else if (player.cobalting <= 0f) {
-                body.isKinematic = false;
-            }
-        }
+        bloomingStart -= Time.fixedDeltaTime;
         if (accelerates && speed != accelOrDeccelTreshold) {
             speed += Time.fixedDeltaTime;
         } else if (deccelerates && speed != accelOrDeccelTreshold) {
@@ -240,6 +237,18 @@ public AudioSource audioSource;
         }
         case "Fireball": {
             FireballMover otherball = collider.gameObject.GetComponentInParent<FireballMover>();
+            if (isFlowerSpring) {
+                if (!otherball.isFlowerSpring && !otherball.isStarball) {
+                    otherball.body.velocity = new Vector2(otherball.body.velocity.x, 4);
+                    if (otherball.left)
+                        otherball.left = false;
+                    else if (!otherball.left)
+                        otherball.left = true;
+                    
+                    if (otherball.isTidalwave)
+                        otherball.speed -= 2f;
+                }
+            }
             if (isIceball ^ otherball.isIceball) {
                 PhotonNetwork.Destroy(collider.gameObject);
                 PhotonNetwork.Destroy(gameObject);

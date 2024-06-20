@@ -34797,6 +34797,7 @@ MonoBehaviour:
   runningOnWater: 0
   inWater: 0
   inWaterCurrent: 0
+  bloomSpring: 0
   jumpLandingTimer: 0
   landing: 0
   koyoteTime: 0
@@ -34826,6 +34827,7 @@ MonoBehaviour:
   magmaGpCooldown: 0
   tideWaveCooldown: 0
   shrunk: 0
+  onSpringCooldown: 0
   invincible: 0
   metal: 0
   cobalting: 0
