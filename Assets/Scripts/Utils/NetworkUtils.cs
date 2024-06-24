@@ -57,6 +57,7 @@ namespace NSMB.Utils {
             [Enums.NetRoomProperties.TideFlowerPowerup] = true,
             [Enums.NetRoomProperties.MagmaFlowerPowerup] = true,
             [Enums.NetRoomProperties.OneUpMush] = true,
+            [Enums.NetRoomProperties.Lightning] = true,
             [Enums.NetRoomProperties.GameStarted] = false,
             [Enums.NetRoomProperties.HostName] = "",
             [Enums.NetRoomProperties.Debug] = false,

@@ -67,6 +67,11 @@ public AudioSource audioSource;
             Animator flowerAnim = GetComponent<Animator>();
             flowerAnim.SetTrigger("boing");
         }
+        if (player != null && player.shrunk > 0) {
+            transform.localScale = Vector3.one / 2f;
+            speed = speed / 2;
+            bounceHeight = bounceHeight / 2;
+        }
     }
 
        public void FixedUpdate() {
@@ -383,13 +388,16 @@ public AudioSource audioSource;
         if (isWaterball && !isBigWaterball) {
             GameObject waterExplosion = (GameObject) Resources.Load("Prefabs/Particle/Waterballwall");
             Instantiate(waterExplosion, transform.position, Quaternion.identity);
-            Animator anim = GetComponent<Animator>();
             AudioSource audio = GetComponent<AudioSource>();
             audio.enabled = true;
             ParticleSystem particle = GetComponentInChildren<ParticleSystem>();
-            particle.transform.localScale = new (0.2f, 0.2f, 1);
-            transform.localScale = new (4.5f, 4.5f, 1);
-            anim.SetTrigger("grow");
+            if (player.shrunk > 0) {
+                particle.transform.localScale = new (0.1f, 0.1f, 1f);
+                transform.localScale = new (3f, 3f, 3f);
+            } else {
+                particle.transform.localScale = new (0.1f, 0.1f, 1f);
+                transform.localScale = new (6f, 6f, 6f);
+            }
             breakOnImpact = false;
             speed = 0;
             despawnTimer = 2.5f;

@@ -425,6 +425,7 @@ namespace NSMB.Utils {
             GetCustomProperty(Enums.NetRoomProperties.BlueShellPowerup, out bool blue);
             GetCustomProperty(Enums.NetRoomProperties.MiniMushroomPowerup, out bool mini);
             GetCustomProperty(Enums.NetRoomProperties.MagmaFlowerPowerup, out bool magma);
+            GetCustomProperty(Enums.NetRoomProperties.Lightning, out bool lightning);
             
             GetCustomProperty(Enums.NetRoomProperties.Lives, out int livesOn);
             bool lives = false;
@@ -440,7 +441,9 @@ namespace NSMB.Utils {
                     continue;
                 if (powerup.name == "CobaltStar" && gm.musicState == Enums.MusicState.CobaltStar)
                     continue;
-                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty) || (powerup.ten && !ten) || (powerup.nsmb && !nsmb) || (powerup.wii && !wii) || (powerup.oneup && !oneup) || (powerup.temporary && !temp) || (powerup.cobalt && !cobalt) || (powerup.star && !star) || (powerup.blue && !blue) || (powerup.acorn && !acorn) || (powerup.fire && !fire) || (powerup.mini && !mini) || (powerup.tide && !tide) || (powerup.magma && !magma))
+                if (powerup.name == "Lightning" && (gm.musicState == Enums.MusicState.CobaltStar || gm.lightningCooldown > 0))
+                    continue;
+                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty) || (powerup.ten && !ten) || (powerup.nsmb && !nsmb) || (powerup.wii && !wii) || (powerup.oneup && !oneup) || (powerup.temporary && !temp) || (powerup.cobalt && !cobalt) || (powerup.star && !star) || (powerup.blue && !blue) || (powerup.acorn && !acorn) || (powerup.fire && !fire) || (powerup.mini && !mini) || (powerup.tide && !tide) || (powerup.magma && !magma) || (powerup.lightning && !lightning))
                     continue;
 
                 totalChance += powerup.GetModifiedChance(starsToWin, leaderStars, ourStars);
@@ -452,7 +455,9 @@ namespace NSMB.Utils {
                     continue;
                 if (powerup.name == "CobaltStar" && gm.musicState == Enums.MusicState.CobaltStar)
                     continue;
-                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty) || (powerup.ten && !ten) || (powerup.nsmb && !nsmb) || (powerup.wii && !wii) || (powerup.oneup && !oneup) || (powerup.temporary && !temp) || (powerup.cobalt && !cobalt) || (powerup.star && !star) || (powerup.blue && !blue) || (powerup.acorn && !acorn) || (powerup.fire && !fire) || (powerup.mini && !mini) || (powerup.tide && !tide) || (powerup.magma && !magma))
+                if (powerup.name == "Lightning" && (gm.musicState == Enums.MusicState.CobaltStar || gm.lightningCooldown > 0))
+                    continue;
+                if ((powerup.big && !big) || (powerup.vertical && !vertical) || (powerup.custom && !custom) || (powerup.lives && !lives) || (powerup.frosty && !frosty) || (powerup.ten && !ten) || (powerup.nsmb && !nsmb) || (powerup.wii && !wii) || (powerup.oneup && !oneup) || (powerup.temporary && !temp) || (powerup.cobalt && !cobalt) || (powerup.star && !star) || (powerup.blue && !blue) || (powerup.acorn && !acorn) || (powerup.fire && !fire) || (powerup.mini && !mini) || (powerup.tide && !tide) || (powerup.magma && !magma) || (powerup.lightning && !lightning))
                     continue;
 
                 float chance = powerup.GetModifiedChance(starsToWin, leaderStars, ourStars);
@@ -542,6 +547,12 @@ namespace NSMB.Utils {
             ['S'] = 23,
             ['/'] = 24,
             [':'] = 25,
+            ['P'] = 62,
+            ['o'] = 63,
+            ['i'] = 64,
+            ['n'] = 65,
+            ['t'] = 66,
+            ['s'] = 67,
         };
         public static readonly Dictionary<char, byte> numberSymbols = new() {
             ['0'] = 27,
@@ -554,6 +565,10 @@ namespace NSMB.Utils {
             ['7'] = 34,
             ['8'] = 35,
             ['9'] = 36,
+            ['+'] = 68,
+            ['-'] = 69,
+            ['x'] = 70,
+            ['/'] = 71,
         };
         public static readonly Dictionary<char, byte> smallSymbols = new() {
             ['0'] = 48,

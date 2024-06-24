@@ -96,6 +96,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Levels/Frosted/Volcano Spleef.unity
     guid: cfd6d3eaca3cefd42b80c8ec07df9680
   - enabled: 1
+    path: Assets/Scenes/Levels/Minigames/Aerial Knockout.unity
+    guid: b54db9d7dd53fa7458f9b55c5c792e22
+  - enabled: 1
     path: Assets/Scenes/Levels/10P/Mushroom Valley.unity
     guid: e87c0eaaedd30bb4688094ba4aff810b
   - enabled: 1

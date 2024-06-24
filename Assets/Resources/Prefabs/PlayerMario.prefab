@@ -34682,6 +34682,7 @@ Transform:
   - {fileID: 2590897884844158599}
   - {fileID: 489978294522721103}
   - {fileID: 8160968049058920931}
+  - {fileID: 3316911544871069603}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -34741,6 +34742,7 @@ MonoBehaviour:
   waterBomb: {fileID: 0}
   bobomb: {fileID: 0}
   stellarSensitivity: 1
+  comboTimer: 0
   bombDelay: 0
   cameraController: {fileID: 0}
   currentCamArea: {fileID: 0}
@@ -34798,6 +34800,7 @@ MonoBehaviour:
   inWater: 0
   inWaterCurrent: 0
   bloomSpring: 0
+  tricked: 0
   jumpLandingTimer: 0
   landing: 0
   koyoteTime: 0
@@ -34828,6 +34831,7 @@ MonoBehaviour:
   tideWaveCooldown: 0
   shrunk: 0
   onSpringCooldown: 0
+  thunder: 0
   invincible: 0
   metal: 0
   cobalting: 0
@@ -34842,6 +34846,8 @@ MonoBehaviour:
   stars: 0
   coins: 0
   lives: -1
+  points: 0
+  combo: 0
   storedPowerup: {fileID: 0}
   holding: {fileID: 0}
   holdingOld: {fileID: 0}
@@ -34852,6 +34858,7 @@ MonoBehaviour:
   previousFramePosition: {x: 0, y: 0}
   onSpinner: {fileID: 0}
   insideWater: {fileID: 0}
+  inTrickZone: {fileID: 0}
   pipeEntering: {fileID: 0}
   step: 0
   alreadyGroundpounded: 0
@@ -34895,6 +34902,7 @@ MonoBehaviour:
   squirrelCoat: {fileID: 3322636400623539765}
   waterShield: {fileID: 8605783211787649588}
   starRod: {fileID: 4683458240724242401}
+  lightningEffect: {fileID: 8496886772033206770}
   glowMaterial: {fileID: 2100000, guid: 2cfa80f93994da44c9bdacad018e6ff5, type: 2}
   primaryColor: {r: 0, g: 0, b: 0, a: 0}
   secondaryColor: {r: 0, g: 0, b: 0, a: 0}
@@ -50836,6 +50844,111 @@ Transform:
   m_Father: {fileID: 4824223341387914440}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 5, y: 90, z: 0}
+--- !u!1 &8496886772033206770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3316911544871069603}
+  - component: {fileID: 4802065150646215616}
+  - component: {fileID: 730003056722743473}
+  m_Layer: 0
+  m_Name: lightningstrike
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3316911544871069603
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8496886772033206770}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.046, y: 0.014003724, z: 0}
+  m_LocalScale: {x: 6, y: 6, z: 6}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4824223341387914440}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &4802065150646215616
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8496886772033206770}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -755315459
+  m_SortingLayer: 1
+  m_SortingOrder: 100
+  m_Sprite: {fileID: -1331994253, guid: a8907e6e39b5ee14bb49209fe632ddad, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.64, y: 1.6}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!95 &730003056722743473
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8496886772033206770}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 73c3d3630eb4e32409c6a87c1c5c4aa7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &8510880611154325961
 GameObject:
   m_ObjectHideFlags: 0

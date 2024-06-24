@@ -111,7 +111,7 @@ public class DiscordController : MonoBehaviour {
             activity.State = room.IsVisible ? "In a Public Giddy Lobby" : "In a Private Giddy Lobby";
             activity.Secrets = new() { Join = PhotonNetwork.CloudRegion + "-" + room.Name };
 
-            activity.Assets = new() { LargeImage = "mainmenu" };
+            activity.Assets = new() { LargeImage = "currentlobby" };
 
         } else {
             //in the main menu, not in a room

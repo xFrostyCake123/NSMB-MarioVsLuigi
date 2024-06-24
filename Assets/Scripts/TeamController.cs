@@ -12,6 +12,7 @@ public class TeamController : MonoBehaviourPun
 
     private Dictionary<int, int> teamStars = new();
     private Dictionary<int, int> teamCoins = new();
+    private Dictionary<int, int> teamCoinReq = new();
 
     // list of all players in the game
     public List<PlayerController> players = new();
@@ -146,31 +147,15 @@ public class TeamController : MonoBehaviourPun
         // Iterate through each player and add their stars to the respective team
         foreach (PlayerController teamPlayer in players)
         {
+            if (teamPlayer == null)
+                return;
+
             if (teamStars.ContainsKey(teamPlayer.team))
             {
                 teamStars[teamPlayer.team] += teamPlayer.stars;
             }
         }
 
-    }
-    public int TeamCoinRequirement(int team) {
-        if (team == 0) {
-            return GameManager.Instance.coinRequirement * redTeamMembers.Count;
-        }
-        if (team == 1) {
-            return GameManager.Instance.coinRequirement * yellowTeamMembers.Count;
-        }
-        if (team == 2) {
-            return GameManager.Instance.coinRequirement * greenTeamMembers.Count;
-        }
-        if (team == 3) {
-            return GameManager.Instance.coinRequirement * blueTeamMembers.Count;
-        }
-        if (team == 4) {
-            return GameManager.Instance.coinRequirement * purpleTeamMembers.Count;
-        }
-
-        return 0;
     }
 
     public void CalculateTeamCoins() {
@@ -184,12 +169,34 @@ public class TeamController : MonoBehaviourPun
         // Iterate through each player and add their stars to the respective team
         foreach (PlayerController teamPlayer in players)
         {
+            if (teamPlayer == null)
+                return;
             if (teamCoins.ContainsKey(teamPlayer.team))
             {
                 teamCoins[teamPlayer.team] += teamPlayer.coins;
             }
         }
 
+    }
+    public void CalculateTeamCoinRequirement() {
+        if (!teamsMatch || !shareCoins)
+            return;
+        for (int i = 0; i <= 4; i++) {
+        
+            teamCoinReq[i] = 0;
+        } 
+
+        // Iterate through each player and add their stars to the respective team
+        foreach (PlayerController teamPlayer in players)
+        {
+            if (teamPlayer == null)
+                return;
+
+            if (teamCoinReq.ContainsKey(teamPlayer.team))
+            {
+                teamCoinReq[teamPlayer.team] += GameManager.Instance.coinRequirement;
+            }
+        }    
     }
     public int GetTeamStars(int team)
     {
@@ -204,6 +211,14 @@ public class TeamController : MonoBehaviourPun
         if (teamCoins.ContainsKey(team))
         {
             return teamCoins[team];
+        }
+        return 0;
+    }
+    public int TeamCoinRequirement(int team)
+    {
+        if (teamCoinReq.ContainsKey(team))
+        {
+            return teamCoinReq[team];
         }
         return 0;
     }

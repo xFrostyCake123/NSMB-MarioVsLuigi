@@ -71,7 +71,7 @@ public static class Enums {
     //Sound effects
     public enum Sounds : byte {
 
-        //CURRENT MAX: 115
+        //CURRENT MAX: 124
 
         //Enemy
         [SoundData("enemy/freeze")]                             Enemy_Generic_Freeze = 0,
@@ -160,6 +160,8 @@ public static class Enums {
         [SoundData("powerup/MagmaGroundpound")]                 Powerup_MagmaGroundpound = 108,
         [SoundData("powerup/Water_Flower_Shoot")]               Powerup_WaterFlower_Shoot = 114,
         [SoundData("powerup/Water_Flower_Destroy")]             Powerup_WaterFlower_Break = 115,
+        [SoundData("powerup/thunder_struck")]                   Powerup_Lightning_Struck = 123,
+        [SoundData("powerup/thunder_ambient")]                  Powerup_Lightning_Ambient = 124,
 
         //UI Sounds / Songs / Jingles
         [SoundData("ui/hurry_up")]                              UI_HurryUp = 60,
@@ -184,6 +186,13 @@ public static class Enums {
         [SoundData("ui/match_draw")]                            UI_Match_Draw = 87,
         [SoundData("ui/countdown0")]                            UI_Countdown_0 = 88,
         [SoundData("ui/countdown1")]                            UI_Countdown_1 = 89,
+        [SoundData("ui/pointscombo_1")]                         UI_PointsCombo_1 = 116,
+        [SoundData("ui/pointscombo_2")]                         UI_PointsCombo_2 = 117,
+        [SoundData("ui/pointscombo_3")]                         UI_PointsCombo_3 = 118,
+        [SoundData("ui/pointscombo_4")]                         UI_PointsCombo_4 = 119,
+        [SoundData("ui/pointscombo_5")]                         UI_PointsCombo_5 = 120,
+        [SoundData("ui/pointscombo_6")]                         UI_PointsCombo_6 = 121,
+        [SoundData("ui/pointscombo_7")]                         UI_PointsCombo_7 = 122,
 
         //World Elements
         [SoundData("world/block_break")]                        World_Block_Break = 67,
@@ -241,6 +250,7 @@ public static class Enums {
         public static string FireFlowerPowerup { get; } = "Fir";
         public static string BlueShellPowerup { get; } = "Blue";
         public static string MagmaFlowerPowerup { get; } = "Mag";
+        public static string Lightning { get; } = "Light";
         public static string ProgressiveToRoulette { get; } = "Ptr";
         public static string NoMapCoins { get; } = "Nmp";
         public static string TenPlayersPowerups { get; } = "Ten";

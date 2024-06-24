@@ -111,6 +111,10 @@ MonoBehaviour:
   - DetonateWaterBomb
   - BecomeWaterExplosion
   - BloomingSpringLaunch
+  - AttemptCollectBalloon
+  - ObtainPoints
+  - GetStruckByLightning
+  - StrikeLightning
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

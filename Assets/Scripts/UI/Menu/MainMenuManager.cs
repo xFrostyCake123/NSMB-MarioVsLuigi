@@ -31,7 +31,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public TMP_Dropdown levelDropdown, characterDropdown, startingPowerupDropdown, startingReserveDropdown, friendlyFireDropdown, teamDropdown, starSharingDropdown;
     public RoomIcon selectedRoomIcon, privateJoinRoom;
     public Button joinRoomBtn, createRoomBtn, startGameBtn;
-    public Toggle randomMapToggle, ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, nsmbPowerups, tenPlayersPowerups, timedPowerups, wiiPowerups, oneUpMushToggle, cobaltToggle, acornToggle, tideToggle, magmaToggle, blueShellToggle, fireToggle, miniToggle, starmanToggle, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, reserveDropToggle, mapCoinsToggle, teamToggle, shareCoinsToggle, mirrorModeToggle, fireballToggle, secondButtonToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
+    public Toggle randomMapToggle, ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, nsmbPowerups, tenPlayersPowerups, timedPowerups, wiiPowerups, oneUpMushToggle, cobaltToggle, acornToggle, tideToggle, magmaToggle, blueShellToggle, fireToggle, miniToggle, starmanToggle, lightningToggle, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, reserveDropToggle, mapCoinsToggle, teamToggle, shareCoinsToggle, mirrorModeToggle, fireballToggle, secondButtonToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
     public GameObject playersContent, playersPrefab, chatContent, chatPrefab;
     public TMP_InputField nicknameField, starsText, coinsText, livesField, timeField, lobbyJoinField, chatTextField;
     public Slider musicSlider, sfxSlider, masterSlider, lobbyPlayersSlider, changePlayersSlider, stellarSensitivitySlider;
@@ -231,6 +231,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.FireFlowerPowerup, ChangeFirePowerup);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.MiniMushroomPowerup, ChangeMiniPowerup);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.BlueShellPowerup, ChangeBlueShellPowerup);
+        AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.Lightning, ChangeLightningPowerup);
         AttemptToUpdateProperty<int>(updatedProperties, Enums.NetRoomProperties.Time, ChangeTime);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.DrawTime, ChangeDrawTime);
         AttemptToUpdateProperty<bool>(updatedProperties, Enums.NetRoomProperties.DeathmatchGame, ChangeDeathmatchGame);
@@ -1046,6 +1047,21 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
 
         Hashtable table = new() {
             [Enums.NetRoomProperties.Level] = levelDropdown.value
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(table);
+    }
+    public void SetNewLevelIndex(int index) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        int newLevelIndex = index;
+        if (newLevelIndex == (int) PhotonNetwork.CurrentRoom.CustomProperties[Enums.NetRoomProperties.Level])
+            return;
+
+        //ChangeLevel(newLevelIndex);
+
+        Hashtable table = new() {
+            [Enums.NetRoomProperties.Level] = index
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(table);
     }
@@ -1955,7 +1971,18 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
     }
-    
+    public void ChangeLightningPowerup(bool value) {
+        lightningToggle.SetIsOnWithoutNotify(value);
+    }
+    public void SetLightningPowerup(Toggle toggle) {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable properties = new() {
+            [Enums.NetRoomProperties.Lightning] = toggle.isOn
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
     public void ChangeDeathmatchGame(bool value) {
         deathmatchToggle.SetIsOnWithoutNotify(value);
     }

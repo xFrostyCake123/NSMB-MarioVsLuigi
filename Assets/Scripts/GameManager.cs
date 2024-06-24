@@ -37,17 +37,21 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
 
     public int levelMinTileX, levelMinTileY, levelWidthTile, levelHeightTile;
     public float cameraMinY, cameraHeightY, cameraMinX = -1000, cameraMaxX = 1000;
-    public bool loopingLevel = true, verticalLoopingLevel = false, raceLevel = false, sppLevel = false;
+    public bool loopingLevel = true, verticalLoopingLevel = false, raceLevel = false, sppLevel = false, tideSurfingLevel = false;
     public bool inSwitchEvent;
+    public float lightningCooldown = 0f;
     public TMP_ColorGradient matchCancelGradient, drawGameGradient, colorableTeamGradient;
     public Slider masterSlider, musicSlider, sfxSlider, stellarSlider;
     public Toggle ndsResolutionToggle, aspectToggle, secondActionToggle;
     public TMP_Text stellarText;
+    public GameObject lightningDarkness;
     public Vector3 spawnpoint;
     public Vector3 checkpoint;
+    
     public bool bypassStartPowerups;
     public Enums.PowerupState startingPowerup = Enums.PowerupState.Small;
     public Powerup startingReserve;
+    
     public List<Enums.PowerupState> possibleStartingPowerups;
     public List<Powerup> possibleStartingReserves;
     public Tilemap tilemap, replaceableTilemap;
@@ -88,6 +92,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public EnemySpawnpoint[] enemySpawnpoints;
 
     private GameObject[] coins;
+    private GameObject[] pointBoxes;
     public SpectationManager SpectationManager { get; private set; }
 
     private ParticleSystem brickBreak;
@@ -199,7 +204,13 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 coin.GetComponent<SpriteRenderer>().enabled = true;
                 coin.GetComponent<BoxCollider2D>().enabled = true;
             }
-
+            foreach (GameObject box in pointBoxes) {
+                //dont use setactive cause it breaks animation cycles being syncewd
+                box.GetComponent<SpriteRenderer>().enabled = true;
+                box.GetComponent<BoxCollider2D>().enabled = true;
+                box.GetComponent<PointsBalloon>().countText.enabled = true;
+                box.GetComponent<AudioSource>().enabled = true;
+            }
             StartCoroutine(BigStarRespawn());
 
             if (!PhotonNetwork.IsMasterClient)
@@ -442,6 +453,8 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         SpectationManager = GetComponent<SpectationManager>();
         loopMusic = GetComponent<LoopingMusic>();
         coins = GameObject.FindGameObjectsWithTag("coin");
+        if (tideSurfingLevel)
+            pointBoxes = GameObject.FindGameObjectsWithTag("PointsBalloon");
         levelUIColor.a = .7f;
 
         InputSystem.controls.LoadBindingOverridesFromJson(GlobalController.Instance.controlsJson);
@@ -746,18 +759,20 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 }
             }
         }
-
+        lightningCooldown -= Time.fixedDeltaTime;
         stellarText.text = "x" + (stellarSlider.value * 2f).ToString("F2");
-        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool team);
-        Utils.GetCustomProperty(Enums.NetRoomProperties.ShareStars, out int star);
-        if (team && (star == 1)) {
+        if (teamController.teamsMatch && teamController.shareStars) {
             redTeamStars = teamController.GetTeamStars(0);
             yellowTeamStars = teamController.GetTeamStars(1);
             greenTeamStars = teamController.GetTeamStars(2);
             blueTeamStars = teamController.GetTeamStars(3);
             purpleTeamStars = teamController.GetTeamStars(4);
         }
-
+        float reset = 2f;
+        if (((reset -= Time.fixedDeltaTime) <= 0) && !lightningDarkness.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("State_dark")) {
+            reset = 2f;
+            lightningDarkness.GetComponent<Animator>().ResetTrigger("darken");
+        }
         if (started && musicEnabled) {
             bool allNull = true;
             foreach (PlayerController controller in players) {
@@ -789,6 +804,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         bool starGame = starRequirement != -1;
         bool timeUp = endServerTime != -1 && endServerTime - Time.deltaTime - PhotonNetwork.ServerTimestamp < 0;
         int winningStars = -1;
+        int winningPoints = -1;
         int winningLives = -1;
         List<PlayerController> winningPlayers = new();
         List<PlayerController> alivePlayers = new();
@@ -801,7 +817,15 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 continue;
 
             alivePlayers.Add(player);
-
+            if (tideSurfingLevel) {
+                if (player.points > winningPoints) {
+                    winningPlayers.Clear();
+                    winningPoints = player.points;
+                    winningPlayers.Add(player);
+                } else if (player.points == winningPoints) {
+                    winningPlayers.Add(player);
+                }    
+            } else {
             if ((starGame && player.stars >= starRequirement && !deathmatch) || timeUp) {
                 
                 //we're in a state where this player would win.
@@ -815,6 +839,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                     winningPlayers.Add(player);
                 }
                 
+            }
             }
         }
         if (teamsMode && sharing && !deathmatch) {

@@ -9,6 +9,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
     [SerializeField] private Avatar smallAvatar, largeAvatar;
     [SerializeField] private ParticleSystem dust, sparkles, drillParticle, giantParticle, fireParticle, glideParticle, shieldParticle, shieldReadyParticle, magmaReadyParticle, tideReadyParticle;
     [SerializeField] private GameObject models, smallModel, largeModel, largeShellExclude, blueShell, propellerHelmet, propeller, bombHelmet, tideShell, tideHelmet, squirrelHat, squirrelCoat, waterShield, starRod;
+    public GameObject lightningEffect;
     [SerializeField] private Material glowMaterial;
     [SerializeField] private Color primaryColor = Color.clear, secondaryColor = Color.clear;
     [SerializeField] [ColorUsage(true, false)] private Color? _glowColor = null;
@@ -249,10 +250,10 @@ public class PlayerAnimationController : MonoBehaviourPun {
             //controller.propellerSpinTimer = animator.GetBool("propellerSpin") ? 1f : 0f;
         }
 
+        
+
         if (controller.giantEndTimer > 0) {
             transform.localScale = Vector3.one + (Vector3.one * (Mathf.Min(1, controller.giantEndTimer / (controller.giantStartTime / 2f)) * 2.6f));
-        } else if (controller.shrunk > 0) {
-            transform.localScale = Vector3.one / 2;
         } else {
             transform.localScale = controller.state switch {
                 Enums.PowerupState.MiniMushroom => Vector3.one / 2,
@@ -260,7 +261,9 @@ public class PlayerAnimationController : MonoBehaviourPun {
                 _ => Vector3.one,
             };
         }
-
+        if (controller.shrunk > 0 && controller.state != Enums.PowerupState.MegaMushroom) {
+            transform.localScale *= 0.5f;
+        }
         //Shader effects
         if (materialBlock == null)
             materialBlock = new();
@@ -301,6 +304,9 @@ public class PlayerAnimationController : MonoBehaviourPun {
 
         //hit flash
         models.SetActive(GameManager.Instance.gameover || controller.dead || !(controller.hitInvincibilityCounter > 0 && controller.hitInvincibilityCounter * (controller.hitInvincibilityCounter <= 0.75f ? 5 : 2) % (blinkDuration * 2f) < blinkDuration));
+        
+        if (controller.thunder <= 0)
+            lightningEffect.GetComponent<Animator>().ResetTrigger("strike");
 
         //Model changing
         bool large = controller.state >= Enums.PowerupState.Mushroom;
@@ -318,6 +324,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
         squirrelCoat.SetActive(controller.state == Enums.PowerupState.SuperAcorn);
         waterShield.SetActive(controller.inShield > 0);
         starRod.SetActive(controller.state == Enums.PowerupState.StellarFlower);
+        lightningEffect.SetActive(controller.thunder > 0);
         animator.avatar = large ? largeAvatar : smallAvatar;
         animator.runtimeAnimatorController = large ? controller.character.largeOverrides : controller.character.smallOverrides;
 

@@ -13,18 +13,18 @@ public class UIUpdater : MonoBehaviour {
     public GameObject playerTrackTemplate, starTrackTemplate;
     public PlayerController player;
     public Sprite storedItemNull;
-    public TMP_Text uiStars, uiCoins, uiDebug, uiLives, uiCountdown, uiMiniTimer, redStars, yellowStars, greenStars, blueStars, purpleStars;
+    public TMP_Text uiStars, uiCoins, uiDebug, uiLives, uiCountdown, uiMiniTimer, redStars, yellowStars, greenStars, blueStars, purpleStars, uiPoints, uiCombo, comboRating;
     public Image itemReserve, itemColor;
     public GameObject cobaltEffect, protectedCobaltEffect;
     public float pingSample = 0;
 
     private Material timerMaterial;
-    private GameObject starsParent, coinsParent, livesParent, timerParent, miniParent;
+    private GameObject starsParent, coinsParent, livesParent, timerParent, miniParent, pointsParent, comboParent;
     public GameObject teamsHeader;
     private readonly List<Image> backgrounds = new();
     private bool uiHidden;
 
-    private int coins = -1, stars = -1, lives = -1, timer = -1, miniTimer = -1;
+    private int coins = -1, stars = -1, lives = -1, timer = -1, miniTimer = -1, combo = -1, points = -1;
 
     public void Start() {
         Instance = this;
@@ -35,11 +35,14 @@ public class UIUpdater : MonoBehaviour {
         livesParent = uiLives.transform.parent.gameObject;
         timerParent = uiCountdown.transform.parent.gameObject;
         miniParent = uiMiniTimer.transform.parent.gameObject;
+        comboParent = uiCombo.transform.parent.gameObject;
+        pointsParent = uiPoints.transform.parent.gameObject;
 
         backgrounds.Add(starsParent.GetComponentInChildren<Image>());
         backgrounds.Add(coinsParent.GetComponentInChildren<Image>());
         backgrounds.Add(livesParent.GetComponentInChildren<Image>());
         backgrounds.Add(timerParent.GetComponentInChildren<Image>());
+        backgrounds.Add(pointsParent.GetComponentInChildren<Image>());
 
         foreach (Image bg in backgrounds)
             bg.color = GameManager.Instance.levelUIColor;
@@ -125,6 +128,8 @@ public class UIUpdater : MonoBehaviour {
         livesParent.SetActive(!hidden);
         coinsParent.SetActive(!hidden);
         timerParent.SetActive(!hidden);
+        pointsParent.SetActive(!hidden);
+        comboParent.SetActive(!hidden);
     }
 
     private void UpdateStoredItemUI() {
@@ -173,6 +178,41 @@ public class UIUpdater : MonoBehaviour {
         } else {
             livesParent.SetActive(false);
         }
+
+        if (player.combo >= 1 && GameManager.Instance.tideSurfingLevel) {
+            if (player.combo != combo) {
+                combo = player.combo;
+                uiCombo.text = "Combo X" + combo;
+            }
+            comboParent.SetActive(true);
+        } else {
+            comboParent.SetActive(false);
+        }
+        if (GameManager.Instance.tideSurfingLevel) {
+            pointsParent.SetActive(true);
+            if (player.points != points) {
+                points = player.points;
+                uiPoints.text = Utils.GetSymbolString(points.ToString());
+            }
+        } else {
+            pointsParent.SetActive(false);
+        }
+        if (combo >= 1 && GameManager.Instance.tideSurfingLevel) {
+            comboRating.text = combo switch {
+                int n when n > 15 => "EXCELLENT!",
+                int n when n > 11 => "GREAT!",
+                int n when n > 7  => "GOOD!",
+                int n when n > 3  => "OK!",
+                _ => ""
+            };
+            comboRating.color = combo switch {
+                int n when n > 15 => new Color(1f, 0f, 0.1f, 1f),
+                int n when n > 11 => new Color(1f, 0.35f, 0f, 1f),
+                int n when n > 7  => new Color(0.75f, 1f, 0f, 1f),
+                int n when n > 3  => new Color(0.5f, 1f, 0f, 1f),
+                _ => new Color(1f, 1f, 1f, 1f) 
+            };
+        }
         redStars.text = Utils.GetSymbolString("" + GameManager.Instance.redTeamStars);
         yellowStars.text = Utils.GetSymbolString("" + GameManager.Instance.yellowTeamStars);
         greenStars.text = Utils.GetSymbolString("" + GameManager.Instance.greenTeamStars);
@@ -203,7 +243,7 @@ public class UIUpdater : MonoBehaviour {
         }
 
         if (player.shrunk > 0) { 
-            uiMiniTimer.text = Utils.GetSymbolString("c" + player.shrunk);
+            uiMiniTimer.text = Utils.GetSymbolString("c" + (Mathf.RoundToInt(player.shrunk)));
             miniParent.SetActive(true);
         } else {
             miniParent.SetActive(false);
