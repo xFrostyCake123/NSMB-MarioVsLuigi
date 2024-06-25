@@ -59,6 +59,9 @@ public static class Enums {
     public enum PlayerEyeState {
         Normal, HalfBlink, FullBlink, Death
     }
+    public enum FrostedFades {
+        Normal, Sad, Sleepy
+    }
     // Music Enums
     public enum MusicState {
         Normal,
@@ -268,6 +271,7 @@ public static class Enums {
         public static string DeathmatchGame { get; } = "Dt";
         public static string FireballDamage { get; } = "Fd";
         public static string BalloonBattleGame { get; } = "Bb";
+        public static string PointsGame { get; } = "Point";
         public static string TeamsMatch { get; } = "Te";
         public static string TeamCollision { get; } = "TeC";
         public static string FriendlyFire { get; } = "Fr";

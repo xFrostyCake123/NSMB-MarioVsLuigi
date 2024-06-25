@@ -70,6 +70,7 @@ MonoBehaviour:
   isMagmaball: 0
   isBigMagmaball: 0
   isFlowerSpring: 0
+  zapped: 0
   goesUp: 0
   terVelocityTreshold: -6.25
   accelerates: 0

@@ -43,6 +43,9 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public TMP_ColorGradient matchCancelGradient, drawGameGradient, colorableTeamGradient;
     public Slider masterSlider, musicSlider, sfxSlider, stellarSlider;
     public Toggle ndsResolutionToggle, aspectToggle, secondActionToggle;
+    public GameObject chatPrefab, chatContent;
+    public TMP_InputField chatTextField;
+    private readonly Dictionary<Player, double> lastMessage = new();
     public TMP_Text stellarText;
     public GameObject lightningDarkness;
     public Vector3 spawnpoint;
@@ -204,12 +207,14 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 coin.GetComponent<SpriteRenderer>().enabled = true;
                 coin.GetComponent<BoxCollider2D>().enabled = true;
             }
-            foreach (GameObject box in pointBoxes) {
-                //dont use setactive cause it breaks animation cycles being syncewd
-                box.GetComponent<SpriteRenderer>().enabled = true;
-                box.GetComponent<BoxCollider2D>().enabled = true;
-                box.GetComponent<PointsBalloon>().countText.enabled = true;
-                box.GetComponent<AudioSource>().enabled = true;
+            if (pointBoxes != null) {
+                foreach (GameObject box in pointBoxes) {
+                    //dont use setactive cause it breaks animation cycles being syncewd
+                    box.GetComponent<SpriteRenderer>().enabled = true;
+                    box.GetComponent<BoxCollider2D>().enabled = true;
+                    box.GetComponent<PointsBalloon>().countText.enabled = true;
+                    box.GetComponent<AudioSource>().enabled = true;
+                }
             }
             StartCoroutine(BigStarRespawn());
 
@@ -339,6 +344,34 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             body.angularVelocity = right ^ upsideDown ? -300 : 300;
 
             particle.transform.position += new Vector3(sr.size.x / 4f, size.y / 4f * (upsideDown ? -1 : 1));
+            break;
+        }
+        case (byte) Enums.NetEventIds.PlayerChatMessage: {
+            string message = customData as string;
+
+            if (string.IsNullOrWhiteSpace(message))
+                return;
+
+            if (sender == null)
+                return;
+
+            double time = lastMessage.GetValueOrDefault(sender);
+            if (PhotonNetwork.Time - time < 0.75f)
+                return;
+
+            lastMessage[sender] = PhotonNetwork.Time;
+
+            if (!sender.IsMasterClient) {
+                Utils.GetCustomProperty(Enums.NetRoomProperties.Mutes, out object[] mutes);
+                if (mutes.Contains(sender.UserId))
+                    return;
+            }
+
+            message = message.Substring(0, Mathf.Min(128, message.Length));
+            message = message.Replace("<", "«").Replace(">", "»").Replace("\n", " ").Trim();
+            message = sender.GetUniqueNickname() + ": " + message.Filter();
+
+            LocalChatMessage(message, Color.black, false);
             break;
         }
         }
@@ -698,7 +731,13 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             music.PlayOneShot(Enums.Sounds.UI_Match_Lose.GetClip());
 
         //TOOD: make a results screen?
-
+        float fadeTime = secondsUntilMenu - 1;
+        if ((fadeTime -= Time.fixedDeltaTime) <= 0) {
+            FadeOutManager fadeOut = GameObject.FindGameObjectWithTag("FadeUI").GetComponent<FadeOutManager>();
+            fadeOut.FrostedFade(Enums.FrostedFades.Normal);
+            fadeOut.GetComponent<Animator>().speed = -1;
+            fadeTime = 99f;
+        }
         yield return new WaitForSecondsRealtime(secondsUntilMenu);
         if (PhotonNetwork.IsMasterClient)
             PhotonNetwork.DestroyAll();
@@ -1073,6 +1112,53 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         Settings.Instance.useSecondAction = secondActionToggle.isOn;
         Settings.Instance.SaveSettingsToPreferences();  
     }
+    public void LocalChatMessage(string message, Color? color = null, bool filter = true) {
+        float y = 0;
+        for (int i = 0; i < chatContent.transform.childCount; i++) {
+            GameObject child = chatContent.transform.GetChild(i).gameObject;
+            if (!child.activeSelf)
+                continue;
+
+            y -= child.GetComponent<RectTransform>().rect.height + 20;
+        }
+
+        GameObject chat = Instantiate(chatPrefab, Vector3.zero, Quaternion.identity, chatContent.transform);
+        chat.SetActive(true);
+
+        if (color != null) {
+            Color fColor = (Color) color;
+            message = $"<color=#{(byte) (fColor.r * 255):X2}{(byte) (fColor.g * 255):X2}{(byte) (fColor.b * 255):X2}>" + message;
+        }
+
+        GameObject txtObject = chat.transform.Find("Text").gameObject;
+        SetText(txtObject, message, filter);
+        Canvas.ForceUpdateCanvases();
+
+        //RectTransform tf = txtObject.GetComponent<RectTransform>();
+        //Bounds bounds = txtObject.GetComponent<TextMeshProUGUI>().textBounds;
+        //tf.sizeDelta = new Vector2(tf.sizeDelta.x, bounds.max.y - bounds.min.y - 15f);
+    }
+    public void SendChat() {
+        double time = lastMessage.GetValueOrDefault(PhotonNetwork.LocalPlayer);
+        if (PhotonNetwork.Time - time < 0.75f)
+            return;
+
+        string text = chatTextField.text.Replace("<", "«").Replace(">", "»").Trim();
+        if (text == null || text == "")
+            return;
+
+        PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.PlayerChatMessage, text, NetworkUtils.EventAll, SendOptions.SendReliable);
+        StartCoroutine(SelectNextFrame(chatTextField));
+    }
+    IEnumerator SelectNextFrame(TMP_InputField input) {
+        yield return new WaitForEndOfFrame();
+        input.text = "";
+        input.ActivateInputField();
+    }
+    private void SetText(GameObject obj, string txt, bool filter) {
+        TextMeshProUGUI textComp = obj.GetComponent<TextMeshProUGUI>();
+        textComp.text = filter ? txt.Filter() : txt;
+    }
     public void AttemptQuit() {
 
         if (PhotonNetwork.IsMasterClient) {
@@ -1098,6 +1184,9 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     }
 
     public void Quit() {
+        FadeOutManager fadeOut = GameObject.FindGameObjectWithTag("FadeUI").GetComponent<FadeOutManager>();
+        fadeOut.FrostedFade(Enums.FrostedFades.Normal);
+        fadeOut.GetComponent<Animator>().speed = -1;
         sfx.PlayOneShot(Enums.Sounds.UI_Decide.GetClip());
         PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene("MainMenu");

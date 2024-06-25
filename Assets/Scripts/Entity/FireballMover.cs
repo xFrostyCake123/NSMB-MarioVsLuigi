@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 public class FireballMover : MonoBehaviourPun {
 public AudioSource audioSource;
 
-    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isBigWaterball, isTidalwave, isWaterBubble, isMagmaball, isBigMagmaball, isFlowerSpring, goesUp;
+    public bool luigiFireball, left, isIceball, isStarball, isWaterball, isBigWaterball, isTidalwave, isWaterBubble, isMagmaball, isBigMagmaball, isFlowerSpring, zapped, goesUp;
     public float terVelocityTreshold = -6.25f;
     private float analogDeadzone = 0.35f;
     public bool accelerates, deccelerates, fastAccelerates;
@@ -395,7 +395,7 @@ public AudioSource audioSource;
                 particle.transform.localScale = new (0.1f, 0.1f, 1f);
                 transform.localScale = new (3f, 3f, 3f);
             } else {
-                particle.transform.localScale = new (0.1f, 0.1f, 1f);
+                particle.transform.localScale = new (0.2f, 0.2f, 1f);
                 transform.localScale = new (6f, 6f, 6f);
             }
             breakOnImpact = false;
@@ -408,5 +408,25 @@ public AudioSource audioSource;
             body.velocity = Vector2.zero;
         }
     }
+    [PunRPC]
+    public void GetZapped() {
+        if (!photonView.IsMine)
+            return;
 
+        if (zapped)
+            return;
+
+        GameObject electricExplosion = (GameObject) Resources.Load("Prefabs/Particle/ElectricFlash");
+        Instantiate(electricExplosion, transform.position, Quaternion.identity);
+        
+        speed *= 1.25f;
+        if (!isBigWaterball)
+            transform.localScale *= 1.2f;
+        
+        if (despawnTimer > 0)
+            despawnTimer += 1f;
+
+        zapped = true;
+        
+    }
 }

@@ -358,8 +358,8 @@ public class PlayerAnimationController : MonoBehaviourPun {
             body.gravityScale = 1.2f;
             body.velocity = new Vector2(0, Mathf.Max(-deathForce, body.velocity.y));
         }
-        if (controller.photonView.IsMine && deathTimer + Time.fixedDeltaTime > (3 - 0.43f) && deathTimer < (3 - 0.43f))
-            controller.fadeOut.FadeOutAndIn(0.33f, .1f);
+        if (controller.photonView.IsMine && deathTimer + Time.fixedDeltaTime > (2 - 0.43f) && deathTimer < (2 - 0.43f))
+            controller.fadeOut.FrostedFade(Enums.FrostedFades.Sad);
 
         if (photonView.IsMine && deathTimer >= 3f)
             photonView.RPC("PreRespawn", RpcTarget.All);
@@ -382,9 +382,6 @@ public class PlayerAnimationController : MonoBehaviourPun {
         controller.UpdateHitbox();
 
         PipeManager pe = controller.pipeEntering;
-
-        if (controller.photonView.IsMine && pipeTimer + Time.fixedDeltaTime > (2 - 0.43f) && pipeTimer < (2 - 0.43f) && pe.fades)
-            controller.fadeOut.FadeOutAndIn(pe.fadeFloat1, pe.fadeFloat2);
 
         body.isKinematic = true;
         body.velocity = controller.pipeDirection * 2f;

@@ -10,7 +10,7 @@ public class FrozenCube : HoldableEntity {
 
     public IFreezableEntity.UnfreezeReason unfreezeReason = IFreezableEntity.UnfreezeReason.Other;
     public float autoBreakTimer = 10;
-
+    public bool noEntity = false, isShinyCube = false;
     private SpriteRenderer spriteRenderer;
     private IFreezableEntity entity;
     private PhotonView entityView;
@@ -28,13 +28,13 @@ public class FrozenCube : HoldableEntity {
         holderOffset = Vector2.one;
         body.velocity = Vector2.zero;
 
-        if (photonView && photonView.InstantiationData != null) {
+        if (photonView && photonView.InstantiationData != null && !noEntity) {
             int id = (int) photonView.InstantiationData[0];
             entityView = PhotonView.Find(id);
 
             entity = entityView.GetComponent<IFreezableEntity>();
             if (entity == null || (photonView.IsMine && entity.Frozen)) {
-                Destroy(gameObject);
+                    Destroy(gameObject);
                 return;
             }
 
@@ -68,6 +68,8 @@ public class FrozenCube : HoldableEntity {
             transform.position -= (Vector3) entityPositionOffset - Vector3.down * 0.1f;
 
             flying = entity.IsFlying;
+            ApplyConstraints();
+        } else if (noEntity) {
             ApplyConstraints();
         }
     }
@@ -225,8 +227,14 @@ public class FrozenCube : HoldableEntity {
             photonView.RPC(nameof(KillWithReason), RpcTarget.All, (byte) IFreezableEntity.UnfreezeReason.BlockBump);
 
         } else if (fastSlide) {
-            player.photonView.RPC(nameof(PlayerController.Knockback), RpcTarget.All, body.position.x > player.body.position.x, 1, false, photonView.ViewID);
-            photonView.RPC(nameof(Kill), RpcTarget.All);
+            if (isShinyCube) {
+                GameObject cube = PhotonNetwork.Instantiate("Prefabs/FrozenCube", player.transform.position, Quaternion.identity, 0, new object[] { player.photonView.ViewID });
+                player.frozenObject = cube.GetComponent<FrozenCube>();
+                photonView.RPC(nameof(Kill), RpcTarget.All);
+            } else {
+                player.photonView.RPC(nameof(PlayerController.Knockback), RpcTarget.All, body.position.x > player.body.position.x, 1, false, photonView.ViewID);
+                photonView.RPC(nameof(Kill), RpcTarget.All);
+            }
         }
         if (entity.IsCarryable && !holder && !dead) {
             if (player.CanPickup() && player.onGround) {

@@ -2287,6 +2287,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     [PunRPC]
     public void StrikeLightning(int summonerID) {
 
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+            
         PhotonView summonerView = PhotonView.Find(summonerID);
         PlayerController summoner = summonerView.GetComponent<PlayerController>();
 
@@ -2297,37 +2300,54 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         foreach (KillableEntity enemy in FindObjectsOfType<KillableEntity>()) {
             if (enemy.GetComponent<BobombWalk>() is BobombWalk bomb) {
                 bomb.photonView.RPC(nameof(bomb.Detonate), RpcTarget.All);
+                GameObject electricExplosion = (GameObject) Resources.Load("Prefabs/Particle/ElectricFlash");
+                Instantiate(electricExplosion, enemy.transform.position, Quaternion.identity);
             } else {
-                if (!enemy.dead)
+                if (!enemy.dead) {
                     enemy.photonView.RPC(nameof(enemy.SpecialKill), RpcTarget.All, facingRight, false, 0);
+                    GameObject electricExplosion = (GameObject) Resources.Load("Prefabs/Particle/ElectricFlash");
+                    Instantiate(electricExplosion, enemy.transform.position, Quaternion.identity);
+                }
             }
         }
         foreach (HoldableEntity enemy in FindObjectsOfType<HoldableEntity>()) {
             if (enemy.GetComponent<BobombWalk>() is BobombWalk bomb) {
                 bomb.photonView.RPC(nameof(bomb.Detonate), RpcTarget.All);
+                GameObject electricExplosion = (GameObject) Resources.Load("Prefabs/Particle/ElectricFlash");
+                Instantiate(electricExplosion, enemy.transform.position, Quaternion.identity);
             } else {
-                if (!enemy.dead)
+                if (!enemy.dead) {
                     enemy.photonView.RPC(nameof(enemy.SpecialKill), RpcTarget.All, facingRight, false, 0);
+                    GameObject electricExplosion = (GameObject) Resources.Load("Prefabs/Particle/ElectricFlash");
+                    Instantiate(electricExplosion, enemy.transform.position, Quaternion.identity);
+                }
             }
         }
         foreach (FireballMover fireball in FindObjectsOfType<FireballMover>()) {
             PhotonView view = fireball.GetComponent<PhotonView>();
-            if (view)
-                PhotonNetwork.Destroy(view);
-            Destroy(fireball.gameObject);
+            if (!fireball.isIceball) {
+                fireball.photonView.RPC(nameof(fireball.GetZapped), RpcTarget.All);
+            } else {
+                if (view)
+                    PhotonNetwork.Destroy(view);
+                Destroy(fireball.gameObject);
+            }
         }
         foreach (PlayerController player in GameManager.Instance.players) {
             if (player != summoner)
-                player.photonView.RPC(nameof(player.GetStruckByLightning), RpcTarget.All);
+                player.photonView.RPC(nameof(player.GetStruckByLightning), RpcTarget.All, player.team == team);
         }
     }
     [PunRPC]
-    public void GetStruckByLightning() {
-        if (!photonView.IsMine)
-            return;
-
+    public void GetStruckByLightning(bool teammate) {
         if (invincible > 0)
             return;
+
+        Utils.GetCustomProperty(Enums.NetRoomProperties.TeamsMatch, out bool teams);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.FriendlyFire, out int friendly);
+        if (teams && teammate && friendly == 0)
+            return;
+        bool dropStars = friendly == 2;
 
         thunder = 1.5f;
         PlaySound(Enums.Sounds.Powerup_Lightning_Struck);
@@ -2340,7 +2360,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             AnimationController.lightningEffect.SetActive(true);
             AnimationController.lightningEffect.GetComponent<Animator>().SetTrigger("strike");
             shrunk = 10f;
-            photonView.RPC(nameof(Knockback), RpcTarget.All, facingRight, 1, state == Enums.PowerupState.MiniMushroom ? false : true, photonView.ViewID);
+            photonView.RPC(nameof(Knockback), RpcTarget.All, facingRight, (teammate && teams && !dropStars) ? 0 : 1, state == Enums.PowerupState.MiniMushroom ? false : true, photonView.ViewID);
         }
     }
     [PunRPC]
