@@ -39,14 +39,14 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public float cameraMinY, cameraHeightY, cameraMinX = -1000, cameraMaxX = 1000;
     public bool loopingLevel = true, verticalLoopingLevel = false, raceLevel = false, sppLevel = false, tideSurfingLevel = false;
     public bool inSwitchEvent;
-    public float lightningCooldown = 0f;
+    public float lightningCooldown = 0f, endingTime = 0f;
     public TMP_ColorGradient matchCancelGradient, drawGameGradient, colorableTeamGradient;
     public Slider masterSlider, musicSlider, sfxSlider, stellarSlider;
-    public Toggle ndsResolutionToggle, aspectToggle, secondActionToggle;
+    public Toggle ndsResolutionToggle, aspectToggle, secondActionToggle, acornControlsToggle, tideControlsToggle;
     public GameObject chatPrefab, chatContent;
     public TMP_InputField chatTextField;
     private readonly Dictionary<Player, double> lastMessage = new();
-    public TMP_Text stellarText;
+    public TMP_Text stellarText, countdown;
     public GameObject lightningDarkness;
     public Vector3 spawnpoint;
     public Vector3 checkpoint;
@@ -527,8 +527,10 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         if (!bypassStartPowerups) {
             if (startPowerup != 0) {
                 startingPowerup = possibleStartingPowerups[startPowerup - 1]; 
+            }
+            if (startReserve != 0) {
                 startingReserve = possibleStartingReserves[startReserve - 1]; 
-            }    
+            }  
         }
 
         if (raceLevel)
@@ -621,6 +623,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
 
         try {
             ScoreboardUpdater.instance.Populate(players);
+            FinalResultsList.instance.Populate(players);
             if (Settings.Instance.scoreboardAlways)
                 ScoreboardUpdater.instance.SetEnabled();
         } catch { }
@@ -715,7 +718,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         bool draw = winner == null;
         int secondsUntilMenu;
         secondsUntilMenu = draw ? 5 : teamsOn ? 5 : 4;
-        
+        int secondsUntilResults = secondsUntilMenu;
         if (draw) {
             text.GetComponent<TMP_Text>().colorGradientPreset = drawGameGradient;
         }
@@ -730,18 +733,40 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         else
             music.PlayOneShot(Enums.Sounds.UI_Match_Lose.GetClip());
 
-        //TOOD: make a results screen?
-        float fadeTime = secondsUntilMenu - 1;
-        if ((fadeTime -= Time.fixedDeltaTime) <= 0) {
-            FadeOutManager fadeOut = GameObject.FindGameObjectWithTag("FadeUI").GetComponent<FadeOutManager>();
-            fadeOut.FrostedFade(Enums.FrostedFades.Normal);
-            fadeOut.GetComponent<Animator>().speed = -1;
-            fadeTime = 99f;
+        //TOOD: make a results screen? yessir
+        if (!draw) {
+            FadeOutManager fade = GameObject.FindGameObjectWithTag("FadeUI").GetComponent<FadeOutManager>();
+            yield return new WaitForSecondsRealtime(secondsUntilResults);
+            foreach (FireballMover fireball in FindObjectsOfType<FireballMover>()) {
+                PhotonView view = fireball.GetComponent<PhotonView>();
+                if (view)
+                    PhotonNetwork.Destroy(view);
+                Destroy(fireball);
+            }
+            music.PlayOneShot(Enums.Sounds.UI_Match_Results.GetClip());
+            text.gameObject.SetActive(false);
+            ScoreboardUpdater.instance.gameObject.SetActive(false);
+            pauseUI.SetActive(false);
+            GameObject results = GameObject.FindWithTag("results");
+            results.GetComponent<Animator>().SetTrigger("slide");
+            if (winner != null)
+                FinalResultsList.instance.SelectWinningPlayer(winner);
+            yield return new WaitForSecondsRealtime(13);
+            fade.FrostedFade(Enums.FrostedFades.ReverseNormal);
+            yield return new WaitForSecondsRealtime(2);
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.DestroyAll();
+            SceneManager.LoadScene("MainMenu");
+        } else {
+            FadeOutManager fade = GameObject.FindGameObjectWithTag("FadeUI").GetComponent<FadeOutManager>();
+            yield return new WaitForSecondsRealtime(secondsUntilMenu);
+            fade.transform.SetAsLastSibling();
+            fade.FrostedFade(Enums.FrostedFades.ReverseNormal);
+            yield return new WaitForSecondsRealtime(2);
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.DestroyAll();
+            SceneManager.LoadScene("MainMenu");
         }
-        yield return new WaitForSecondsRealtime(secondsUntilMenu);
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.DestroyAll();
-        SceneManager.LoadScene("MainMenu");
     }
 
     private IEnumerator BigStarRespawn(bool wait = true) {
@@ -775,6 +800,10 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     }
 
     public void Update() {
+        endingTime -= Time.fixedDeltaTime;
+        countdown.text = Mathf.RoundToInt(endingTime).ToString();
+        if (endingTime <= 0)
+            countdown.gameObject.SetActive(false);
         if (gameover)
             return;
         aspectToggle.interactable = ndsResolutionToggle.isOn = Settings.Instance.ndsResolution;
@@ -806,11 +835,6 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             greenTeamStars = teamController.GetTeamStars(2);
             blueTeamStars = teamController.GetTeamStars(3);
             purpleTeamStars = teamController.GetTeamStars(4);
-        }
-        float reset = 2f;
-        if (((reset -= Time.fixedDeltaTime) <= 0) && !lightningDarkness.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("State_dark")) {
-            reset = 2f;
-            lightningDarkness.GetComponent<Animator>().ResetTrigger("darken");
         }
         if (started && musicEnabled) {
             bool allNull = true;
@@ -937,7 +961,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             //everyone's dead...? ok then, draw?
             PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, null, NetworkUtils.EventAll, SendOptions.SendReliable);
             return;
-        } else if ((alivePlayers.Count == 1 || (teamsMode && !allSameTeam && alivePlayers.Count != 0 && alivePlayers.All(player => teamController.IsPlayerTeammate(alivePlayers[0], player)))) && playerCount >= 2) {
+        } else if (alivePlayers.Count == 1 && playerCount >= 2) {
             //one player left alive (and not in a solo game). winner!
             PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, alivePlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
             return;
@@ -964,7 +988,7 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
             if (draw)
                 // it's a draw! Thanks for playing the demo!
                 PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, null, NetworkUtils.EventAll, SendOptions.SendReliable);
-            else if (winningPlayers.Count == 1 || (teamsMode && alivePlayers.Count != 0 && alivePlayers.All(player => teamController.IsPlayerTeammate(alivePlayers[0], player))))
+            else if (winningPlayers.Count == 1)
                 PhotonNetwork.RaiseEvent((byte) Enums.NetEventIds.EndGame, winningPlayers[0].photonView.Owner, NetworkUtils.EventAll, SendOptions.SendReliable);
 
             return;
@@ -1050,7 +1074,21 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     public void OnPause(InputAction.CallbackContext context) {
         Pause();
     }
+    public void BackSound() {
+        sfx.PlayOneShot(Enums.Sounds.UI_Back.GetClip());
+    }
 
+    public void ConfirmSound() {
+        sfx.PlayOneShot(Enums.Sounds.UI_Decide.GetClip());
+    }
+
+    public void WindowOpenSound() {
+        sfx.PlayOneShot(Enums.Sounds.UI_WindowOpen.GetClip());
+    }
+
+    public void WindowCloseSound() {
+        sfx.PlayOneShot(Enums.Sounds.UI_WindowClose.GetClip());
+    }
     public void Pause() {
         if (gameover || !musicEnabled)
             return;
@@ -1081,6 +1119,8 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         stellarSlider.value = Settings.Instance.StellarSensitivity;
         ndsResolutionToggle.isOn = Settings.Instance.ndsResolution;
         secondActionToggle.isOn = Settings.Instance.useSecondAction;
+        acornControlsToggle.isOn = Settings.Instance.changeAcornControls;
+        tideControlsToggle.isOn = Settings.Instance.changeTideControls;
         aspectToggle.isOn = Settings.Instance.fourByThreeRatio;
         EventSystem.current.SetSelectedGameObject(optionsButton);
     }
@@ -1110,6 +1150,14 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
     }
     public void ChangeSecondAction() {
         Settings.Instance.useSecondAction = secondActionToggle.isOn;
+        Settings.Instance.SaveSettingsToPreferences();  
+    }
+    public void ChangeAcornControls() {
+        Settings.Instance.changeAcornControls = acornControlsToggle.isOn;
+        Settings.Instance.SaveSettingsToPreferences();  
+    }
+    public void ChangeTideControls() {
+        Settings.Instance.changeTideControls = tideControlsToggle.isOn;
         Settings.Instance.SaveSettingsToPreferences();  
     }
     public void LocalChatMessage(string message, Color? color = null, bool filter = true) {

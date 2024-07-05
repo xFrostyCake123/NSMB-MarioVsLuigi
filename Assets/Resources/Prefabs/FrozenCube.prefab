@@ -73,6 +73,7 @@ MonoBehaviour:
   autoBreakTimer: 3
   noEntity: 0
   isShinyCube: 0
+  entityView: {fileID: 0}
 --- !u!212 &5302927234469735370
 SpriteRenderer:
   m_ObjectHideFlags: 0

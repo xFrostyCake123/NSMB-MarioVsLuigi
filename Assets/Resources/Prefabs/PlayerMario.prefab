@@ -34732,6 +34732,8 @@ MonoBehaviour:
   propellerLaunchVelocity: 6
   propellerFallSpeed: 2
   propellerSpinFallSpeed: 1.5
+  propellerDrillAccel: 0
+  propellerFlySpeed: 1
   glidingFallSpeed: 1.15
   squirrelJumpFallSpeed: 3
   propellerSpinTime: 0.5
@@ -34832,6 +34834,7 @@ MonoBehaviour:
   shrunk: 0
   onSpringCooldown: 0
   thunder: 0
+  lightningCd: 0
   invincible: 0
   metal: 0
   cobalting: 0
@@ -34848,6 +34851,7 @@ MonoBehaviour:
   lives: -1
   points: 0
   combo: 0
+  totalCoins: 0
   storedPowerup: {fileID: 0}
   holding: {fileID: 0}
   holdingOld: {fileID: 0}
@@ -50861,7 +50865,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3316911544871069603
 Transform:
   m_ObjectHideFlags: 0

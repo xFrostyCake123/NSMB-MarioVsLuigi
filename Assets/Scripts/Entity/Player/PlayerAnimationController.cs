@@ -304,9 +304,6 @@ public class PlayerAnimationController : MonoBehaviourPun {
 
         //hit flash
         models.SetActive(GameManager.Instance.gameover || controller.dead || !(controller.hitInvincibilityCounter > 0 && controller.hitInvincibilityCounter * (controller.hitInvincibilityCounter <= 0.75f ? 5 : 2) % (blinkDuration * 2f) < blinkDuration));
-        
-        if (controller.thunder <= 0)
-            lightningEffect.GetComponent<Animator>().ResetTrigger("strike");
 
         //Model changing
         bool large = controller.state >= Enums.PowerupState.Mushroom;
@@ -358,7 +355,7 @@ public class PlayerAnimationController : MonoBehaviourPun {
             body.gravityScale = 1.2f;
             body.velocity = new Vector2(0, Mathf.Max(-deathForce, body.velocity.y));
         }
-        if (controller.photonView.IsMine && deathTimer + Time.fixedDeltaTime > (2 - 0.43f) && deathTimer < (2 - 0.43f))
+        if (controller.photonView.IsMine && deathTimer + Time.fixedDeltaTime > (2.3 - 0.43f) && deathTimer < (2.3 - 0.43f))
             controller.fadeOut.FrostedFade(Enums.FrostedFades.Sad);
 
         if (photonView.IsMine && deathTimer >= 3f)

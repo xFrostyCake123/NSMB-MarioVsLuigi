@@ -20257,7 +20257,6 @@ GameObject:
   - component: {fileID: 7228472167028104521}
   - component: {fileID: 914383415064480845}
   - component: {fileID: 8274588790948171244}
-  - component: {fileID: 2489254871111148325}
   m_Layer: 9
   m_Name: Particles (1)
   m_TagString: Untagged
@@ -25159,18 +25158,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &2489254871111148325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2931979919419227694}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b73da02d946c92409564fcf9c2a6aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3278154085914941010
 GameObject:
   m_ObjectHideFlags: 0
@@ -40402,7 +40389,7 @@ GameObject:
   - component: {fileID: 2096308167822506428}
   - component: {fileID: 1804862002836440517}
   - component: {fileID: 8229717443863269642}
-  - component: {fileID: 8320768984923928649}
+  - component: {fileID: 3905790755592592804}
   m_Layer: 9
   m_Name: glide
   m_TagString: Untagged
@@ -45305,7 +45292,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &8320768984923928649
+--- !u!114 &3905790755592592804
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45314,9 +45301,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 6890387250249721994}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b73da02d946c92409564fcf9c2a6aa3, type: 3}
+  m_Script: {fileID: 11500000, guid: e996f15526c6efc41a2844bb5666b6ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSources:
+  - {fileID: 8274588790948171244}
+  - {fileID: 8229717443863269642}
+  soundOrigin: {fileID: 8636928217783201364}
+  soundRange: 8
 --- !u!1 &6898196785961775308
 GameObject:
   m_ObjectHideFlags: 0
@@ -55568,6 +55560,8 @@ MonoBehaviour:
   propellerLaunchVelocity: 6
   propellerFallSpeed: 2
   propellerSpinFallSpeed: 1.5
+  propellerDrillAccel: 0
+  propellerFlySpeed: 1
   glidingFallSpeed: 1.15
   squirrelJumpFallSpeed: 3
   propellerSpinTime: 0.5
@@ -55668,6 +55662,7 @@ MonoBehaviour:
   shrunk: 0
   onSpringCooldown: 0
   thunder: 0
+  lightningCd: 0
   invincible: 0
   metal: 0
   cobalting: 0
@@ -55684,6 +55679,7 @@ MonoBehaviour:
   lives: -1
   points: 0
   combo: 0
+  totalCoins: 0
   storedPowerup: {fileID: 0}
   holding: {fileID: 0}
   holdingOld: {fileID: 0}
@@ -61316,7 +61312,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2211061129474003991
 Transform:
   m_ObjectHideFlags: 0

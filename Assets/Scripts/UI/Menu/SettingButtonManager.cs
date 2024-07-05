@@ -47,6 +47,14 @@ public class SettingButtonManager : MonoBehaviour {
         Settings.useSecondAction = toggle.isOn;
         Settings.SaveSettingsToPreferences();
     }
+    public void OnAcornToggle(Toggle toggle) {
+        Settings.changeAcornControls = toggle.isOn;
+        Settings.SaveSettingsToPreferences();
+    }
+    public void OnTideToggle(Toggle toggle) {
+        Settings.changeTideControls = toggle.isOn;
+        Settings.SaveSettingsToPreferences();
+    }
     public void OnChatFilterToggle(Toggle toggle) {
         Settings.filter = toggle.isOn;
         Settings.SaveSettingsToPreferences();

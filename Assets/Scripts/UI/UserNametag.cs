@@ -76,11 +76,16 @@ public class UserNametag : MonoBehaviour {
                 text.color = Utils.GetVicColor();
             } else if (text.text.Contains("KingKittyTurnip")) {
                 text.color = Utils.GetTurnipColor();
-            } else if (text.text == "Foxyyy") {
+            } else if (text.text.Contains("Foxyyy")) {
                 text.color = Utils.GetFoxyyyColor();
-            } else if (text.text == "zomblebobble") {
+            } else if (text.text.Contains("zomblebobble")) {
                 text.color = Utils.GetZombleColor();
-            } 
+            } else if (text.text.Contains("Lust")) {
+                text.color = Utils.GetLustColor();
+            } else if (text.text.Contains("Windows10V")) {
+                text.color = Utils.GetWindowsColor();
+            }
+             
         }
     }
 }

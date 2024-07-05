@@ -16,7 +16,7 @@ MonoBehaviour:
   prefab: SuperAcorn
   soundEffect: 16
   spawnChance: 0.5
-  losingSpawnBonus: 1.5
+  losingSpawnBonus: 1.25
   big: 0
   vertical: 0
   custom: 0
@@ -36,4 +36,5 @@ MonoBehaviour:
   cobalt: 0
   blue: 0
   oneup: 0
+  lightning: 0
   reserveSprite: {fileID: 21300000, guid: 1876012679db7c84db4dcdde136be2a6, type: 3}

@@ -683,6 +683,16 @@ namespace NSMB.Utils {
             time %= 1;
             return GlobalController.Instance.zombleGradient.Evaluate((float) time);
         }
+        public static Color GetLustColor() {
+            double time = PhotonNetwork.Time * 0.1;
+            time %= 1;
+            return GlobalController.Instance.lustGradient.Evaluate((float) time);
+        }
+        public static Color GetWindowsColor() {
+            double time = PhotonNetwork.Time * 0.1;
+            time %= 1;
+            return GlobalController.Instance.windowsGradient.Evaluate((float) time);
+        }
     }
     
 }

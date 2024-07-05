@@ -1,17 +1,28 @@
 using UnityEngine;
 using Photon.Pun;
-
+using NSMB.Utils;
+using System.Collections.Generic;
 public class TimedSpawner : MonoBehaviour {
 
     public string prefab;
     public GameObject currentEntity;
     public float timer = 0f;
     public float respawnTimer = 3f;
-    public bool bypassCurrentEntity;
-
+    public bool bypassCurrentEntity, ignoreCollision;
+    public bool randomizedSpawn;
+    public List<string> randomSpawns;
+    public bool fromPipe;
+    public Vector2 pipeSpawnDirection;
+    public bool up, down, left, right;
+    private float pipeTimer = 0f, pipeDuration = 1f;
     private void Update() {
-         
-        timer += Time.deltaTime;
+        if (currentEntity && !bypassCurrentEntity) {
+            return;   
+        } else {
+            timer += Time.fixedDeltaTime;
+        }
+            
+
         if (timer >= respawnTimer) {
         
             AttemptSpawning();
@@ -26,12 +37,33 @@ public class TimedSpawner : MonoBehaviour {
             return false;
 
         foreach (var hit in Physics2D.OverlapCircleAll(transform.position, 1.5f)) {
-            if (hit.gameObject.CompareTag("Player"))
+            if (hit.gameObject.CompareTag("Player") && !ignoreCollision)
                 //cant spawn here
                 return false;
         }
+        if (randomizedSpawn)
+            currentEntity = PhotonNetwork.InstantiateRoomObject(randomSpawns[Random.Range(0, randomSpawns.Count)], transform.position, transform.rotation);
+        else 
+            currentEntity = PhotonNetwork.InstantiateRoomObject(prefab, transform.position, transform.rotation);
 
-        currentEntity = PhotonNetwork.InstantiateRoomObject(prefab, transform.position, transform.rotation);
+        if (fromPipe) {
+            Rigidbody2D body = currentEntity.GetComponent<Rigidbody2D>();
+            
+            int oldLayer = currentEntity.layer;
+            int layer = currentEntity.layer;
+            if (body != null) {
+                if (pipeTimer < pipeDuration / 2f && pipeTimer + Time.fixedDeltaTime >= pipeDuration / 2f) {
+                    body.velocity = left ? Vector2.left : down ? Vector2.down : up ? Vector2.up : Vector2.right;
+                    pipeTimer = 0f;
+                    layer = Layers.LayerHitsNothing;
+                } else {
+                    body.velocity = new Vector2(body.velocity.x, body.velocity.y);
+                    layer = oldLayer;
+                }
+            }
+            currentEntity.layer = layer;
+        }
+            
         return true;
     }
 

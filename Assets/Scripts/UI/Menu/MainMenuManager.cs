@@ -24,18 +24,18 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public GameObject lobbiesContent, lobbyPrefab;
     bool quit, validName;
     public GameObject connecting;
-    public GameObject title, bg, mainMenu, optionsMenu, lobbyMenu, createLobbyPrompt, inLobbyMenu, creditsMenu, controlsMenu, privatePrompt, updateBox, bonusSettingsPrompt, powerupsPrompt, frostypediaMenu, menuTogglesMenu, powerupGuideMenu, welcomePrompt;
+    public GameObject title, bg, mainMenu, optionsMenu, lobbyMenu, createLobbyPrompt, inLobbyMenu, creditsMenu, controlsMenu, privatePrompt, updateBox, bonusSettingsPrompt, powerupsPrompt, frostypediaMenu, menuTogglesMenu, powerupGuideMenu, welcomePrompt, mapsPrompt, changelogMenu, powerupControlsPrompt;
     public GameObject[] levelCameraPositions;
     public GameObject randomMapCameraPosition;
     public GameObject sliderText, lobbyText, currentMaxPlayers, settingsPanel;
     public TMP_Dropdown levelDropdown, characterDropdown, startingPowerupDropdown, startingReserveDropdown, friendlyFireDropdown, teamDropdown, starSharingDropdown;
     public RoomIcon selectedRoomIcon, privateJoinRoom;
     public Button joinRoomBtn, createRoomBtn, startGameBtn;
-    public Toggle randomMapToggle, ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, nsmbPowerups, tenPlayersPowerups, timedPowerups, wiiPowerups, oneUpMushToggle, cobaltToggle, acornToggle, tideToggle, magmaToggle, blueShellToggle, fireToggle, miniToggle, starmanToggle, lightningToggle, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, reserveDropToggle, mapCoinsToggle, teamToggle, shareCoinsToggle, mirrorModeToggle, fireballToggle, secondButtonToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
+    public Toggle randomMapToggle, ndsResolutionToggle, fullscreenToggle, livesEnabled, powerupsEnabled, frostyPowerupsEnabled, nsmbPowerups, tenPlayersPowerups, timedPowerups, wiiPowerups, oneUpMushToggle, cobaltToggle, acornToggle, tideToggle, magmaToggle, blueShellToggle, fireToggle, miniToggle, starmanToggle, lightningToggle, timeEnabled, drawTimeupToggle, rouletteToggle, deathmatchToggle, fireballDamageToggle, reserveDropToggle, mapCoinsToggle, teamToggle, shareCoinsToggle, mirrorModeToggle, fireballToggle, secondButtonToggle, acornControlsToggle, tideControlsToggle, vsyncToggle, privateToggle, privateToggleRoom, aspectToggle, spectateToggle, scoreboardToggle, filterToggle;
     public GameObject playersContent, playersPrefab, chatContent, chatPrefab;
     public TMP_InputField nicknameField, starsText, coinsText, livesField, timeField, lobbyJoinField, chatTextField;
     public Slider musicSlider, sfxSlider, masterSlider, lobbyPlayersSlider, changePlayersSlider, stellarSensitivitySlider;
-    public GameObject mainMenuSelected, optionsSelected, lobbySelected, currentLobbySelected, createLobbySelected, creditsSelected, controlsSelected, privateSelected, reconnectSelected, updateBoxSelected, bonusSelected, powerupsSelected, frostypediaSelected, togglesMenuSelected, powerupGuideSelected;
+    public GameObject mainMenuSelected, optionsSelected, lobbySelected, currentLobbySelected, createLobbySelected, creditsSelected, controlsSelected, privateSelected, reconnectSelected, updateBoxSelected, bonusSelected, powerupsSelected, frostypediaSelected, togglesMenuSelected, powerupGuideSelected, changelogSelected, powerupControlsSelected;
     public GameObject errorBox, errorButton, rebindPrompt, reconnectBox;
     public TMP_Text errorText, rebindCountdown, rebindText, reconnectText, updateText, stellarSensitivityText;
     public TMP_Dropdown region;
@@ -561,6 +561,8 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         fullscreenToggle.isOn = Screen.fullScreenMode == FullScreenMode.FullScreenWindow;
         fireballToggle.isOn = Settings.Instance.fireballFromSprint;
         secondButtonToggle.isOn = Settings.Instance.useSecondAction;
+        acornControlsToggle.isOn = Settings.Instance.changeAcornControls;
+        tideControlsToggle.isOn = Settings.Instance.changeTideControls;
         vsyncToggle.isOn = Settings.Instance.vsync;
         scoreboardToggle.isOn = Settings.Instance.scoreboardAlways;
         filterToggle.isOn = Settings.Instance.filter;
@@ -677,6 +679,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(false);
         menuTogglesMenu.SetActive(false);
         powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(mainMenuSelected);
     }
@@ -697,6 +702,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(false);
         menuTogglesMenu.SetActive(false);
         powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(mainMenuSelected);
 
@@ -717,6 +725,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(false);
         menuTogglesMenu.SetActive(false);
         powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
 
         foreach (RoomIcon room in currentRooms.Values)
             room.UpdateUI(room.room);
@@ -739,6 +750,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(false);
         menuTogglesMenu.SetActive(false);
         powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
 
         privateToggle.isOn = false;
 
@@ -760,6 +774,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(false);
         menuTogglesMenu.SetActive(false);
         powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(optionsSelected);
     }
@@ -779,6 +796,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(false);
         menuTogglesMenu.SetActive(false);
         powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(controlsSelected);
     }
@@ -798,6 +818,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(false);
         menuTogglesMenu.SetActive(false);
         powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(creditsSelected);
     }
@@ -817,6 +840,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(false);
         menuTogglesMenu.SetActive(false);
         powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(currentLobbySelected);
     }
@@ -836,6 +862,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(true);
         menuTogglesMenu.SetActive(false);
         powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(frostypediaSelected);
     }
@@ -855,6 +884,9 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(false);
         menuTogglesMenu.SetActive(true);
         powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(togglesMenuSelected);
     }
@@ -874,12 +906,41 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         frostypediaMenu.SetActive(false);
         menuTogglesMenu.SetActive(false);
         powerupGuideMenu.SetActive(true);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(false);
+        powerupControlsPrompt.SetActive(false);
+
+        EventSystem.current.SetSelectedGameObject(powerupGuideSelected);
+    }
+    public void OpenChangelog() {
+        title.SetActive(false);
+        bg.SetActive(true);
+        mainMenu.SetActive(false);
+        optionsMenu.SetActive(false);
+        controlsMenu.SetActive(false);
+        lobbyMenu.SetActive(false);
+        createLobbyPrompt.SetActive(false);
+        inLobbyMenu.SetActive(false);
+        creditsMenu.SetActive(false);
+        privatePrompt.SetActive(false);
+        bonusSettingsPrompt.SetActive(false);
+        powerupsPrompt.SetActive(false);
+        frostypediaMenu.SetActive(false);
+        menuTogglesMenu.SetActive(false);
+        powerupGuideMenu.SetActive(false);
+        mapsPrompt.SetActive(false);
+        changelogMenu.SetActive(true);
+        powerupControlsPrompt.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(powerupGuideSelected);
     }
     public void OpenBonusSettingsPrompt() {
         bonusSettingsPrompt.SetActive(true);
         EventSystem.current.SetSelectedGameObject(bonusSelected);
+    }
+    public void OpenPowerupControlsPrompt() {
+        powerupControlsPrompt.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(powerupControlsSelected);
     }
     public void OpenPowerupsPrompt() {
         powerupsPrompt.SetActive(true);

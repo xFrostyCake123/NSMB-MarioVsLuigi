@@ -16,7 +16,7 @@ MonoBehaviour:
   prefab: MagmaFlower
   soundEffect: 16
   spawnChance: 0.5
-  losingSpawnBonus: 1.25
+  losingSpawnBonus: 1.5
   big: 0
   vertical: 0
   custom: 0
@@ -36,4 +36,5 @@ MonoBehaviour:
   cobalt: 0
   blue: 0
   oneup: 0
+  lightning: 0
   reserveSprite: {fileID: 21300000, guid: d531c49948026ba49b8344552495389f, type: 3}

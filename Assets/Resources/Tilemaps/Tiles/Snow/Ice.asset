@@ -182,8 +182,9 @@ MonoBehaviour:
     - {x: 0, y: -1, z: 0}
     - {x: 1, y: 0, z: 0}
     m_RuleTransform: 0
-  siblings: []
+  siblings:
+  - {fileID: 11400000, guid: 67013148242b8a34484b929c5a191d1d, type: 2}
+  - {fileID: 11400000, guid: 83a479e029fde6c4491d922e813e797a, type: 2}
   isBackgroundTile: 0
   iceSkidding: 1
   footstepSound: 31
-  frictionFactor: 0.225

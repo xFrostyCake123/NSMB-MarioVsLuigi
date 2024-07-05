@@ -16,8 +16,9 @@ public class LobbySettingsList : MonoBehaviour
         // Game settings texts
         Utils.GetCustomProperty(Enums.NetRoomProperties.Lives, out int life);
         Utils.GetCustomProperty(Enums.NetRoomProperties.Time, out int time);
+        Utils.GetCustomProperty(Enums.NetRoomProperties.DeathmatchGame, out bool dm);
         mapName.text = "Map: " + GameManager.Instance.levelName;
-        starReq.text = "Star Requirement: "  + GameManager.Instance.starRequirement.ToString();
+        starReq.text = dm ? "Stars: Disabled" : "Star Requirement: "  + GameManager.Instance.starRequirement.ToString();
         coinReq.text = "Coins for Item: " + GameManager.Instance.coinRequirement.ToString();
         lives.text = life == -1 ? "Lives: Disabled" : "Amount of Lives: " + MainMenuManager.Instance.livesField.text;
         timer.text = time == -1 ? " Timer: Disabled" : "Time Limit: " + MainMenuManager.Instance.timeField.text;
@@ -39,6 +40,7 @@ public class LobbySettingsList : MonoBehaviour
             Utils.GetCustomProperty(Enums.NetRoomProperties.TemporaryPowerups, out bool mega);
             Utils.GetCustomProperty(Enums.NetRoomProperties.StarmanPowerup, out bool star);
             Utils.GetCustomProperty(Enums.NetRoomProperties.CobaltStarPowerup, out bool cobalt);
+            Utils.GetCustomProperty(Enums.NetRoomProperties.Lightning, out bool lightning);
             
             if (sprite.name.Contains("Mushroom") && !mush)
                 sprite.gameObject.SetActive(false);
@@ -83,6 +85,9 @@ public class LobbySettingsList : MonoBehaviour
                 sprite.gameObject.SetActive(false);
 
             if (sprite.name.Contains("CobaltStar") && !cobalt)
+                sprite.gameObject.SetActive(false);
+
+            if (sprite.name.Contains("Lightning") && !lightning)
                 sprite.gameObject.SetActive(false);
         }
 

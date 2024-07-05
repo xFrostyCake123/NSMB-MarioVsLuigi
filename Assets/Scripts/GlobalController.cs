@@ -18,7 +18,7 @@ public class GlobalController : Singleton<GlobalController>, IInRoomCallbacks, I
     public Gradient turnipGradient;
     public Gradient vicGradient;
     public Gradient foxyyyGradient;
-    public Gradient zombleGradient;
+    public Gradient zombleGradient, lustGradient, windowsGradient;
 
     public GameObject ndsCanvas, fourByThreeImage, anyAspectImage, graphy;
 

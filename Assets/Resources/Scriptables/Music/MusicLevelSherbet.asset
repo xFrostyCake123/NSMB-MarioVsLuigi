@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e5478bfbe63c3c46b392d3ca752690c, type: 3}
   m_Name: MusicLevelSherbet
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 6e5764382652bf044a9abf924e2ef748, type: 3}
-  fastClip: {fileID: 8300000, guid: 09c464309e299704fa7f2929462f5802, type: 3}
-  loopStartSample: 0
-  loopEndSample: 0
+  clip: {fileID: 8300000, guid: b4e878f43dda19f47bb4b9a6775c065c, type: 3}
+  fastClip: {fileID: 8300000, guid: afb7a03ca91b8ac439bedd41ce71b73e, type: 3}
+  loopStartSample: 7.804
+  loopEndSample: 62.448

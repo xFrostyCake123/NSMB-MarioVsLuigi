@@ -41,5 +41,7 @@ public class FadeOutManager : MonoBehaviour {
             animator.SetTrigger("Sad");
         else if (frostedFade == Enums.FrostedFades.Sleepy)
             animator.SetTrigger("Sleepy");
+        else if (frostedFade == Enums.FrostedFades.ReverseNormal)
+            animator.SetTrigger("ReverseNormal");
     }   
 }

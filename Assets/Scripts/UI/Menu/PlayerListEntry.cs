@@ -43,7 +43,12 @@ public class PlayerListEntry : MonoBehaviour {
             nameText.color = Utils.GetFoxyyyColor();
         } else if (nameText.text.Contains("zomblebobble")) {
             nameText.color = Utils.GetZombleColor();
+        } else if (nameText.text.Contains("Lust")) {
+            nameText.color = Utils.GetLustColor();
+        } else if (nameText.text.Contains("Windows10V")) {
+            nameText.color = Utils.GetWindowsColor();
         } 
+         
     }
 
     public void UpdateText() {

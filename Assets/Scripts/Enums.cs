@@ -60,7 +60,7 @@ public static class Enums {
         Normal, HalfBlink, FullBlink, Death
     }
     public enum FrostedFades {
-        Normal, Sad, Sleepy
+        Normal, Sad, Sleepy, ReverseNormal
     }
     // Music Enums
     public enum MusicState {
@@ -74,7 +74,7 @@ public static class Enums {
     //Sound effects
     public enum Sounds : byte {
 
-        //CURRENT MAX: 124
+        //CURRENT MAX: 125
 
         //Enemy
         [SoundData("enemy/freeze")]                             Enemy_Generic_Freeze = 0,
@@ -173,6 +173,7 @@ public static class Enums {
         [SoundData("ui/match_win")]                             UI_Match_Win = 63,
         [SoundData("ui/match_team_win")]                        UI_Match_Team_Win = 103,
         [SoundData("ui/match_cancelled")]                       UI_Match_Cancelled = 111,
+        [SoundData("ui/match_results")]                         UI_Match_Results = 125,
         [SoundData("ui/file_select")]                           UI_FileSelect = 112,
         [SoundData("ui/pause")]                                 UI_Pause = 64,
         [SoundData("ui/quit")]                                  UI_Quit = 65,

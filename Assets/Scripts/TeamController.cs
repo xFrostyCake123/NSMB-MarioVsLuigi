@@ -102,30 +102,45 @@ public class TeamController : MonoBehaviourPun
             
         if (team == 0) {
             foreach (PlayerController red in redTeamMembers) {
+                if (red == null)
+                    return;
+
                 red.SpawnTeamItem();
                 red.coins = 0;
             }
         }
         if (team == 1) {
             foreach (PlayerController yellow in yellowTeamMembers) {
+                if (yellow == null)
+                    return;
+
                 yellow.SpawnTeamItem();
                 yellow.coins = 0;
             }
         }
         if (team == 2) {
             foreach (PlayerController green in greenTeamMembers) {
+                if (green == null)
+                    return;
+
                 green.SpawnTeamItem();
                 green.coins = 0;
             }
         }
         if (team == 3) {
             foreach (PlayerController blue in blueTeamMembers) {
+                if (blue == null)
+                    return;
+
                 blue.SpawnTeamItem();
                 blue.coins = 0;
             }
         }
         if (team == 4) {
             foreach (PlayerController purple in purpleTeamMembers) {
+                if (purple == null)
+                    return;
+                    
                 purple.SpawnTeamItem();
                 purple.coins = 0;
             }

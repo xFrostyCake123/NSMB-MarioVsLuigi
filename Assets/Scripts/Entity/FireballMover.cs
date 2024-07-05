@@ -72,6 +72,10 @@ public AudioSource audioSource;
             speed = speed / 2;
             bounceHeight = bounceHeight / 2;
         }
+        if (player != null && player.invincible > 0 && isTidalwave) {
+            speed *= 1.5f;
+            accelMultiplier *= 1.25f;
+        }
     }
 
        public void FixedUpdate() {
@@ -119,6 +123,7 @@ public AudioSource audioSource;
         if (despawnTimer > 0 && (despawnTimer -= Time.fixedDeltaTime) <= 0) {
             PhotonNetwork.Destroy(gameObject);
         }
+
     }
 
     private bool CollideWithTiles() {

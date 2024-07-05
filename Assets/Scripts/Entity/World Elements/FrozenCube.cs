@@ -12,8 +12,8 @@ public class FrozenCube : HoldableEntity {
     public float autoBreakTimer = 10;
     public bool noEntity = false, isShinyCube = false;
     private SpriteRenderer spriteRenderer;
-    private IFreezableEntity entity;
-    private PhotonView entityView;
+    public IFreezableEntity entity;
+    public PhotonView entityView;
     private Rigidbody2D entityBody;
 
     private Vector2 entityPositionOffset;
@@ -70,6 +70,7 @@ public class FrozenCube : HoldableEntity {
             flying = entity.IsFlying;
             ApplyConstraints();
         } else if (noEntity) {
+            entity = entityView.GetComponent<IFreezableEntity>();
             ApplyConstraints();
         }
     }
@@ -312,7 +313,8 @@ public class FrozenCube : HoldableEntity {
 
     [PunRPC]
     public override void Kill() {
-        entity?.Unfreeze((byte) unfreezeReason);
+        if (!noEntity)
+            entity?.Unfreeze((byte) unfreezeReason);
 
         if (holder)
             holder.holding = null;
