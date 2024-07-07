@@ -3639,7 +3639,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         Utils.TickTimer(ref propellerSpinTimer, 0, delta);
         Utils.TickTimer(ref propellerTimer, 0, delta);
         if (propeller && drill)
-            Utils.TickTimer(ref propellerDrillAccel, 0, -delta * 3.5f);
+            Utils.TickTimer(ref propellerDrillAccel, 0, -delta * 4f);
         if (propellerFlySpeed > 1)
             Utils.TickTimer(ref propellerFlySpeed, 0, delta);  
         Utils.TickTimer(ref knockbackTimer, 0, delta);
