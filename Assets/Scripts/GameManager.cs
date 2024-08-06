@@ -733,40 +733,16 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         else
             music.PlayOneShot(Enums.Sounds.UI_Match_Lose.GetClip());
 
-        //TOOD: make a results screen? yessir
-        if (!draw) {
-            FadeOutManager fade = GameObject.FindGameObjectWithTag("FadeUI").GetComponent<FadeOutManager>();
-            yield return new WaitForSecondsRealtime(secondsUntilResults);
-            foreach (FireballMover fireball in FindObjectsOfType<FireballMover>()) {
-                PhotonView view = fireball.GetComponent<PhotonView>();
-                if (view)
-                    PhotonNetwork.Destroy(view);
-                Destroy(fireball);
-            }
-            music.PlayOneShot(Enums.Sounds.UI_Match_Results.GetClip());
-            text.gameObject.SetActive(false);
-            ScoreboardUpdater.instance.gameObject.SetActive(false);
-            pauseUI.SetActive(false);
-            GameObject results = GameObject.FindWithTag("results");
-            results.GetComponent<Animator>().SetTrigger("slide");
-            if (winner != null)
-                FinalResultsList.instance.SelectWinningPlayer(winner);
-            yield return new WaitForSecondsRealtime(13);
-            fade.FrostedFade(Enums.FrostedFades.ReverseNormal);
-            yield return new WaitForSecondsRealtime(2);
-            if (PhotonNetwork.IsMasterClient)
-                PhotonNetwork.DestroyAll();
-            SceneManager.LoadScene("MainMenu");
-        } else {
-            FadeOutManager fade = GameObject.FindGameObjectWithTag("FadeUI").GetComponent<FadeOutManager>();
-            yield return new WaitForSecondsRealtime(secondsUntilMenu);
-            fade.transform.SetAsLastSibling();
-            fade.FrostedFade(Enums.FrostedFades.ReverseNormal);
-            yield return new WaitForSecondsRealtime(2);
-            if (PhotonNetwork.IsMasterClient)
-                PhotonNetwork.DestroyAll();
-            SceneManager.LoadScene("MainMenu");
-        }
+        //TOOD: make a results screen? yessir (scrapped)
+        FadeOutManager fade = GameObject.FindGameObjectWithTag("FadeUI").GetComponent<FadeOutManager>();
+        yield return new WaitForSecondsRealtime(secondsUntilMenu);
+        fade.transform.SetAsLastSibling();
+        fade.FrostedFade(Enums.FrostedFades.ReverseNormal);
+        yield return new WaitForSecondsRealtime(2);
+        if (PhotonNetwork.IsMasterClient)
+            PhotonNetwork.DestroyAll();
+        SceneManager.LoadScene("MainMenu");
+            
     }
 
     private IEnumerator BigStarRespawn(bool wait = true) {
