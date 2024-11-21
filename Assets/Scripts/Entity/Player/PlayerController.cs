@@ -2305,7 +2305,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             gm.lightningDarkness.GetComponent<Animator>().SetTrigger("darken");
         if (!gm.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("State_LowVolume"))
             gm.GetComponent<Animator>().SetTrigger("lowvolume");
-        gm.lightningCooldown = 45f;
+        gm.lightningCooldown = 30f;
         foreach (KillableEntity enemy in FindObjectsOfType<KillableEntity>()) {
             if (enemy.GetComponent<BobombWalk>() is BobombWalk bomb && enemy != null) {
                 bomb.photonView.RPC(nameof(bomb.Detonate), RpcTarget.All);
@@ -2867,6 +2867,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         hitInvincibilityCounter = state != Enums.PowerupState.MegaMushroom ? 2f : 0f;
         bounce = false;
         knockback = false;
+        fireballKnockback = false;
         body.velocity = new(0, body.velocity.y);
         facingRight = initialKnockbackFacingRight;
     }
@@ -4163,7 +4164,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             }
         } else if (propeller) {
             if (drill) {
-                body.velocity = new(0, -drillVelocity * (propellerDrillAccel < 1 ? propellerDrillAccel : 1));
+                body.velocity = new((Mathf.Clamp(body.velocity.x, -WalkingMaxSpeed, WalkingMaxSpeed) * 0.5f), -drillVelocity * (propellerDrillAccel < 1 ? propellerDrillAccel : 1));
             } else {
                 propellerDrillAccel = 0;
                 float htv = (WalkingMaxSpeed * 1.18f + (propellerTimer * 2f)) * propellerFlySpeed;
