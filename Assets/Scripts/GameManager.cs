@@ -803,7 +803,6 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
                 }
             }
         }
-        lightningCooldown -= Time.fixedDeltaTime;
         stellarText.text = "x" + (stellarSlider.value * 2f).ToString("F2");
         if (teamController.teamsMatch && teamController.shareStars) {
             redTeamStars = teamController.GetTeamStars(0);
@@ -829,7 +828,9 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         if (musicEnabled)
             HandleMusic();
     }
-
+    public void FixedUpdate() {
+        lightningCooldown -= Time.fixedDeltaTime;
+    }
     public void CreateNametag(PlayerController controller) {
         GameObject nametag = Instantiate(nametagPrefab, nametagPrefab.transform.parent);
         nametag.GetComponent<UserNametag>().parent = controller;
