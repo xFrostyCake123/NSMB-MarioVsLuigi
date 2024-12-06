@@ -4164,7 +4164,7 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             }
         } else if (propeller) {
             if (drill) {
-                body.velocity = new((Mathf.Clamp(body.velocity.x, -WalkingMaxSpeed, WalkingMaxSpeed) * 0.5f), -drillVelocity * (propellerDrillAccel < 1 ? propellerDrillAccel : 1));
+                body.velocity = new((Mathf.Clamp(body.velocity.x, -WalkingMaxSpeed, WalkingMaxSpeed) * 0.85f), -drillVelocity * (propellerDrillAccel < 1 ? propellerDrillAccel : 1));
             } else {
                 propellerDrillAccel = 0;
                 float htv = (WalkingMaxSpeed * 1.18f + (propellerTimer * 2f)) * propellerFlySpeed;
