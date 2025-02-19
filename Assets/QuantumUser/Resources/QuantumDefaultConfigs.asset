@@ -225,6 +225,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2725d860a5f0d8f48a6b40fa4d04ae1a, type: 2}
   - {fileID: 11400000, guid: b18d332df84e64f4ba8cd55a576ce872, type: 2}
   - {fileID: 11400000, guid: 540a3bf6243f1c94cb307db79d724474, type: 2}
+  - {fileID: 11400000, guid: f9165d1196691ed4c9df8bd02b8feda9, type: 2}
   FallbackPowerup: {fileID: 11400000, guid: 96aa97e77f3b7fe4999fbc85e8b34323, type: 2}
   CharacterDatas:
   - {fileID: 11400000, guid: 5832ac6f6c9afdb4aa8697141cc3a330, type: 2}
