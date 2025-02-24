@@ -21,12 +21,12 @@ MonoBehaviour:
   Speed:
     RawValue: 294912
   BounceStrength:
-    RawValue: 196608
+    RawValue: 262144
   Gravity:
     X:
       RawValue: 0
     Y:
-      RawValue: -1179648
+      RawValue: -983040
   DestroyOnSecondBounce: 0
   DestroyOnHit: 0
   LockTo45Degrees: 0

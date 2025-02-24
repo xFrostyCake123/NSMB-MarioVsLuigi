@@ -53,6 +53,8 @@ public class BackgroundLoop : QuantumSceneViewComponent<StageContext> {
         for (int i = 0; i < children.Length; i++) {
             GameObject obj = children[i];
             float parallaxSpeed = 1 - Mathf.Clamp01(Mathf.Abs(-10f / obj.transform.position.z));
+            if (obj.transform.position.z < 0)
+                parallaxSpeed = -1 + Mathf.Clamp01(Mathf.Abs(2f / (obj.transform.position.z * -1)));    
 
             float difference = xDifference.AsFloat + (obj.transform.position.x - truePositions[i].x);
 
@@ -60,11 +62,10 @@ public class BackgroundLoop : QuantumSceneViewComponent<StageContext> {
                 truePositions[i].x += ((cameraTransform.position.x > stage.StageWorldMin.X.AsFloat + (stage.TileDimensions.x * 0.25f)) ? 1 : -1) * (stage.TileDimensions.x * 0.5f);
             }
 
-            if (parallaxSpeed > 0) {
-                Vector3 newPosition = truePositions[i] + difference * parallaxSpeed * Vector3.right;
-                truePositions[i] = newPosition;
-                obj.transform.position = newPosition;
-            }
+            
+            Vector3 newPosition = truePositions[i] + difference * parallaxSpeed * Vector3.right;
+            truePositions[i] = newPosition;
+            obj.transform.position = newPosition;
 
             RepositionChildObjects(cameraTransform, obj);
         }
